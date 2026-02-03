@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BORDERLAND: Criador de Dossiê [SISTEMA SSB]</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Biblioteca para gerar a imagem -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Courier+Prime:wght@400;700&family=Inter:wght@300;400;600&display=swap');
+
+        /* --- CONFIGURAÇÃO DOS TEMAS --- */
+
+        /* TEMA 1: ARISU (Gamer / Tech / Neon) */
+        .theme-arisu {
+            --bg-color: #050510;
+            --panel-bg: rgba(16, 20, 35, 0.95);
+            --text-main: #e0f2fe;
+            --text-muted: #94a3b8;
+            --accent-primary: #0ea5e9; /* Sky Blue */
+            --accent-secondary: #f43f5e; /* Rose */
+            --border-color: #1e293b;
+            --font-main: 'Rajdhani', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+            --shadow-color: rgba(14, 165, 233, 0.2);
+            --bg-image: radial-gradient(circle at 50% 50%, #1a2040 0%, #000 120%);
+        }
+
+        /* TEMA 2: CHISHIYA (Clínico / Analítico / Branco) */
+        .theme-chishiya {
+            --bg-color: #e5e5e5;
+            --panel-bg: #ffffff;
+            --text-main: #171717;
+            --text-muted: #525252;
+            --accent-primary: #404040; /* Dark Grey */
+            --accent-secondary: #dc2626; /* Red (Surgical) */
+            --border-color: #d4d4d4;
+            --font-main: 'Inter', sans-serif;
+            --font-mono: 'Courier Prime', monospace;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --bg-image: linear-gradient(to bottom right, #f0f0f0, #dcdcdc);
+        }
+
+        /* TEMA 3: A PRAIA (Máfia / Luxo Decadente / Militar) */
+        .theme-mafia {
+            --bg-color: #1c1917;
+            --panel-bg: #292524;
+            --text-main: #d6d3d1;
+            --text-muted: #a8a29e;
+            --accent-primary: #d97706; /* Amber/Gold */
+            --accent-secondary: #78350f; /* Leather/Brown */
+            --border-color: #44403c;
+            --font-main: 'Courier Prime', monospace; /* Datilografia */
+            --font-mono: 'Courier Prime', monospace;
+            --shadow-color: rgba(217, 119, 6, 0.15);
+            --bg-image: url('https://www.transparenttextures.com/patterns/leather.png');
+        }
+
+        /* APLICAÇÃO GERAL */
+        body {
+            background-color: var(--bg-color);
+            background-image: var(--bg-image);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            transition: all 0.5s ease;
+        }
+
+        .dossier-container {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 0 30px var(--shadow-color);
+        }
+
+        input, select, textarea {
+            background-color: rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-family: var(--font-mono);
+        }
+        
+        .theme-chishiya input, .theme-chishiya select, .theme-chishiya textarea {
+            background-color: #f5f5f5;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 5px var(--shadow-color);
+        }
+
+        /* ELEMENTOS ESPECÍFICOS */
+        .stat-box {
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background-color: var(--accent-secondary);
+        }
+
+        .skill-card {
+            background-color: rgba(0,0,0,0.05);
+            border-left: 3px solid var(--accent-primary);
+        }
+
+        .mono { font-family: var(--font-mono); }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
+
+        /* UPLOAD DE FOTO */
+        #photo-preview {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* IMPRESSÃO / EXPORTAÇÃO */
+        .print-only { display: none; }
+    </style>
+</head>
+<body class="theme-arisu min-h-screen p-4 md:p-8">
+
+    <!-- CONTROLES SUPERIORES (NÃO EXPORTADOS) -->
+    <div class="max-w-6xl mx-auto mb-8 flex flex-col md:flex-row justify-between items-center gap-4 bg-black/50 p-4 rounded-xl border border-white/10 backdrop-blur-md">
+        <div class="flex items-center gap-4">
+            <h1 class="text-xl font-bold uppercase tracking-widest text-white"><i class="fa-solid fa-id-card mr-2 text-red-600"></i>Gerador de Dossiê</h1>
+            
+            <div class="flex gap-2 text-xs">
+                <button onclick="setTheme('theme-arisu')" class="px-3 py-1 bg-blue-900/50 border border-blue-500 text-blue-200 rounded hover:bg-blue-800 transition">ARISU</button>
+                <button onclick="setTheme('theme-chishiya')" class="px-3 py-1 bg-gray-200 text-gray-800 border border-white rounded hover:bg-white transition font-bold">CHISHIYA</button>
+                <button onclick="setTheme('theme-mafia')" class="px-3 py-1 bg-yellow-900/50 border border-yellow-600 text-yellow-200 rounded hover:bg-yellow-800 transition">A PRAIA</button>
+            </div>
+        </div>
+
+        <div class="flex gap-3">
+            <button onclick="saveData()" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded text-xs uppercase font-bold border border-zinc-600 transition"><i class="fa-solid fa-save mr-2"></i>Salvar .JSON</button>
+            <label class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded text-xs uppercase font-bold border border-zinc-600 transition cursor-pointer">
+                <i class="fa-solid fa-folder-open mr-2"></i>Carregar
+                <input type="file" id="file-upload" class="hidden" accept=".json" onchange="loadData(this)">
+            </label>
+            <button onclick="exportImage()" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded text-xs uppercase font-bold shadow-[0_0_15px_rgba(220,38,38,0.5)] transition"><i class="fa-solid fa-camera mr-2"></i>Gerar Imagem</button>
+        </div>
+    </div>
+
+    <!-- ÁREA DO DOSSIÊ (SERÁ EXPORTADA COMO IMAGEM) -->
+    <div id="character-sheet" class="dossier-container max-w-6xl mx-auto p-8 rounded-lg relative">
+        
+        <!-- CABEÇALHO DA FICHA -->
+        <header class="flex justify-between items-end border-b-2 mb-8 pb-4" style="border-color: var(--border-color)">
+            <div class="w-2/3">
+                <div class="flex items-center gap-3 mb-2">
+                    <i class="fa-solid fa-biohazard text-3xl" style="color: var(--accent-secondary)"></i>
+                    <span class="text-xs font-mono tracking-[0.3em] uppercase" style="color: var(--text-muted)">Protocolo de Imigração v12.0</span>
+                </div>
+                <input type="text" id="char-name" placeholder="NOME DO JOGADOR" class="w-full bg-transparent border-none text-4xl font-black uppercase tracking-tighter p-0 focus:ring-0 placeholder-opacity-30" style="color: var(--text-main); font-family: var(--font-main)">
+                <div class="flex gap-4 mt-2">
+                    <div class="flex flex-col">
+                        <label class="text-[10px] uppercase tracking-widest font-bold" style="color: var(--accent-primary)">Idade</label>
+                        <input type="text" class="bg-transparent border-b w-16 text-sm" style="border-color: var(--border-color)">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-[10px] uppercase tracking-widest font-bold" style="color: var(--accent-primary)">Gênero</label>
+                        <input type="text" class="bg-transparent border-b w-24 text-sm" style="border-color: var(--border-color)">
+                    </div>
+                    <div class="flex flex-col flex-grow">
+                        <label class="text-[10px] uppercase tracking-widest font-bold" style="color: var(--accent-primary)">Arquétipo (Personalidade)</label>
+                        <select id="char-personality" onchange="updatePersonaDesc()" class="bg-transparent border-b w-full text-sm font-bold uppercase cursor-pointer" style="border-color: var(--border-color)">
+                            <option value="">Selecione...</option>
+                            <!-- JS popula aqui -->
+                        </select>
+                    </div>
+                </div>
+                <div id="persona-desc" class="text-[10px] mt-1 italic opacity-70 h-4 overflow-hidden text-ellipsis whitespace-nowrap">...</div>
+            </div>
+            
+            <div class="text-right">
+                <div class="text-xs font-mono mb-1" style="color: var(--text-muted)">ID DE REGISTRO</div>
+                <div class="text-2xl font-mono font-bold tracking-widest" style="color: var(--accent-primary)">#<span id="reg-id">8492</span></div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-12 gap-8">
+            
+            <!-- COLUNA ESQUERDA: FOTO E STATUS VITAIS -->
+            <div class="col-span-12 md:col-span-3 space-y-6">
+                
+                <!-- Foto -->
+                <div class="aspect-[3/4] w-full border-2 border-dashed relative overflow-hidden group cursor-pointer transition-all hover:border-opacity-100" style="border-color: var(--border-color)" onclick="document.getElementById('photo-upload').click()">
+                    <input type="file" id="photo-upload" class="hidden" accept="image/*" onchange="loadPhoto(this)">
+                    <img id="char-photo" src="" class="hidden w-full h-full object-cover">
+                    <div id="photo-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-4 opacity-50 group-hover:opacity-100 transition-opacity">
+                        <i class="fa-solid fa-camera text-2xl mb-2" style="color: var(--accent-primary)"></i>
+                        <span class="text-[10px] uppercase font-bold">Carregar Biometria</span>
+                    </div>
+                </div>
+
+                <!-- Barras Vitais -->
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-xs uppercase font-bold mb-1">
+                            <span style="color: var(--text-muted)">Dias de Visto</span>
+                            <span id="visa-val" style="color: var(--accent-secondary)">3 DIAS</span>
+                        </div>
+                        <input type="range" id="visa-input" min="0" max="10" value="3" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-red-600" oninput="updateBars()">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs uppercase font-bold mb-1">
+                            <span style="color: var(--text-muted)">Stress (Copas)</span>
+                            <span id="stress-val" class="text-red-500">0 / 25</span>
+                        </div>
+                        <div class="w-full bg-gray-800 h-4 border rounded overflow-hidden relative" style="border-color: var(--border-color)">
+                            <div id="stress-bar" class="h-full transition-all duration-300" style="width: 0%; background-color: var(--accent-secondary)"></div>
+                        </div>
+                        <div class="flex justify-between mt-2">
+                            <button onclick="adjustStress(-1)" class="w-8 h-8 rounded border hover:bg-white/10" style="border-color: var(--border-color)">-</button>
+                            <input type="number" id="stress-input" value="0" min="0" max="25" class="w-16 text-center bg-transparent font-mono font-bold" oninput="updateBars()">
+                            <button onclick="adjustStress(1)" class="w-8 h-8 rounded border hover:bg-white/10" style="border-color: var(--border-color)">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Caixa de Dano Físico -->
+                <div class="p-3 border rounded" style="border-color: var(--accent-secondary); background-color: rgba(220, 38, 38, 0.05)">
+                    <h4 class="text-xs font-bold uppercase mb-2 text-center" style="color: var(--accent-secondary)">Condição Física (Espadas)</h4>
+                    <textarea class="w-full h-20 bg-transparent border-none text-xs resize-none p-1 placeholder-opacity-50" placeholder="Anote ferimentos, fraturas ou condições aqui... (Reduz atributo Espadas)" style="color: var(--text-main)"></textarea>
+                </div>
+
+            </div>
+
+            <!-- COLUNA CENTRAL: ATRIBUTOS E PROFISSÃO -->
+            <div class="col-span-12 md:col-span-9 space-y-8">
+                
+                <!-- Profissão -->
+                <div class="stat-box p-4 rounded-lg">
+                    <label class="block text-xs uppercase font-bold tracking-widest mb-2" style="color: var(--accent-primary)">Profissão (Vida Anterior)</label>
+                    <select id="char-job" onchange="updateJob()" class="w-full p-2 text-lg font-bold uppercase rounded cursor-pointer border-b-2 border-transparent focus:border-b-2" style="border-color: var(--border-color); background: rgba(0,0,0,0.2)">
+                        <option value="">Selecione sua Profissão...</option>
+                        <!-- JS popula aqui -->
+                    </select>
+                    <p id="job-desc" class="text-xs mt-2 italic opacity-70 min-h-[30px]">Descrição da profissão aparecerá aqui...</p>
+                </div>
+
+                <!-- Habilidades (Auto-Populated) -->
+                <div class="grid md:grid-cols-3 gap-4" id="skills-container">
+                    <!-- Cards de habilidades gerados via JS -->
+                    <div class="skill-card p-3 rounded h-24 flex items-center justify-center opacity-30 border border-dashed border-gray-600">
+                        <span class="text-xs">Habilidade 1</span>
+                    </div>
+                    <div class="skill-card p-3 rounded h-24 flex items-center justify-center opacity-30 border border-dashed border-gray-600">
+                        <span class="text-xs">Habilidade 2</span>
+                    </div>
+                    <div class="skill-card p-3 rounded h-24 flex items-center justify-center opacity-30 border border-dashed border-gray-600">
+                        <span class="text-xs">Habilidade 3</span>
+                    </div>
+                </div>
+
+                <!-- Atributos (Naipes) -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    
+                    <!-- Espadas -->
+                    <div class="text-center p-4 rounded border-2 relative group" style="border-color: #3b82f6; background: rgba(59, 130, 246, 0.05)">
+                        <i class="fa-solid fa-shield-halved text-2xl absolute top-2 right-2 opacity-20 text-blue-500"></i>
+                        <h3 class="text-blue-500 font-black uppercase text-sm mb-2">Espadas</h3>
+                        <input type="number" id="attr-spades" value="30" class="w-full text-center text-3xl font-mono font-bold bg-transparent border-none focus:ring-0 p-0" style="color: var(--text-main)">
+                        <span class="text-[9px] uppercase opacity-50 block mt-1">Físico / Vigor</span>
+                    </div>
+
+                    <!-- Ouros -->
+                    <div class="text-center p-4 rounded border-2 relative group" style="border-color: #eab308; background: rgba(234, 179, 8, 0.05)">
+                        <i class="fa-solid fa-brain text-2xl absolute top-2 right-2 opacity-20 text-yellow-500"></i>
+                        <h3 class="text-yellow-500 font-black uppercase text-sm mb-2">Ouros</h3>
+                        <input type="number" id="attr-diamonds" value="30" class="w-full text-center text-3xl font-mono font-bold bg-transparent border-none focus:ring-0 p-0" style="color: var(--text-main)">
+                        <span class="text-[9px] uppercase opacity-50 block mt-1">Lógica / Intelecto</span>
+                    </div>
+
+                    <!-- Paus -->
+                    <div class="text-center p-4 rounded border-2 relative group" style="border-color: #22c55e; background: rgba(34, 197, 94, 0.05)">
+                        <i class="fa-solid fa-users text-2xl absolute top-2 right-2 opacity-20 text-green-500"></i>
+                        <h3 class="text-green-500 font-black uppercase text-sm mb-2">Paus</h3>
+                        <input type="number" id="attr-clubs" value="30" class="w-full text-center text-3xl font-mono font-bold bg-transparent border-none focus:ring-0 p-0" style="color: var(--text-main)">
+                        <span class="text-[9px] uppercase opacity-50 block mt-1">Social / Equipe</span>
+                    </div>
+
+                    <!-- Copas -->
+                    <div class="text-center p-4 rounded border-2 relative group" style="border-color: #ef4444; background: rgba(239, 68, 68, 0.05)">
+                        <i class="fa-solid fa-heart-crack text-2xl absolute top-2 right-2 opacity-20 text-red-500"></i>
+                        <h3 class="text-red-500 font-black uppercase text-sm mb-2">Copas</h3>
+                        <input type="number" id="attr-hearts" value="30" class="w-full text-center text-3xl font-mono font-bold bg-transparent border-none focus:ring-0 p-0" style="color: var(--text-main)">
+                        <span class="text-[9px] uppercase opacity-50 block mt-1">Psique / Traição</span>
+                    </div>
+                </div>
+
+                <!-- Abas de Texto (História / Log) -->
+                <div class="border rounded-lg overflow-hidden" style="border-color: var(--border-color)">
+                    <div class="flex border-b" style="border-color: var(--border-color)">
+                        <button onclick="showTextTab('history')" class="flex-1 py-2 text-xs font-bold uppercase hover:bg-white/5 transition" style="background-color: var(--accent-primary); color: var(--bg-color)">História & Trauma</button>
+                        <button onclick="showTextTab('log')" class="flex-1 py-2 text-xs font-bold uppercase hover:bg-white/5 transition" style="color: var(--text-muted)">Diário de Bordo</button>
+                    </div>
+                    
+                    <div id="tab-history" class="p-4">
+                        <textarea id="txt-history" class="w-full h-32 bg-transparent border-none resize-none text-sm leading-relaxed" placeholder="Quem você era antes? Qual o seu maior arrependimento? O que você deixou para trás?"></textarea>
+                    </div>
+                    
+                    <div id="tab-log" class="p-4 hidden">
+                        <textarea id="txt-log" class="w-full h-32 bg-transparent border-none resize-none text-sm leading-relaxed font-mono" placeholder="REGISTRO DE EVENTOS:
+> Dia 1: Acordei no cruzamento de Shibuya. Encontrei um celular.
+> Dia 2: Jogo 3 de Paus. Sobrevivi por pouco..."></textarea>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Footer da Ficha -->
+        <div class="mt-8 border-t pt-4 flex justify-between items-center text-[10px] font-mono opacity-50" style="border-color: var(--border-color)">
+            <span>GERADO PELO SISTEMA SSB</span>
+            <span>NÃO PERCA ESTE DOCUMENTO</span>
+            <span>BORDERLAND</span>
+        </div>
+    </div>
+
+    <script>
+        // --- DADOS (Mesmos do Manual para Consistência) ---
+        // (Nota: Copiei a estrutura de dados para garantir que a ficha funcione independente do manual)
+        const professions = [
+            // GRUPO 1: ESPADAS
+            {
+                name: "Militar de Elite",
+                group: "Espadas",
+                desc: "Arma do Estado. Humanidade removida. Reage antes de pensar.",
+                skills: [
+                    { type: "Passiva", name: "Memória Muscular", effect: "Recarrega e move-se taticamente sem penalidade." },
+                    { type: "Ativa", name: "Supressão", effect: "Força inimigo a perder o turno por medo." },
+                    { type: "Narrativa", name: "Protocolo de Dor", effect: "Ignora penalidade de ferimento leve em combate." }
+                ]
+            },
+            {
+                name: "Atleta Olímpico",
+                group: "Espadas",
+                desc: "Corpo esculpido pela obsessão. Conhece e quebra limites físicos.",
+                skills: [
+                    { type: "Passiva", name: "Fôlego Infinito", effect: "Vantagem em testes de resistência física." },
+                    { type: "Ativa", name: "Explosão", effect: "Feito de força sobre-humana (Custa 2 Stress)." },
+                    { type: "Narrativa", name: "Metabolismo", effect: "Recupera dano físico 2x mais rápido." }
+                ]
+            },
+            {
+                name: "Bombeiro Civil",
+                group: "Espadas",
+                desc: "Entra no inferno. Força funcional e resistência ao calor.",
+                skills: [
+                    { type: "Passiva", name: "Arrombamento", effect: "+20 para destruir portas e obstáculos." },
+                    { type: "Ativa", name: "Carga de Resgate", effect: "Carrega pessoas sem penalidade de movimento." },
+                    { type: "Narrativa", name: "Pulmões de Aço", effect: "Resiste a fumaça/gás por mais tempo." }
+                ]
+            },
+            { name: "Segurança Privada", group: "Espadas", desc: "Parede humana. Neutralização rápida.", skills: [{type:"Ativa",name:"Escudo Humano",effect:"Intercepta dano de aliado."}, {type:"Passiva",name:"Revista",effect:"Detecta armas escondidas."}, {type:"Narrativa",name:"Intimidação",effect:"Usa Espadas para intimidar."}] },
+            { name: "Dublê de Ação", group: "Espadas", desc: "Profissional da dor controlada.", skills: [{type:"Passiva",name:"Queda Controlada",effect:"Reduz dano de queda em 50%."}, {type:"Ativa",name:"Improviso Letal",effect:"Qualquer objeto vira arma."}, {type:"Narrativa",name:"Teatralidade",effect:"Finge morte/ferimento perfeitamente."}] },
+            { name: "Yakuza", group: "Espadas", desc: "Honra e violência. Tolerância à dor.", skills: [{type:"Passiva",name:"Pacto",effect:"Bônus ao proteger 'Irmão'."}, {type:"Ativa",name:"Tortura",effect:"Extrai info com dor física."}, {type:"Narrativa",name:"Mãos Letais",effect:"Dano desarmado é letal."}] },
+            { name: "Operário", group: "Espadas", desc: "Força bruta. Vê o mundo como obra.", skills: [{type:"Passiva",name:"Demolição",effect:"Identifica fragilidade estrutural."}, {type:"Ativa",name:"Ferramentas",effect:"Ferramentas causam +10 dano."}, {type:"Narrativa",name:"Equilíbrio",effect:"Não cai de vigas/alturas."}] },
+            { name: "Dançarino", group: "Espadas", desc: "Controle absoluto. Flui no combate.", skills: [{type:"Ativa",name:"Esquiva Graciosa",effect:"Torna-se intocável por 1 turno."}, {type:"Passiva",name:"Contorcionismo",effect:"Entra em espaços minúsculos."}, {type:"Narrativa",name:"Ritmo",effect:"Prevê armadilhas de tempo."}] },
+            { name: "Lutador MMA", group: "Espadas", desc: "Especialista X1. Apaga consciências.", skills: [{type:"Ativa",name:"Grappling",effect:"Imobiliza oponente no chão."}, {type:"Passiva",name:"Nocaute",effect:"Crítico desarmado apaga alvo."}, {type:"Narrativa",name:"Foco na Dor",effect:"Ignora dor de fratura por 10min."}] },
+            { name: "Açougueiro", group: "Espadas", desc: "Anatomia da carne. Indiferença ao gore.", skills: [{type:"Passiva",name:"Corte Cirúrgico",effect:"Causa sangramento contínuo."}, {type:"Narrativa",name:"Estômago de Ferro",effect:"Imune a náusea/gore."}, {type:"Ativa",name:"Desmembramento",effect:"Inutiliza membro específico."}] },
+
+            // GRUPO 2: OUROS
+            {
+                name: "Médico Cirurgião",
+                group: "Ouros",
+                desc: "Deus de jaleco. Sabe o que cura e o que mata.",
+                skills: [
+                    { type: "Ativa", name: "Estabilização", effect: "Impede morte ou cura leve sem itens." },
+                    { type: "Passiva", name: "Diagnóstico", effect: "Identifica veneno/doença olhando." },
+                    { type: "Narrativa", name: "Mãos Firmes", effect: "Bônus em tarefas manuais delicadas." }
+                ]
+            },
+            {
+                name: "Engenheiro Civil",
+                group: "Ouros",
+                desc: "Vê vetores de força. Tudo tem ponto de falha.",
+                skills: [
+                    { type: "Narrativa", name: "Raio-X", effect: "Deduz planta baixa de prédios." },
+                    { type: "Passiva", name: "Física Intuitiva", effect: "Calcula quedas/colisões mentalmente." },
+                    { type: "Ativa", name: "Engenharia Sucata", effect: "Cria barricadas/armadilhas com lixo." }
+                ]
+            },
+            { name: "Hacker / Dev", group: "Ouros", desc: "Mago digital. Entende lógica de máquina.", skills: [{type:"Ativa",name:"Interface",effect:"Acessa logs/portas eletrônicas."}, {type:"Narrativa",name:"Bypass",effect:"Ligação direta/hack simples."}, {type:"Passiva",name:"Depuração",effect:"Elimina 50% de opções erradas em puzzle."}] },
+            { name: "Químico", group: "Ouros", desc: "Domina a matéria. Mundo é laboratório.", skills: [{type:"Ativa",name:"Alquimia",effect:"Cria explosivo/ácido com itens comuns."}, {type:"Passiva",name:"Detector",effect:"Identifica toxinas pelo cheiro."}, {type:"Narrativa",name:"Farmacologia",effect:"Mistura remédios para efeitos."}] },
+            { name: "Arquiteto", group: "Ouros", desc: "Desenha espaços. Percebe o invisível.", skills: [{type:"Passiva",name:"Espaço",effect:"Acha passagens secretas/fundos falsos."}, {type:"Narrativa",name:"Geometria",effect:"Calcula distâncias sem instrumentos."}, {type:"Ativa",name:"Ruptura",effect:"Sabe onde bater para derrubar teto."}] },
+            { name: "Detetive", group: "Ouros", desc: "Lê cenas de crime. Nada escapa.", skills: [{type:"Passiva",name:"Olho de Águia",effect:"Mestre revela pista visual oculta."}, {type:"Ativa",name:"Reconstrução",effect:"Descreve como evento ocorreu."}, {type:"Narrativa",name:"Memória Eidética",effect:"Lembra detalhes visuais perfeitamente."}] },
+            { name: "Matemático", group: "Ouros", desc: "Gerencia caos com números.", skills: [{type:"Ativa",name:"Análise Risco",effect:"Sabe chance real de sucesso (Alta/Baixa)."}, {type:"Passiva",name:"Escassez",effect:"Recursos duram o dobro."}, {type:"Narrativa",name:"Padrão",effect:"Identifica lógicas numéricas na hora."}] },
+            { name: "Eletricista", group: "Ouros", desc: "Senhor da energia. Acende ou apaga.", skills: [{type:"Ativa",name:"Mestre da Rede",effect:"Corta luz ou restaura gerador."}, {type:"Passiva",name:"Alta Voltagem",effect:"Imune a choque/Cria armadilha."}, {type:"Narrativa",name:"Bypass Mag",effect:"Abre fechadura magnética."}] },
+            { name: "Historiador", group: "Ouros", desc: "Conhecimento humano. Erros antigos.", skills: [{type:"Narrativa",name:"Enciclopédia",effect:"Sabe fatos obscuros para enigmas."}, {type:"Passiva",name:"Poliglota",effect:"Lê múltiplos idiomas/códigos."}, {type:"Ativa",name:"Tática",effect:"Bônus se terreno lembrar batalha histórica."}] },
+            { name: "Mecânico", group: "Ouros", desc: "Fala com máquinas. Conserta tudo.", skills: [{type:"Ativa",name:"Reparo",effect:"Conserta veículo temporariamente."}, {type:"Passiva",name:"Sabotagem",effect:"Inutiliza veículo silenciosamente."}, {type:"Narrativa",name:"Mad Max",effect:"Melhora veículo com sucata."}] },
+
+            // GRUPO 3: PAUS
+            {
+                name: "Político",
+                group: "Paus",
+                desc: "Manipula massas. Lidera por consenso.",
+                skills: [
+                    { type: "Ativa", name: "Discurso", effect: "Acalma pânico ou incita revolta." },
+                    { type: "Narrativa", name: "Tratado", effect: "Negocia tréguas com rivais." },
+                    { type: "Passiva", name: "Bode Expiatório", effect: "Culpa outro por falha crítica." }
+                ]
+            },
+            {
+                name: "Gerente Projetos",
+                group: "Paus",
+                desc: "Eficiência pura. Odeia o caos.",
+                skills: [
+                    { type: "Ativa", name: "Delegação", effect: "Dá sua ação para aliado (+20 no teste)." },
+                    { type: "Passiva", name: "Logística", effect: "Grupo nunca se perde." },
+                    { type: "Narrativa", name: "Gestão Crise", effect: "Reduz stress se plano funcionar." }
+                ]
+            },
+            { name: "Motorista", group: "Paus", desc: "Rei da estrada. Reflexos e mapa mental.", skills: [{type:"Ativa",name:"Direção Defensiva",effect:"Vantagem absoluta pilotando."}, {type:"Narrativa",name:"GPS",effect:"Conhece rotas e atalhos."}, {type:"Passiva",name:"Vigília",effect:"Fica acordado o dobro do tempo."}] },
+            { name: "Professor", group: "Paus", desc: "Paciência e autoridade. Ensina.", skills: [{type:"Passiva",name:"Proteção",effect:"Identifica elo fraco para ajudar."}, {type:"Ativa",name:"Didática",effect:"Permite aliado 'burro' fazer teste INT."}, {type:"Narrativa",name:"Autoridade",effect:"Para brigas com a voz."}] },
+            { name: "Padre", group: "Paus", desc: "Farol de fé. Cura a mente.", skills: [{type:"Ativa",name:"Confissão",effect:"Aliados recuperam Stress falando."}, {type:"Passiva",name:"Fé",effect:"Bônus contra medo sobrenatural."}, {type:"Narrativa",name:"Sacrifício",effect:"Absorve Stress de aliado para si."}] },
+            { name: "Bartender", group: "Paus", desc: "Ouve tudo. Serve veneno.", skills: [{type:"Passiva",name:"Ouvinte",effect:"Coleta rumores sem ser notado."}, {type:"Narrativa",name:"Química Social",effect:"Identifica bêbado/mentiroso."}, {type:"Ativa",name:"Mixologia",effect:"Cria coquetel molotov/energético."}] },
+            { name: "Coach", group: "Paus", desc: "Extrai potencial. Não deixa desistir.", skills: [{type:"Ativa",name:"Preleção",effect:"+10 em atributo de aliado por 1 turno."}, {type:"Passiva",name:"Leitura",effect:"Sabe cansaço/dano exato de alguém."}, {type:"Narrativa",name:"Incentivo",effect:"Remove status 'Desistência'."}] },
+            { name: "Líder Sindical", group: "Paus", desc: "Guerreiro da classe. Força na união.", skills: [{type:"Ativa",name:"Massa",effect:"Coordena NPCs para tarefa física."}, {type:"Passiva",name:"Negociação",effect:"Melhor troca por recursos."}, {type:"Narrativa",name:"Resistência",effect:"Bônus de Vigor (acostumado a briga)."}] },
+            { name: "Guia Turístico", group: "Paus", desc: "Localização e comunicação.", skills: [{type:"Passiva",name:"Senso Direção",effect:"Acha norte e rotas de fuga."}, {type:"Narrativa",name:"Línguas",effect:"Comunica-se em qualquer idioma básico."}, {type:"Ativa",name:"Memória",effect:"Lembra mapas vistos uma vez."}] },
+            { name: "Piloto", group: "Paus", desc: "Frieza sob pressão. Gerencia crise.", skills: [{type:"Passiva",name:"Sangue Frio",effect:"Ignora pânico em velocidade/altura."}, {type:"Ativa",name:"Instrumentos",effect:"Opera qualquer painel complexo."}, {type:"Narrativa",name:"Visão 3D",effect:"Noção perfeita de espaço/distância."}] },
+
+            // GRUPO 4: COPAS
+            {
+                name: "Psicólogo",
+                group: "Copas",
+                desc: "Engenheiro da mente. Conserta ou quebra.",
+                skills: [
+                    { type: "Ativa", name: "Perfil", effect: "Descobre Natureza/Trauma de alguém." },
+                    { type: "Narrativa", name: "Terapia", effect: "Recupera dobro de Stress do grupo." },
+                    { type: "Passiva", name: "Psy-Op", effect: "Induz medo/dúvida com palavras." }
+                ]
+            },
+            {
+                name: "Ator / Atriz",
+                group: "Copas",
+                desc: "Camaleão. Identidade é fluida.",
+                skills: [
+                    { type: "Passiva", name: "Máscara", effect: "Finge emoção perfeitamente (imune insight)." },
+                    { type: "Ativa", name: "Disfarce", effect: "Passa-se por outra pessoa." },
+                    { type: "Narrativa", name: "Mímica", effect: "Copia voz e sotaque." }
+                ]
+            },
+            { name: "Vigarista", group: "Copas", desc: "Predador social. Pessoas são cofres.", skills: [{type:"Passiva",name:"Leitura Fria",effect:"Sabe o que a pessoa quer ouvir."}, {type:"Ativa",name:"Mãos Leves",effect:"Rouba itens conversando."}, {type:"Narrativa",name:"Falsificação",effect:"Cria documentos falsos com lixo."}] },
+            { name: "Jogador Poker", group: "Copas", desc: "Risco calculado. Face impenetrável.", skills: [{type:"Passiva",name:"Poker Face",effect:"Impossível ler suas intenções."}, {type:"Narrativa",name:"Fold",effect:"Sabe quando desistir de situação ruim."}, {type:"Ativa",name:"Blefe",effect:"Convence de vantagem que não tem."}] },
+            { name: "Host / Hostess", group: "Copas", desc: "Vende desejo e ilusão.", skills: [{type:"Ativa",name:"Sedução",effect:"Vantagem manipulando sexo oposto."}, {type:"Narrativa",name:"Distração",effect:"Mantém atenção total do alvo."}, {type:"Passiva",name:"VIP",effect:"Acesso a locais exclusivos."}] },
+            { name: "Vidente", group: "Copas", desc: "Usa o medo do desconhecido.", skills: [{type:"Ativa",name:"Aura",effect:"Mestre descreve 'vibe' do local."}, {type:"Passiva",name:"Forer",effect:"Finge saber passado da pessoa."}, {type:"Narrativa",name:"Ritual",effect:"Fé protege contra medo sobrenatural."}] },
+            { name: "Influencer", group: "Copas", desc: "Celebridade. Narcisismo é armadura.", skills: [{type:"Ativa",name:"Culto",effect:"Influencia grupo de mente fraca."}, {type:"Narrativa",name:"Imagem",effect:"Finge estar bem para manter moral."}, {type:"Passiva",name:"Spin",effect:"Distorce fatos para culpar outro."}] },
+            { name: "Vendedor Carro", group: "Copas", desc: "Negociador agressivo. Pressão.", skills: [{type:"Ativa",name:"Lábia",effect:"Vende qualquer ideia ruim."}, {type:"Narrativa",name:"Pressão",effect:"Força decisão rápida e errada."}, {type:"Passiva",name:"Valor",effect:"Sabe valor real e se é enganado."}] },
+            { name: "Negociador", group: "Copas", desc: "Desarma bomba humana. Empatia tática.", skills: [{type:"Ativa",name:"Desescalada",effect:"Para combate com conversa."}, {type:"Passiva",name:"Troca",effect:"Consegue melhores termos."}, {type:"Narrativa",name:"Empatia",effect:"Cria vínculo para prever ação."}] },
+            { name: "Fanático", group: "Copas", desc: "Submissão à doutrina. Convicção.", skills: [{type:"Passiva",name:"Zelo",effect:"Bônus se for 'missão divina'."}, {type:"Ativa",name:"Conversão",effect:"Recruta seguidores leais."}, {type:"Narrativa",name:"Mártir",effect:"Sua morte cura Stress de aliados."}] }
+        ];
+
+        const personalities = [
+            "Analítico", "Covarde", "Heroico", "Sádico", "Niilista", "Pragmático", 
+            "Otimista Delirante", "Pessimista", "Líder Nato", "Seguidor", "Lobo Solitário", 
+            "Dependente", "Agressivo", "Passivo", "Manipulador", "Ingênuo", "Estoico", 
+            "Neurótico (TOC)", "Narcisista", "Altruísta", "Paranoico", "Confiante", 
+            "Disciplinado", "Caótico", "Místico"
+        ];
+
+        // --- INICIALIZAÇÃO ---
+        window.onload = () => {
+            populateLists();
+            generateRegID();
+        };
+
+        function generateRegID() {
+            document.getElementById('reg-id').innerText = Math.floor(1000 + Math.random() * 9000);
+        }
+
+        function populateLists() {
+            // Personalidades
+            const pSelect = document.getElementById('char-personality');
+            personalities.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p;
+                opt.innerText = p;
+                pSelect.appendChild(opt);
+            });
+
+            // Profissões
+            const jSelect = document.getElementById('char-job');
+            professions.forEach((p, index) => {
+                const opt = document.createElement('option');
+                opt.value = index;
+                opt.innerText = `[${p.group}] ${p.name}`;
+                jSelect.appendChild(opt);
+            });
+        }
+
+        // --- LÓGICA DE INTERFACE ---
+
+        function setTheme(themeName) {
+            document.body.className = themeName + " min-h-screen p-4 md:p-8";
+        }
+
+        function updateJob() {
+            const index = document.getElementById('char-job').value;
+            const desc = document.getElementById('job-desc');
+            const container = document.getElementById('skills-container');
+            
+            if (index === "") {
+                desc.innerText = "Selecione uma profissão para ver detalhes.";
+                container.innerHTML = `
+                    <div class="skill-card p-3 rounded h-24 flex items-center justify-center opacity-30 border border-dashed border-gray-600"><span class="text-xs">Habilidade 1</span></div>
+                    <div class="skill-card p-3 rounded h-24 flex items-center justify-center opacity-30 border border-dashed border-gray-600"><span class="text-xs">Habilidade 2</span></div>
+                    <div class="skill-card p-3 rounded h-24 flex items-center justify-center opacity-30 border border-dashed border-gray-600"><span class="text-xs">Habilidade 3</span></div>`;
+                return;
+            }
+
+            const job = professions[index];
+            desc.innerText = job.desc;
+            
+            // Highlight Attribute
+            resetBorders();
+            if (job.group === "Espadas") highlightAttr("attr-spades", "blue");
+            if (job.group === "Ouros") highlightAttr("attr-diamonds", "yellow");
+            if (job.group === "Paus") highlightAttr("attr-clubs", "green");
+            if (job.group === "Copas") highlightAttr("attr-hearts", "red");
+
+            // Update Skills
+            container.innerHTML = job.skills.map(s => `
+                <div class="skill-card p-3 rounded h-24 flex flex-col justify-center transition-all hover:scale-105">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-[9px] uppercase border px-1 rounded font-bold" style="border-color: var(--accent-primary); color: var(--accent-primary)">${s.type}</span>
+                        <strong class="text-xs uppercase font-bold" style="color: var(--text-main)">${s.name}</strong>
+                    </div>
+                    <p class="text-[10px] leading-tight opacity-80" style="color: var(--text-muted)">${s.effect}</p>
+                </div>
+            `).join('');
+        }
+
+        function highlightAttr(id, color) {
+            // Simples indicação visual de qual atributo a profissão foca
+            const el = document.getElementById(id).parentElement;
+            el.style.boxShadow = `0 0 15px ${color}`;
+        }
+
+        function resetBorders() {
+            ['attr-spades','attr-diamonds','attr-clubs','attr-hearts'].forEach(id => {
+                document.getElementById(id).parentElement.style.boxShadow = "none";
+            });
+        }
+
+        function updatePersonaDesc() {
+            // (Opcional) Poderia adicionar descrições para personalidades aqui se necessário
+            const val = document.getElementById('char-personality').value;
+            const desc = document.getElementById('persona-desc');
+            desc.innerText = val ? `Arquétipo: ${val}. O trauma define sua reação.` : "...";
+        }
+
+        function updateBars() {
+            // Visa
+            const visa = document.getElementById('visa-input').value;
+            const visaText = document.getElementById('visa-val');
+            visaText.innerText = visa + " DIAS";
+            if(visa <= 3) visaText.classList.add('animate-pulse', 'text-red-600');
+            else visaText.classList.remove('animate-pulse', 'text-red-600');
+
+            // Stress
+            const stressInput = document.getElementById('stress-input');
+            let stress = parseInt(stressInput.value);
+            
+            // Clamp value
+            if (stress > 25) stress = 25;
+            if (stress < 0) stress = 0;
+            stressInput.value = stress;
+
+            document.getElementById('stress-val').innerText = stress + " / 25";
+            
+            const bar = document.getElementById('stress-bar');
+            const pct = (stress / 25) * 100;
+            bar.style.width = pct + "%";
+            
+            if(stress < 10) bar.style.backgroundColor = "#3b82f6"; // Blue
+            else if(stress < 20) bar.style.backgroundColor = "#eab308"; // Yellow
+            else bar.style.backgroundColor = "#ef4444"; // Red
+        }
+
+        function adjustStress(val) {
+            const input = document.getElementById('stress-input');
+            input.value = parseInt(input.value) + val;
+            updateBars();
+        }
+
+        function showTextTab(tab) {
+            if(tab === 'history') {
+                document.getElementById('tab-history').classList.remove('hidden');
+                document.getElementById('tab-log').classList.add('hidden');
+            } else {
+                document.getElementById('tab-history').classList.add('hidden');
+                document.getElementById('tab-log').classList.remove('hidden');
+            }
+        }
+
+        // --- FOTO ---
+        function loadPhoto(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('char-photo');
+                    img.src = e.target.result;
+                    img.classList.remove('hidden');
+                    document.getElementById('photo-placeholder').classList.add('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // --- SALVAR / CARREGAR / EXPORTAR ---
+
+        function saveData() {
+            const data = {
+                name: document.getElementById('char-name').value,
+                jobIdx: document.getElementById('char-job').value,
+                personality: document.getElementById('char-personality').value,
+                stats: {
+                    s: document.getElementById('attr-spades').value,
+                    d: document.getElementById('attr-diamonds').value,
+                    c: document.getElementById('attr-clubs').value,
+                    h: document.getElementById('attr-hearts').value
+                },
+                visa: document.getElementById('visa-input').value,
+                stress: document.getElementById('stress-input').value,
+                history: document.getElementById('txt-history').value,
+                log: document.getElementById('txt-log').value,
+                photo: document.getElementById('char-photo').src
+            };
+            
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+            const el = document.createElement('a');
+            el.setAttribute("href", dataStr);
+            el.setAttribute("download", `dossie_${data.name || 'imigrante'}.json`);
+            el.click();
+        }
+
+        function loadData(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    document.getElementById('char-name').value = data.name || "";
+                    document.getElementById('char-job').value = data.jobIdx || "";
+                    updateJob(); // Refresh skills
+                    
+                    document.getElementById('char-personality').value = data.personality || "";
+                    updatePersonaDesc();
+
+                    document.getElementById('attr-spades').value = data.stats.s;
+                    document.getElementById('attr-diamonds').value = data.stats.d;
+                    document.getElementById('attr-clubs').value = data.stats.c;
+                    document.getElementById('attr-hearts').value = data.stats.h;
+
+                    document.getElementById('visa-input').value = data.visa || 3;
+                    document.getElementById('stress-input').value = data.stress || 0;
+                    updateBars();
+
+                    document.getElementById('txt-history').value = data.history || "";
+                    document.getElementById('txt-log').value = data.log || "";
+
+                    if (data.photo && data.photo.length > 100) {
+                        const img = document.getElementById('char-photo');
+                        img.src = data.photo;
+                        img.classList.remove('hidden');
+                        document.getElementById('photo-placeholder').classList.add('hidden');
+                    }
+                    
+                    alert("Dossiê carregado com sucesso.");
+                } catch (err) {
+                    alert("Erro ao ler arquivo: " + err);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function exportImage() {
+            const element = document.getElementById('character-sheet');
+            
+            // Garantir que a aba visível seja a de história (ou log, se preferir)
+            // html2canvas só renderiza o que está visível
+            
+            html2canvas(element, {
+                backgroundColor: null, // Mantém transparência/fundo do tema
+                scale: 2 // Melhor qualidade
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `ficha_${document.getElementById('char-name').value || 'imigrante'}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        }
+
+    </script>
+</body>
+</html>
