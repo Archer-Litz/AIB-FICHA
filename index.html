@@ -3,711 +3,999 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BORDERLAND: Criador de Dossiê [SISTEMA SSB]</title>
+    <title>BORDERLAND: IDENTITY SYSTEM [V7.0]</title>
+    
+    <!-- External Libs -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Biblioteca para gerar a imagem -->
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Fonts -->
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Courier+Prime:wght@400;700&family=Inter:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;500;600;700&family=Courier+Prime:wght@400;700&family=Inter:wght@200;400;800&family=Cinzel:wght@400;700&family=Black+Ops+One&display=swap');
 
-        /* --- CONFIGURAÇÃO DOS TEMAS --- */
+        /* =========================================
+           CORE THEME ENGINE
+           ========================================= */
+        :root {
+            --transition-speed: 0.5s;
+        }
 
-        /* TEMA 1: ARISU (Gamer / Tech / Neon) */
-        .theme-arisu {
+        /* --- TEMA ARISU (HACKER / NEON / ESCURO) --- */
+        body.theme-arisu {
             --bg-color: #050510;
-            --panel-bg: rgba(16, 20, 35, 0.95);
-            --text-main: #e0f2fe;
-            --text-muted: #94a3b8;
-            --accent-primary: #0ea5e9; /* Sky Blue */
-            --accent-secondary: #f43f5e; /* Rose */
-            --border-color: #1e293b;
-            --font-main: 'Rajdhani', sans-serif;
-            --font-mono: 'Share Tech Mono', monospace;
-            --shadow-color: rgba(14, 165, 233, 0.2);
-            --bg-image: radial-gradient(circle at 50% 50%, #1a2040 0%, #000 120%);
+            --panel-bg: rgba(10, 15, 25, 0.95);
+            --text-main: #a5f3fc;
+            --text-dim: #1e3a8a;
+            --accent: #00f3ff;
+            --accent-glow: rgba(0, 243, 255, 0.5);
+            --accent-danger: #ff0055;
+            --border-style: solid;
+            --border-width: 1px;
+            --font-head: 'Rajdhani', sans-serif;
+            --font-body: 'Share Tech Mono', monospace;
+            --corner-cut: polygon(0 0, 100% 0, 100% 95%, 95% 100%, 0 100%);
+            --scanline: block;
         }
 
-        /* TEMA 2: CHISHIYA (Clínico / Analítico / Branco) */
-        .theme-chishiya {
-            --bg-color: #e5e5e5;
+        /* --- TEMA CHISHIYA (MÉDICO / BRANCO / CLÍNICO) --- */
+        body.theme-chishiya {
+            --bg-color: #f3f4f6;
             --panel-bg: #ffffff;
-            --text-main: #171717;
-            --text-muted: #525252;
-            --accent-primary: #404040; /* Dark Grey */
-            --accent-secondary: #dc2626; /* Red (Surgical) */
-            --border-color: #d4d4d4;
-            --font-main: 'Inter', sans-serif;
-            --font-mono: 'Courier Prime', monospace;
-            --shadow-color: rgba(0, 0, 0, 0.1);
-            --bg-image: linear-gradient(to bottom right, #f0f0f0, #dcdcdc);
+            --text-main: #111827; /* Texto escuro */
+            --text-dim: #6b7280;
+            --accent: #0f172a;    /* Preto/Azul escuro */
+            --accent-glow: rgba(0, 0, 0, 0.1);
+            --accent-danger: #dc2626; /* Vermelho sangue */
+            --border-style: double;
+            --border-width: 4px;
+            --font-head: 'Inter', sans-serif;
+            --font-body: 'Courier Prime', monospace;
+            --corner-cut: none; /* Reto e limpo */
+            --scanline: none;
+        }
+        /* Ajustes específicos para Chishiya (Tema Claro) */
+        body.theme-chishiya .stat-block {
+            background: #f9fafb;
+            border: 1px solid #d1d5db;
+            box-shadow: none;
+        }
+        body.theme-chishiya input, 
+        body.theme-chishiya select, 
+        body.theme-chishiya textarea {
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            color: #000;
+            border-bottom: 2px solid #000;
+        }
+        body.theme-chishiya .skill-item {
+            background: #fff; border: 1px solid #ccc; color: #333;
+        }
+        body.theme-chishiya .dossier-panel {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-color: #e5e7eb;
         }
 
-        /* TEMA 3: A PRAIA (Máfia / Luxo Decadente / Militar) */
-        .theme-mafia {
+        /* --- TEMA PRAIA (MILITAR / SUJO / FOGO) --- */
+        body.theme-mafia {
             --bg-color: #1c1917;
             --panel-bg: #292524;
-            --text-main: #d6d3d1;
-            --text-muted: #a8a29e;
-            --accent-primary: #d97706; /* Amber/Gold */
-            --accent-secondary: #78350f; /* Leather/Brown */
-            --border-color: #44403c;
-            --font-main: 'Courier Prime', monospace; /* Datilografia */
-            --font-mono: 'Courier Prime', monospace;
-            --shadow-color: rgba(217, 119, 6, 0.15);
-            --bg-image: url('https://www.transparenttextures.com/patterns/leather.png');
+            --text-main: #e7e5e4;
+            --text-dim: #78350f;
+            --accent: #f59e0b;
+            --accent-glow: rgba(245, 158, 11, 0.3);
+            --accent-danger: #ef4444;
+            --border-style: dashed;
+            --border-width: 3px;
+            --font-head: 'Black Ops One', cursive;
+            --font-body: 'Courier Prime', monospace;
+            --corner-cut: polygon(2% 0, 100% 0, 100% 100%, 0 100%, 0 2%);
+            --scanline: block;
         }
 
-        /* APLICAÇÃO GERAL */
+        /* --- TEMA DEALER (ELEGANTE / ROXO / MIRA) --- */
+        body.theme-dealer {
+            --bg-color: #1a0510;
+            --panel-bg: #2a0a18;
+            --text-main: #fbcfe8;
+            --text-dim: #831843;
+            --accent: #d946ef;
+            --accent-glow: rgba(217, 70, 239, 0.4);
+            --accent-danger: #9f1239;
+            --border-style: solid;
+            --border-width: 1px;
+            --font-head: 'Cinzel', serif;
+            --font-body: 'Rajdhani', sans-serif;
+            --corner-cut: border-box;
+            --scanline: none;
+        }
+
+        /* =========================================
+           GLOBAL STYLES
+           ========================================= */
         body {
             background-color: var(--bg-color);
-            background-image: var(--bg-image);
             color: var(--text-main);
-            font-family: var(--font-main);
-            transition: all 0.5s ease;
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            transition: all var(--transition-speed);
         }
 
-        .dossier-container {
+        #bg-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;
+        }
+
+        .dossier-panel {
             background-color: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 0 30px var(--shadow-color);
+            border: var(--border-width) var(--border-style) var(--accent);
+            box-shadow: 0 0 40px rgba(0,0,0,0.5), 0 0 10px var(--accent-glow);
+            backdrop-filter: blur(10px);
+            clip-path: var(--corner-cut);
+            transition: all var(--transition-speed);
+            padding: 3rem;
+            margin-top: 2rem;
+            position: relative;
         }
 
+        /* Inputs Personalizados */
         input, select, textarea {
-            background-color: rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 2px;
             color: var(--text-main);
-            font-family: var(--font-mono);
+            font-family: var(--font-body);
+            padding: 0.5rem;
+            width: 100%;
+            transition: 0.3s;
         }
-        
-        .theme-chishiya input, .theme-chishiya select, .theme-chishiya textarea {
-            background-color: #f5f5f5;
-        }
-
         input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 5px var(--shadow-color);
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
         }
 
-        /* ELEMENTOS ESPECÍFICOS */
-        .stat-box {
-            border: 1px solid var(--border-color);
+        h1, h2, h3, h4 { font-family: var(--font-head); text-transform: uppercase; letter-spacing: 0.05em; }
+
+        /* Stat Blocks */
+        .stat-block {
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 1.2rem;
             position: relative;
-            overflow: hidden;
+            background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(0,0,0,0.2) 100%);
+            transition: transform 0.3s;
+        }
+        .stat-block h3 {
+            position: absolute; top: -12px; left: 10px;
+            background: var(--panel-bg);
+            padding: 0 8px; font-size: 0.7rem; color: var(--accent);
+            border: 1px solid var(--accent); font-weight: bold;
+        }
+
+        /* Grid de Perícias */
+        .skill-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 6px;
+        }
+        .skill-item {
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2);
+            padding: 6px 10px; font-size: 0.75rem;
+            cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+            transition: all 0.2s;
+        }
+        .skill-item:hover { border-color: var(--accent); transform: translateX(2px); }
+        .skill-item.active {
+            background: var(--accent); color: var(--bg-color); border-color: var(--accent); font-weight: bold;
+        }
+
+        /* Cartas de Habilidade (Holográficas) */
+        .job-skill-card {
+            background: linear-gradient(90deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.1) 100%);
+            border-left: 3px solid var(--accent);
+            padding: 10px; margin-bottom: 8px;
+            animation: slideIn 0.4s ease-out forwards;
+        }
+        body.theme-chishiya .job-skill-card {
+            background: #f0fdf4; border: 1px solid #ccc; border-left: 4px solid var(--accent); color: #000;
+        }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* Efeito de Scanlines (Apenas Arisu/Mafia) */
+        .scanlines {
+            display: var(--scanline);
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px; pointer-events: none; z-index: 999; opacity: 0.3;
         }
         
-        .stat-box::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 4px; height: 100%;
-            background-color: var(--accent-secondary);
+        /* Ajuste de Textarea Expandida */
+        .expanded-textarea {
+            min-height: 400px; /* BEM MAIOR */
+            line-height: 1.6;
+            font-size: 0.9rem;
+            padding: 1rem;
+            resize: vertical;
         }
-
-        .skill-card {
-            background-color: rgba(0,0,0,0.05);
-            border-left: 3px solid var(--accent-primary);
-        }
-
-        .mono { font-family: var(--font-mono); }
-
-        /* SCROLLBAR */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
-
-        /* UPLOAD DE FOTO */
-        #photo-preview {
-            object-fit: cover;
-            width: 100%;
-            height: 100%;
-        }
-        
-        /* IMPRESSÃO / EXPORTAÇÃO */
-        .print-only { display: none; }
     </style>
 </head>
-<body class="theme-arisu min-h-screen p-4 md:p-8">
+<body class="theme-arisu">
 
-    <!-- CONTROLES SUPERIORES (NÃO EXPORTADOS) -->
-    <div class="max-w-6xl mx-auto mb-8 flex flex-col md:flex-row justify-between items-center gap-4 bg-black/50 p-4 rounded-xl border border-white/10 backdrop-blur-md">
-        <div class="flex items-center gap-4">
-            <h1 class="text-xl font-bold uppercase tracking-widest text-white"><i class="fa-solid fa-id-card mr-2 text-red-600"></i>Gerador de Dossiê</h1>
-            
-            <div class="flex gap-2 text-xs">
-                <button onclick="setTheme('theme-arisu')" class="px-3 py-1 bg-blue-900/50 border border-blue-500 text-blue-200 rounded hover:bg-blue-800 transition">ARISU</button>
-                <button onclick="setTheme('theme-chishiya')" class="px-3 py-1 bg-gray-200 text-gray-800 border border-white rounded hover:bg-white transition font-bold">CHISHIYA</button>
-                <button onclick="setTheme('theme-mafia')" class="px-3 py-1 bg-yellow-900/50 border border-yellow-600 text-yellow-200 rounded hover:bg-yellow-800 transition">A PRAIA</button>
-            </div>
-        </div>
+    <canvas id="bg-canvas"></canvas>
+    <div class="scanlines"></div>
 
-        <div class="flex gap-3">
-            <button onclick="saveData()" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded text-xs uppercase font-bold border border-zinc-600 transition"><i class="fa-solid fa-save mr-2"></i>Salvar .JSON</button>
-            <label class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded text-xs uppercase font-bold border border-zinc-600 transition cursor-pointer">
-                <i class="fa-solid fa-folder-open mr-2"></i>Carregar
-                <input type="file" id="file-upload" class="hidden" accept=".json" onchange="loadData(this)">
-            </label>
-            <button onclick="exportImage()" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded text-xs uppercase font-bold shadow-[0_0_15px_rgba(220,38,38,0.5)] transition"><i class="fa-solid fa-camera mr-2"></i>Gerar Imagem</button>
-        </div>
-    </div>
-
-    <!-- ÁREA DO DOSSIÊ (SERÁ EXPORTADA COMO IMAGEM) -->
-    <div id="character-sheet" class="dossier-container max-w-6xl mx-auto p-8 rounded-lg relative">
+    <div class="max-w-[1400px] mx-auto p-4 relative z-10">
         
-        <!-- CABEÇALHO DA FICHA -->
-        <header class="flex justify-between items-end border-b-2 mb-8 pb-4" style="border-color: var(--border-color)">
-            <div class="w-2/3">
-                <div class="flex items-center gap-3 mb-2">
-                    <i class="fa-solid fa-biohazard text-3xl" style="color: var(--accent-secondary)"></i>
-                    <span class="text-xs font-mono tracking-[0.3em] uppercase" style="color: var(--text-muted)">Protocolo de Imigração v12.0</span>
+        <!-- NAV -->
+        <nav class="flex flex-wrap justify-between items-center p-4 mb-4 backdrop-blur-md bg-black/40 border-b border-white/10 sticky top-0 z-50 rounded">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-database text-2xl text-accent animate-pulse"></i>
+                <div>
+                    <h1 class="text-xl font-bold tracking-[0.2em] leading-none text-white header-font">BORDERLAND DB</h1>
+                    <span class="text-[10px] text-accent uppercase tracking-widest">Identity System V7.0</span>
                 </div>
-                <input type="text" id="char-name" placeholder="NOME DO JOGADOR" class="w-full bg-transparent border-none text-4xl font-black uppercase tracking-tighter p-0 focus:ring-0 placeholder-opacity-30" style="color: var(--text-main); font-family: var(--font-main)">
-                <div class="flex gap-4 mt-2">
-                    <div class="flex flex-col">
-                        <label class="text-[10px] uppercase tracking-widest font-bold" style="color: var(--accent-primary)">Idade</label>
-                        <input type="text" class="bg-transparent border-b w-16 text-sm" style="border-color: var(--border-color)">
-                    </div>
-                    <div class="flex flex-col">
-                        <label class="text-[10px] uppercase tracking-widest font-bold" style="color: var(--accent-primary)">Gênero</label>
-                        <input type="text" class="bg-transparent border-b w-24 text-sm" style="border-color: var(--border-color)">
-                    </div>
-                    <div class="flex flex-col flex-grow">
-                        <label class="text-[10px] uppercase tracking-widest font-bold" style="color: var(--accent-primary)">Arquétipo (Personalidade)</label>
-                        <select id="char-personality" onchange="updatePersonaDesc()" class="bg-transparent border-b w-full text-sm font-bold uppercase cursor-pointer" style="border-color: var(--border-color)">
-                            <option value="">Selecione...</option>
-                            <!-- JS popula aqui -->
-                        </select>
-                    </div>
-                </div>
-                <div id="persona-desc" class="text-[10px] mt-1 italic opacity-70 h-4 overflow-hidden text-ellipsis whitespace-nowrap">...</div>
             </div>
+
+            <div class="flex gap-2 my-2">
+                <button onclick="setTheme('arisu')" class="px-3 py-1 border border-cyan-500 text-cyan-500 hover:bg-cyan-500 hover:text-black text-[10px] font-bold uppercase transition">Arisu</button>
+                <button onclick="setTheme('chishiya')" class="px-3 py-1 border border-gray-400 text-gray-400 bg-white hover:bg-gray-200 hover:text-black text-[10px] font-bold uppercase transition">Chishiya</button>
+                <button onclick="setTheme('mafia')" class="px-3 py-1 border border-orange-600 text-orange-500 hover:bg-orange-600 hover:text-black text-[10px] font-bold uppercase transition">Praia</button>
+                <button onclick="setTheme('dealer')" class="px-3 py-1 border border-purple-500 text-purple-400 hover:bg-purple-600 hover:text-white text-[10px] font-bold uppercase transition">Dealer</button>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="saveData()" class="px-3 bg-zinc-800 border border-white/20 text-white hover:bg-zinc-700 transition" title="Salvar JSON"><i class="fa-solid fa-save"></i></button>
+                <label class="px-3 flex items-center bg-zinc-800 border border-white/20 text-white hover:bg-zinc-700 transition cursor-pointer" title="Carregar JSON">
+                    <i class="fa-solid fa-upload"></i> <input type="file" class="hidden" onchange="loadData(this)">
+                </label>
+                <button onclick="diceRoll()" class="px-4 py-1 bg-accent text-black font-bold uppercase text-xs hover:shadow-[0_0_20px_var(--accent)] transition duration-300"><i class="fa-solid fa-dice-d20 mr-1"></i> D100</button>
+                <button onclick="exportSheet()" class="px-4 py-1 border border-accent text-accent font-bold uppercase text-xs hover:bg-accent hover:text-black transition duration-300"><i class="fa-solid fa-camera mr-1"></i> JPG</button>
+            </div>
+        </nav>
+
+        <div id="sheet-content" class="dossier-panel">
             
-            <div class="text-right">
-                <div class="text-xs font-mono mb-1" style="color: var(--text-muted)">ID DE REGISTRO</div>
-                <div class="text-2xl font-mono font-bold tracking-widest" style="color: var(--accent-primary)">#<span id="reg-id">8492</span></div>
-            </div>
-        </header>
-
-        <div class="grid grid-cols-12 gap-8">
-            
-            <!-- COLUNA ESQUERDA: FOTO E STATUS VITAIS -->
-            <div class="col-span-12 md:col-span-3 space-y-6">
+            <!-- HEADER -->
+            <header class="flex flex-col md:flex-row justify-between items-end border-b pb-6 mb-8" style="border-color: var(--accent)">
+                <div class="w-full md:w-2/3">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="px-2 py-0.5 bg-accent text-black text-[10px] font-bold uppercase tracking-widest">Dossiê Oficial</span>
+                        <span class="text-[10px] text-dim font-mono animate-pulse" id="timestamp">CONECTADO...</span>
+                    </div>
+                    <input type="text" id="char-name" value="RYOHEI ARISU" class="text-5xl md:text-6xl font-black uppercase bg-transparent border-none p-0 focus:ring-0 leading-none tracking-tighter w-full drop-shadow-lg">
+                    
+                    <div class="flex flex-wrap gap-4 mt-6">
+                        <div class="w-20">
+                            <label class="text-[9px] uppercase font-bold text-accent">Idade</label>
+                            <input type="number" id="char-age" class="text-xl font-bold bg-transparent border-b border-t-0 border-l-0 border-r-0 border-white/20 p-0 focus:border-accent" value="24">
+                        </div>
+                        <div class="w-64">
+                            <label class="text-[9px] uppercase font-bold text-accent">Profissão</label>
+                            <select id="job-select" onchange="applyJob()" class="text-sm font-bold uppercase bg-transparent border-b border-t-0 border-l-0 border-r-0 border-white/20 p-0 h-8 cursor-pointer focus:border-accent">
+                                <option value="">Selecione...</option>
+                            </select>
+                        </div>
+                        <div class="flex-grow min-w-[150px]">
+                            <label class="text-[9px] uppercase font-bold text-accent">Personalidade</label>
+                            <select id="char-personality" class="text-sm font-bold uppercase bg-transparent border-b border-t-0 border-l-0 border-r-0 border-white/20 p-0 h-8 cursor-pointer focus:border-accent">
+                                <option value="">Selecione...</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 
-                <!-- Foto -->
-                <div class="aspect-[3/4] w-full border-2 border-dashed relative overflow-hidden group cursor-pointer transition-all hover:border-opacity-100" style="border-color: var(--border-color)" onclick="document.getElementById('photo-upload').click()">
-                    <input type="file" id="photo-upload" class="hidden" accept="image/*" onchange="loadPhoto(this)">
-                    <img id="char-photo" src="" class="hidden w-full h-full object-cover">
-                    <div id="photo-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-4 opacity-50 group-hover:opacity-100 transition-opacity">
-                        <i class="fa-solid fa-camera text-2xl mb-2" style="color: var(--accent-primary)"></i>
-                        <span class="text-[10px] uppercase font-bold">Carregar Biometria</span>
-                    </div>
+                <div class="text-right mt-4 md:mt-0 relative">
+                    <div class="text-xs font-mono text-dim mb-1">REGISTRO UID</div>
+                    <div class="text-5xl font-mono font-bold text-accent tracking-widest" id="uid-display">5902</div>
+                    <div class="mt-2 text-[10px] uppercase font-bold text-dim tracking-[0.3em]">Visto: <span class="text-accent animate-pulse">VÁLIDO</span></div>
+                    <div class="mt-2 text-[9px] font-mono text-red-500 border border-red-500 px-2 py-1 inline-block rounded">PROB. MORTE: <span id="death-prob">12%</span></div>
                 </div>
+            </header>
 
-                <!-- Barras Vitais -->
-                <div class="space-y-4">
-                    <div>
-                        <div class="flex justify-between text-xs uppercase font-bold mb-1">
-                            <span style="color: var(--text-muted)">Dias de Visto</span>
-                            <span id="visa-val" style="color: var(--accent-secondary)">3 DIAS</span>
-                        </div>
-                        <input type="range" id="visa-input" min="0" max="10" value="3" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-red-600" oninput="updateBars()">
-                    </div>
-
-                    <div>
-                        <div class="flex justify-between text-xs uppercase font-bold mb-1">
-                            <span style="color: var(--text-muted)">Stress (Copas)</span>
-                            <span id="stress-val" class="text-red-500">0 / 25</span>
-                        </div>
-                        <div class="w-full bg-gray-800 h-4 border rounded overflow-hidden relative" style="border-color: var(--border-color)">
-                            <div id="stress-bar" class="h-full transition-all duration-300" style="width: 0%; background-color: var(--accent-secondary)"></div>
-                        </div>
-                        <div class="flex justify-between mt-2">
-                            <button onclick="adjustStress(-1)" class="w-8 h-8 rounded border hover:bg-white/10" style="border-color: var(--border-color)">-</button>
-                            <input type="number" id="stress-input" value="0" min="0" max="25" class="w-16 text-center bg-transparent font-mono font-bold" oninput="updateBars()">
-                            <button onclick="adjustStress(1)" class="w-8 h-8 rounded border hover:bg-white/10" style="border-color: var(--border-color)">+</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Caixa de Dano Físico -->
-                <div class="p-3 border rounded" style="border-color: var(--accent-secondary); background-color: rgba(220, 38, 38, 0.05)">
-                    <h4 class="text-xs font-bold uppercase mb-2 text-center" style="color: var(--accent-secondary)">Condição Física (Espadas)</h4>
-                    <textarea class="w-full h-20 bg-transparent border-none text-xs resize-none p-1 placeholder-opacity-50" placeholder="Anote ferimentos, fraturas ou condições aqui... (Reduz atributo Espadas)" style="color: var(--text-main)"></textarea>
-                </div>
-
-            </div>
-
-            <!-- COLUNA CENTRAL: ATRIBUTOS E PROFISSÃO -->
-            <div class="col-span-12 md:col-span-9 space-y-8">
+            <!-- CORE GRID -->
+            <div class="grid grid-cols-12 gap-8">
                 
-                <!-- Profissão -->
-                <div class="stat-box p-4 rounded-lg">
-                    <label class="block text-xs uppercase font-bold tracking-widest mb-2" style="color: var(--accent-primary)">Profissão (Vida Anterior)</label>
-                    <select id="char-job" onchange="updateJob()" class="w-full p-2 text-lg font-bold uppercase rounded cursor-pointer border-b-2 border-transparent focus:border-b-2" style="border-color: var(--border-color); background: rgba(0,0,0,0.2)">
-                        <option value="">Selecione sua Profissão...</option>
-                        <!-- JS popula aqui -->
-                    </select>
-                    <p id="job-desc" class="text-xs mt-2 italic opacity-70 min-h-[30px]">Descrição da profissão aparecerá aqui...</p>
+                <!-- COLUNA 1: AVATAR & VITAIS -->
+                <div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+                    
+                    <!-- FOTO -->
+                    <div class="relative group cursor-pointer border border-dim aspect-[4/5] bg-black/10 overflow-hidden shadow-lg transition-all hover:border-accent" onclick="document.getElementById('file-input').click()">
+                        <input type="file" id="file-input" class="hidden" onchange="loadImage(this)">
+                        <img id="avatar-img" src="" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-700 hidden">
+                        <div id="avatar-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-dim group-hover:text-accent transition duration-500">
+                            <i class="fa-solid fa-user-large text-6xl mb-4"></i>
+                            <span class="text-xs font-mono tracking-widest">FOTO DO JOGADOR</span>
+                        </div>
+                    </div>
+
+                    <!-- VITAIS -->
+                    <div class="stat-block">
+                        <h3>SINAIS VITAIS</h3>
+                        <div class="space-y-5 pt-2">
+                            <!-- HP -->
+                            <div>
+                                <div class="flex justify-between text-[10px] font-bold mb-1 uppercase tracking-widest">
+                                    <span>Integridade</span>
+                                    <span class="text-accent" id="hp-txt">100%</span>
+                                </div>
+                                <div class="w-full h-3 bg-gray-700 border border-gray-500 relative overflow-hidden rounded-sm">
+                                    <div id="hp-bar" class="h-full bg-green-500 transition-all duration-500" style="width: 100%;"></div>
+                                </div>
+                                <div class="flex gap-1 mt-1 opacity-80">
+                                    <button onclick="modStat('hp', -10)" class="text-[9px] bg-red-900/30 text-red-400 px-2 py-1 flex-1 border border-transparent hover:border-red-500 transition">- Dano</button>
+                                    <button onclick="modStat('hp', 10)" class="text-[9px] bg-green-900/30 text-green-400 px-2 py-1 flex-1 border border-transparent hover:border-green-500 transition">+ Cura</button>
+                                </div>
+                            </div>
+
+                            <!-- Visa -->
+                            <div>
+                                <div class="flex justify-between text-[10px] font-bold mb-1 uppercase tracking-widest">
+                                    <span>Dias de Visto</span>
+                                    <span class="text-accent" id="visa-txt">3</span>
+                                </div>
+                                <div class="flex gap-0.5 h-3 mb-1" id="visa-blocks">
+                                    <!-- JS Generated -->
+                                </div>
+                                <input type="range" id="visa-input" min="0" max="14" value="3" oninput="updateVisa(this.value)" class="w-full h-1 mt-2 accent-accent">
+                            </div>
+
+                            <!-- Stress -->
+                            <div>
+                                <div class="flex justify-between text-[10px] font-bold mb-1 uppercase tracking-widest">
+                                    <span>Stress Mental</span>
+                                    <span class="text-red-500" id="stress-txt">0%</span>
+                                </div>
+                                <div class="w-full h-3 bg-gray-700 border border-gray-500 relative overflow-hidden rounded-sm">
+                                    <div id="stress-bar" class="h-full bg-red-600 transition-all duration-500" style="width: 0%;"></div>
+                                </div>
+                                <div class="flex gap-1 mt-1 opacity-80">
+                                    <button onclick="modStat('stress', -10)" class="text-[9px] border border-dim px-2 py-1 flex-1 hover:bg-white/10 text-dim">Calma</button>
+                                    <button onclick="modStat('stress', 10)" class="text-[9px] border border-dim px-2 py-1 flex-1 hover:bg-white/10 text-dim">Surto</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-block">
+                        <h3>CONDIÇÕES FÍSICAS</h3>
+                        <div class="grid grid-cols-2 gap-2 mt-2" id="condition-grid">
+                            <!-- JS Generated -->
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Habilidades (Auto-Populated) -->
-                <div class="grid md:grid-cols-3 gap-4" id="skills-container">
-                    <!-- Cards de habilidades gerados via JS -->
-                    <div class="skill-card p-3 rounded h-24 flex items-center justify-center opacity-30 border border-dashed border-gray-600">
-                        <span class="text-xs">Habilidade 1</span>
+                <!-- COLUNA 2: ATRIBUTOS & PERÍCIAS -->
+                <div class="col-span-12 lg:col-span-5 flex flex-col gap-6">
+                    
+                    <!-- Atributos -->
+                    <div class="grid grid-cols-4 gap-3">
+                        <div class="stat-block text-center cursor-pointer group border-t-2 border-t-transparent hover:border-t-blue-500">
+                            <h3 class="!text-blue-500 !border-blue-500">ESPADAS</h3>
+                            <input type="number" id="attr-s" value="40" min="1" max="99" onchange="recalcSkills()" class="text-3xl font-black bg-transparent border-none text-center w-full p-0 focus:text-blue-500">
+                            <div class="text-[8px] uppercase text-dim tracking-widest mt-1">Físico</div>
+                        </div>
+                        <div class="stat-block text-center cursor-pointer group border-t-2 border-t-transparent hover:border-t-yellow-500">
+                            <h3 class="!text-yellow-500 !border-yellow-500">OUROS</h3>
+                            <input type="number" id="attr-d" value="40" min="1" max="99" onchange="recalcSkills()" class="text-3xl font-black bg-transparent border-none text-center w-full p-0 focus:text-yellow-500">
+                            <div class="text-[8px] uppercase text-dim tracking-widest mt-1">Intelecto</div>
+                        </div>
+                        <div class="stat-block text-center cursor-pointer group border-t-2 border-t-transparent hover:border-t-green-500">
+                            <h3 class="!text-green-500 !border-green-500">PAUS</h3>
+                            <input type="number" id="attr-c" value="40" min="1" max="99" onchange="recalcSkills()" class="text-3xl font-black bg-transparent border-none text-center w-full p-0 focus:text-green-500">
+                            <div class="text-[8px] uppercase text-dim tracking-widest mt-1">Social</div>
+                        </div>
+                        <div class="stat-block text-center cursor-pointer group border-t-2 border-t-transparent hover:border-t-red-500">
+                            <h3 class="!text-red-500 !border-red-500">COPAS</h3>
+                            <input type="number" id="attr-h" value="40" min="1" max="99" onchange="recalcSkills()" class="text-3xl font-black bg-transparent border-none text-center w-full p-0 focus:text-red-500">
+                            <div class="text-[8px] uppercase text-dim tracking-widest mt-1">Psique</div>
+                        </div>
                     </div>
-                    <div class="skill-card p-3 rounded h-24 flex items-center justify-center opacity-30 border border-dashed border-gray-600">
-                        <span class="text-xs">Habilidade 2</span>
-                    </div>
-                    <div class="skill-card p-3 rounded h-24 flex items-center justify-center opacity-30 border border-dashed border-gray-600">
-                        <span class="text-xs">Habilidade 3</span>
+
+                    <!-- Skills -->
+                    <div class="stat-block flex-grow flex flex-col">
+                        <h3>MATRIZ DE PERÍCIAS</h3>
+                        <div class="flex justify-between text-[9px] text-dim mb-3 font-mono border-b border-dim pb-1">
+                            <span>TREINO ADICIONA +20%</span>
+                            <span>MÉDIA DE ATRIBUTOS PARA HÍBRIDAS</span>
+                        </div>
+                        
+                        <div class="skill-grid overflow-y-auto max-h-[400px] pr-2 custom-scroll" id="skills-container">
+                            <!-- JS Generated -->
+                        </div>
+                        
+                        <div class="mt-6">
+                            <h4 class="text-xs font-bold text-accent mb-3 flex items-center gap-2">
+                                <i class="fa-solid fa-code-branch"></i> HABILIDADES ESPECIAIS
+                            </h4>
+                            <div id="job-skills-list" class="flex flex-col gap-2 min-h-[120px]">
+                                <div class="text-xs opacity-40 italic border border-dashed border-dim p-4 rounded text-center text-dim">Selecione uma profissão...</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Atributos (Naipes) -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- COLUNA 3: HISTÓRIA & INVENTÁRIO (EXPANDIDO) -->
+                <div class="col-span-12 lg:col-span-3 flex flex-col gap-6">
                     
-                    <!-- Espadas -->
-                    <div class="text-center p-4 rounded border-2 relative group" style="border-color: #3b82f6; background: rgba(59, 130, 246, 0.05)">
-                        <i class="fa-solid fa-shield-halved text-2xl absolute top-2 right-2 opacity-20 text-blue-500"></i>
-                        <h3 class="text-blue-500 font-black uppercase text-sm mb-2">Espadas</h3>
-                        <input type="number" id="attr-spades" value="30" class="w-full text-center text-3xl font-mono font-bold bg-transparent border-none focus:ring-0 p-0" style="color: var(--text-main)">
-                        <span class="text-[9px] uppercase opacity-50 block mt-1">Físico / Vigor</span>
+                    <!-- Textos Expandidos -->
+                    <div class="stat-block flex-grow flex flex-col">
+                        <h3>DIÁRIO DE BORDO (EXPANDIDO)</h3>
+                        <div class="flex border-b border-dim mb-2">
+                            <button onclick="switchTab('hist')" id="btn-hist" class="flex-1 text-[9px] font-bold py-2 bg-accent text-black transition">HISTÓRICO</button>
+                            <button onclick="switchTab('notes')" id="btn-notes" class="flex-1 text-[9px] font-bold py-2 bg-transparent text-dim hover:text-accent transition">NOTAS</button>
+                        </div>
+                        <textarea id="txt-hist" class="w-full flex-grow expanded-textarea bg-transparent border-none" placeholder="> Insira aqui o histórico detalhado, traumas e motivações do personagem... (Área Expandida)"></textarea>
+                        <textarea id="txt-notes" class="w-full flex-grow expanded-textarea bg-transparent border-none hidden" placeholder="> Registro de sessão, inventário extra e pistas... (Área Expandida)"></textarea>
                     </div>
 
-                    <!-- Ouros -->
-                    <div class="text-center p-4 rounded border-2 relative group" style="border-color: #eab308; background: rgba(234, 179, 8, 0.05)">
-                        <i class="fa-solid fa-brain text-2xl absolute top-2 right-2 opacity-20 text-yellow-500"></i>
-                        <h3 class="text-yellow-500 font-black uppercase text-sm mb-2">Ouros</h3>
-                        <input type="number" id="attr-diamonds" value="30" class="w-full text-center text-3xl font-mono font-bold bg-transparent border-none focus:ring-0 p-0" style="color: var(--text-main)">
-                        <span class="text-[9px] uppercase opacity-50 block mt-1">Lógica / Intelecto</span>
+                    <div class="stat-block">
+                        <h3>MOCHILA RÁPIDA</h3>
+                        <div class="grid grid-cols-5 gap-1 mb-3" id="inventory-grid">
+                            <!-- JS Generated -->
+                        </div>
+                        <div class="flex gap-2 relative">
+                            <input type="text" id="item-add-input" placeholder="Item..." class="text-xs h-8 pl-2 pr-8">
+                            <button onclick="addItem()" class="absolute right-0 top-0 h-8 w-8 text-accent hover:text-white transition"><i class="fa-solid fa-plus"></i></button>
+                        </div>
+                        <div class="mt-2 text-[9px] text-right text-dim font-mono" id="encumbrance">0/20 SLOTS</div>
                     </div>
 
-                    <!-- Paus -->
-                    <div class="text-center p-4 rounded border-2 relative group" style="border-color: #22c55e; background: rgba(34, 197, 94, 0.05)">
-                        <i class="fa-solid fa-users text-2xl absolute top-2 right-2 opacity-20 text-green-500"></i>
-                        <h3 class="text-green-500 font-black uppercase text-sm mb-2">Paus</h3>
-                        <input type="number" id="attr-clubs" value="30" class="w-full text-center text-3xl font-mono font-bold bg-transparent border-none focus:ring-0 p-0" style="color: var(--text-main)">
-                        <span class="text-[9px] uppercase opacity-50 block mt-1">Social / Equipe</span>
-                    </div>
-
-                    <!-- Copas -->
-                    <div class="text-center p-4 rounded border-2 relative group" style="border-color: #ef4444; background: rgba(239, 68, 68, 0.05)">
-                        <i class="fa-solid fa-heart-crack text-2xl absolute top-2 right-2 opacity-20 text-red-500"></i>
-                        <h3 class="text-red-500 font-black uppercase text-sm mb-2">Copas</h3>
-                        <input type="number" id="attr-hearts" value="30" class="w-full text-center text-3xl font-mono font-bold bg-transparent border-none focus:ring-0 p-0" style="color: var(--text-main)">
-                        <span class="text-[9px] uppercase opacity-50 block mt-1">Psique / Traição</span>
-                    </div>
-                </div>
-
-                <!-- Abas de Texto (História / Log) -->
-                <div class="border rounded-lg overflow-hidden" style="border-color: var(--border-color)">
-                    <div class="flex border-b" style="border-color: var(--border-color)">
-                        <button onclick="showTextTab('history')" class="flex-1 py-2 text-xs font-bold uppercase hover:bg-white/5 transition" style="background-color: var(--accent-primary); color: var(--bg-color)">História & Trauma</button>
-                        <button onclick="showTextTab('log')" class="flex-1 py-2 text-xs font-bold uppercase hover:bg-white/5 transition" style="color: var(--text-muted)">Diário de Bordo</button>
-                    </div>
-                    
-                    <div id="tab-history" class="p-4">
-                        <textarea id="txt-history" class="w-full h-32 bg-transparent border-none resize-none text-sm leading-relaxed" placeholder="Quem você era antes? Qual o seu maior arrependimento? O que você deixou para trás?"></textarea>
-                    </div>
-                    
-                    <div id="tab-log" class="p-4 hidden">
-                        <textarea id="txt-log" class="w-full h-32 bg-transparent border-none resize-none text-sm leading-relaxed font-mono" placeholder="REGISTRO DE EVENTOS:
-> Dia 1: Acordei no cruzamento de Shibuya. Encontrei um celular.
-> Dia 2: Jogo 3 de Paus. Sobrevivi por pouco..."></textarea>
-                    </div>
                 </div>
 
             </div>
-        </div>
 
-        <!-- Footer da Ficha -->
-        <div class="mt-8 border-t pt-4 flex justify-between items-center text-[10px] font-mono opacity-50" style="border-color: var(--border-color)">
-            <span>GERADO PELO SISTEMA SSB</span>
-            <span>NÃO PERCA ESTE DOCUMENTO</span>
-            <span>BORDERLAND</span>
+            <!-- FOOTER -->
+            <footer class="mt-12 pt-4 border-t border-dim flex justify-between items-center text-[9px] font-mono text-dim uppercase">
+                <div>TOKYO.MUNICIPAL // SERVIDOR LOCAL</div>
+                <div class="animate-pulse text-accent">SINAL DE REDE: FRACO</div>
+            </footer>
+
         </div>
     </div>
 
+    <!-- DICE MODAL -->
+    <div id="dice-modal" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-md">
+        <div class="bg-gray-900 border border-accent p-10 rounded-sm shadow-[0_0_100px_rgba(0,243,255,0.1)] text-center max-w-sm w-full transform scale-90 transition-all duration-300 relative overflow-hidden" id="dice-content">
+            <h2 class="text-xl font-bold text-white mb-6 relative z-10 tracking-[0.2em]">TESTE PERCENTUAL</h2>
+            <div class="w-32 h-32 mx-auto border-2 border-accent rounded-full flex items-center justify-center mb-6 relative z-10 bg-black/50 shadow-[0_0_30px_var(--accent-glow)]">
+                <div id="dice-anim" class="text-6xl font-black text-white font-mono">00</div>
+            </div>
+            <div id="dice-result" class="text-lg font-bold uppercase relative z-10 h-8 text-dim">Rolando...</div>
+            <button onclick="closeModal()" class="mt-8 px-8 py-3 bg-accent text-black font-bold uppercase hover:bg-white hover:scale-105 transition w-full relative z-10">CONFIRMAR</button>
+        </div>
+    </div>
+
+    <!-- JS ENGINE -->
     <script>
-        // --- DADOS (Mesmos do Manual para Consistência) ---
-        // (Nota: Copiei a estrutura de dados para garantir que a ficha funcione independente do manual)
-        const professions = [
-            // GRUPO 1: ESPADAS
-            {
-                name: "Militar de Elite",
-                group: "Espadas",
-                desc: "Arma do Estado. Humanidade removida. Reage antes de pensar.",
-                skills: [
-                    { type: "Passiva", name: "Memória Muscular", effect: "Recarrega e move-se taticamente sem penalidade." },
-                    { type: "Ativa", name: "Supressão", effect: "Força inimigo a perder o turno por medo." },
-                    { type: "Narrativa", name: "Protocolo de Dor", effect: "Ignora penalidade de ferimento leve em combate." }
-                ]
-            },
-            {
-                name: "Atleta Olímpico",
-                group: "Espadas",
-                desc: "Corpo esculpido pela obsessão. Conhece e quebra limites físicos.",
-                skills: [
-                    { type: "Passiva", name: "Fôlego Infinito", effect: "Vantagem em testes de resistência física." },
-                    { type: "Ativa", name: "Explosão", effect: "Feito de força sobre-humana (Custa 2 Stress)." },
-                    { type: "Narrativa", name: "Metabolismo", effect: "Recupera dano físico 2x mais rápido." }
-                ]
-            },
-            {
-                name: "Bombeiro Civil",
-                group: "Espadas",
-                desc: "Entra no inferno. Força funcional e resistência ao calor.",
-                skills: [
-                    { type: "Passiva", name: "Arrombamento", effect: "+20 para destruir portas e obstáculos." },
-                    { type: "Ativa", name: "Carga de Resgate", effect: "Carrega pessoas sem penalidade de movimento." },
-                    { type: "Narrativa", name: "Pulmões de Aço", effect: "Resiste a fumaça/gás por mais tempo." }
-                ]
-            },
-            { name: "Segurança Privada", group: "Espadas", desc: "Parede humana. Neutralização rápida.", skills: [{type:"Ativa",name:"Escudo Humano",effect:"Intercepta dano de aliado."}, {type:"Passiva",name:"Revista",effect:"Detecta armas escondidas."}, {type:"Narrativa",name:"Intimidação",effect:"Usa Espadas para intimidar."}] },
-            { name: "Dublê de Ação", group: "Espadas", desc: "Profissional da dor controlada.", skills: [{type:"Passiva",name:"Queda Controlada",effect:"Reduz dano de queda em 50%."}, {type:"Ativa",name:"Improviso Letal",effect:"Qualquer objeto vira arma."}, {type:"Narrativa",name:"Teatralidade",effect:"Finge morte/ferimento perfeitamente."}] },
-            { name: "Yakuza", group: "Espadas", desc: "Honra e violência. Tolerância à dor.", skills: [{type:"Passiva",name:"Pacto",effect:"Bônus ao proteger 'Irmão'."}, {type:"Ativa",name:"Tortura",effect:"Extrai info com dor física."}, {type:"Narrativa",name:"Mãos Letais",effect:"Dano desarmado é letal."}] },
-            { name: "Operário", group: "Espadas", desc: "Força bruta. Vê o mundo como obra.", skills: [{type:"Passiva",name:"Demolição",effect:"Identifica fragilidade estrutural."}, {type:"Ativa",name:"Ferramentas",effect:"Ferramentas causam +10 dano."}, {type:"Narrativa",name:"Equilíbrio",effect:"Não cai de vigas/alturas."}] },
-            { name: "Dançarino", group: "Espadas", desc: "Controle absoluto. Flui no combate.", skills: [{type:"Ativa",name:"Esquiva Graciosa",effect:"Torna-se intocável por 1 turno."}, {type:"Passiva",name:"Contorcionismo",effect:"Entra em espaços minúsculos."}, {type:"Narrativa",name:"Ritmo",effect:"Prevê armadilhas de tempo."}] },
-            { name: "Lutador MMA", group: "Espadas", desc: "Especialista X1. Apaga consciências.", skills: [{type:"Ativa",name:"Grappling",effect:"Imobiliza oponente no chão."}, {type:"Passiva",name:"Nocaute",effect:"Crítico desarmado apaga alvo."}, {type:"Narrativa",name:"Foco na Dor",effect:"Ignora dor de fratura por 10min."}] },
-            { name: "Açougueiro", group: "Espadas", desc: "Anatomia da carne. Indiferença ao gore.", skills: [{type:"Passiva",name:"Corte Cirúrgico",effect:"Causa sangramento contínuo."}, {type:"Narrativa",name:"Estômago de Ferro",effect:"Imune a náusea/gore."}, {type:"Ativa",name:"Desmembramento",effect:"Inutiliza membro específico."}] },
+        /* --- DATABASE V7.0 --- */
+        const DB = {
+            professions: [
+                // ESPADAS (Físico/Combate)
+                { id: 'militar', name: 'Militar', group: 'Espadas', bonus: ['Armas de Fogo', 'Atletismo', 'Sobrevivência', 'Prontidão'], 
+                  skills: [
+                    { type: "Passiva", name: "Memória Muscular", effect: "Recarrega e move-se taticamente sem gastar ação." },
+                    { type: "Ativa", name: "Supressão", effect: "Obriga inimigos a se esconderem ou tomarem dano." },
+                    { type: "Narrativa", name: "Protocolo", effect: "Ignora ferimentos leves em combate." }
+                ]},
+                { id: 'atleta', name: 'Atleta', group: 'Espadas', bonus: ['Atletismo', 'Acrobacia', 'Fôlego', 'Vigor'], 
+                  skills: [
+                    { type: "Passiva", name: "Grip de Ferro", effect: "Vantagem em escalada e agarrar." },
+                    { type: "Ativa", name: "Explosão", effect: "+30 em Força por 1 turno." },
+                    { type: "Narrativa", name: "Parkour", effect: "Move-se por terreno difícil sem penalidade." }
+                ]},
+                { id: 'yakuza', name: 'Yakuza', group: 'Espadas', bonus: ['Briga', 'Intimidação', 'Armas Brancas', 'Resistência'], 
+                  skills: [
+                    { type: "Passiva", name: "Tatuagem", effect: "Resistência aumentada contra dor e tortura." },
+                    { type: "Ativa", name: "Amputação", effect: "Golpe corpo-a-corpo que causa sangramento severo." },
+                    { type: "Narrativa", name: "Submundo", effect: "Reconhece sinais de gangues e territórios." }
+                ]},
+                { id: 'duble', name: 'Dublê', group: 'Espadas', bonus: ['Acrobacia', 'Direção', 'Atuação', 'Reflexos'], 
+                  skills: [
+                    { type: "Passiva", name: "Queda Livre", effect: "Reduz dano de queda pela metade." },
+                    { type: "Ativa", name: "Improviso", effect: "Usa qualquer objeto do cenário como arma letal." },
+                    { type: "Narrativa", name: "Temerário", effect: "Imune a medo em situações físicas extremas." }
+                ]},
 
-            // GRUPO 2: OUROS
-            {
-                name: "Médico Cirurgião",
-                group: "Ouros",
-                desc: "Deus de jaleco. Sabe o que cura e o que mata.",
-                skills: [
-                    { type: "Ativa", name: "Estabilização", effect: "Impede morte ou cura leve sem itens." },
-                    { type: "Passiva", name: "Diagnóstico", effect: "Identifica veneno/doença olhando." },
-                    { type: "Narrativa", name: "Mãos Firmes", effect: "Bônus em tarefas manuais delicadas." }
-                ]
-            },
-            {
-                name: "Engenheiro Civil",
-                group: "Ouros",
-                desc: "Vê vetores de força. Tudo tem ponto de falha.",
-                skills: [
-                    { type: "Narrativa", name: "Raio-X", effect: "Deduz planta baixa de prédios." },
-                    { type: "Passiva", name: "Física Intuitiva", effect: "Calcula quedas/colisões mentalmente." },
-                    { type: "Ativa", name: "Engenharia Sucata", effect: "Cria barricadas/armadilhas com lixo." }
-                ]
-            },
-            { name: "Hacker / Dev", group: "Ouros", desc: "Mago digital. Entende lógica de máquina.", skills: [{type:"Ativa",name:"Interface",effect:"Acessa logs/portas eletrônicas."}, {type:"Narrativa",name:"Bypass",effect:"Ligação direta/hack simples."}, {type:"Passiva",name:"Depuração",effect:"Elimina 50% de opções erradas em puzzle."}] },
-            { name: "Químico", group: "Ouros", desc: "Domina a matéria. Mundo é laboratório.", skills: [{type:"Ativa",name:"Alquimia",effect:"Cria explosivo/ácido com itens comuns."}, {type:"Passiva",name:"Detector",effect:"Identifica toxinas pelo cheiro."}, {type:"Narrativa",name:"Farmacologia",effect:"Mistura remédios para efeitos."}] },
-            { name: "Arquiteto", group: "Ouros", desc: "Desenha espaços. Percebe o invisível.", skills: [{type:"Passiva",name:"Espaço",effect:"Acha passagens secretas/fundos falsos."}, {type:"Narrativa",name:"Geometria",effect:"Calcula distâncias sem instrumentos."}, {type:"Ativa",name:"Ruptura",effect:"Sabe onde bater para derrubar teto."}] },
-            { name: "Detetive", group: "Ouros", desc: "Lê cenas de crime. Nada escapa.", skills: [{type:"Passiva",name:"Olho de Águia",effect:"Mestre revela pista visual oculta."}, {type:"Ativa",name:"Reconstrução",effect:"Descreve como evento ocorreu."}, {type:"Narrativa",name:"Memória Eidética",effect:"Lembra detalhes visuais perfeitamente."}] },
-            { name: "Matemático", group: "Ouros", desc: "Gerencia caos com números.", skills: [{type:"Ativa",name:"Análise Risco",effect:"Sabe chance real de sucesso (Alta/Baixa)."}, {type:"Passiva",name:"Escassez",effect:"Recursos duram o dobro."}, {type:"Narrativa",name:"Padrão",effect:"Identifica lógicas numéricas na hora."}] },
-            { name: "Eletricista", group: "Ouros", desc: "Senhor da energia. Acende ou apaga.", skills: [{type:"Ativa",name:"Mestre da Rede",effect:"Corta luz ou restaura gerador."}, {type:"Passiva",name:"Alta Voltagem",effect:"Imune a choque/Cria armadilha."}, {type:"Narrativa",name:"Bypass Mag",effect:"Abre fechadura magnética."}] },
-            { name: "Historiador", group: "Ouros", desc: "Conhecimento humano. Erros antigos.", skills: [{type:"Narrativa",name:"Enciclopédia",effect:"Sabe fatos obscuros para enigmas."}, {type:"Passiva",name:"Poliglota",effect:"Lê múltiplos idiomas/códigos."}, {type:"Ativa",name:"Tática",effect:"Bônus se terreno lembrar batalha histórica."}] },
-            { name: "Mecânico", group: "Ouros", desc: "Fala com máquinas. Conserta tudo.", skills: [{type:"Ativa",name:"Reparo",effect:"Conserta veículo temporariamente."}, {type:"Passiva",name:"Sabotagem",effect:"Inutiliza veículo silenciosamente."}, {type:"Narrativa",name:"Mad Max",effect:"Melhora veículo com sucata."}] },
+                // OUROS (Intelecto/Lógica)
+                { id: 'medico', name: 'Médico', group: 'Ouros', bonus: ['Primeiros Socorros', 'Ciências', 'Percepção', 'Sangue Frio'], 
+                  skills: [
+                    { type: "Ativa", name: "Estabilizar", effect: "Impede morte de aliado sem usar kit." },
+                    { type: "Passiva", name: "Anatomia", effect: "Sabe onde causar dor sem matar." },
+                    { type: "Narrativa", name: "Diagnóstico", effect: "Identifica doenças e venenos visualmente." }
+                ]},
+                { id: 'engenheiro', name: 'Engenheiro', group: 'Ouros', bonus: ['Eletrônica', 'Física', 'Arrombamento', 'Percepção'], 
+                  skills: [
+                    { type: "Passiva", name: "Estrutura", effect: "Identifica pontos fracos em construções." },
+                    { type: "Ativa", name: "MacGyver", effect: "Cria ferramentas úteis com lixo." },
+                    { type: "Narrativa", name: "Cálculo", effect: "Estima distâncias e pesos instantaneamente." }
+                ]},
+                { id: 'arquiteto', name: 'Arquiteto', group: 'Ouros', bonus: ['Geometria', 'Percepção', 'Desenho', 'História'], 
+                  skills: [
+                    { type: "Passiva", name: "Mapeamento", effect: "Nunca se perde em ambientes fechados." },
+                    { type: "Ativa", name: "Ponto de Ruptura", effect: "Bônus para demolir/abrir passagens." },
+                    { type: "Narrativa", name: "Planta Baixa", effect: "Deduz o layout de prédios vistos por fora." }
+                ]},
+                { id: 'quimico', name: 'Químico', group: 'Ouros', bonus: ['Química', 'Culinária', 'Sobrevivência', 'Ciências'], 
+                  skills: [
+                    { type: "Passiva", name: "Imunidade", effect: "Resistência a gases e toxinas." },
+                    { type: "Ativa", name: "Volátil", effect: "Cria explosivos ou ácidos improvisados." },
+                    { type: "Narrativa", name: "Identificação", effect: "Sabe o que é seguro comer ou beber." }
+                ]},
 
-            // GRUPO 3: PAUS
-            {
-                name: "Político",
-                group: "Paus",
-                desc: "Manipula massas. Lidera por consenso.",
-                skills: [
-                    { type: "Ativa", name: "Discurso", effect: "Acalma pânico ou incita revolta." },
-                    { type: "Narrativa", name: "Tratado", effect: "Negocia tréguas com rivais." },
-                    { type: "Passiva", name: "Bode Expiatório", effect: "Culpa outro por falha crítica." }
-                ]
-            },
-            {
-                name: "Gerente Projetos",
-                group: "Paus",
-                desc: "Eficiência pura. Odeia o caos.",
-                skills: [
-                    { type: "Ativa", name: "Delegação", effect: "Dá sua ação para aliado (+20 no teste)." },
-                    { type: "Passiva", name: "Logística", effect: "Grupo nunca se perde." },
-                    { type: "Narrativa", name: "Gestão Crise", effect: "Reduz stress se plano funcionar." }
-                ]
-            },
-            { name: "Motorista", group: "Paus", desc: "Rei da estrada. Reflexos e mapa mental.", skills: [{type:"Ativa",name:"Direção Defensiva",effect:"Vantagem absoluta pilotando."}, {type:"Narrativa",name:"GPS",effect:"Conhece rotas e atalhos."}, {type:"Passiva",name:"Vigília",effect:"Fica acordado o dobro do tempo."}] },
-            { name: "Professor", group: "Paus", desc: "Paciência e autoridade. Ensina.", skills: [{type:"Passiva",name:"Proteção",effect:"Identifica elo fraco para ajudar."}, {type:"Ativa",name:"Didática",effect:"Permite aliado 'burro' fazer teste INT."}, {type:"Narrativa",name:"Autoridade",effect:"Para brigas com a voz."}] },
-            { name: "Padre", group: "Paus", desc: "Farol de fé. Cura a mente.", skills: [{type:"Ativa",name:"Confissão",effect:"Aliados recuperam Stress falando."}, {type:"Passiva",name:"Fé",effect:"Bônus contra medo sobrenatural."}, {type:"Narrativa",name:"Sacrifício",effect:"Absorve Stress de aliado para si."}] },
-            { name: "Bartender", group: "Paus", desc: "Ouve tudo. Serve veneno.", skills: [{type:"Passiva",name:"Ouvinte",effect:"Coleta rumores sem ser notado."}, {type:"Narrativa",name:"Química Social",effect:"Identifica bêbado/mentiroso."}, {type:"Ativa",name:"Mixologia",effect:"Cria coquetel molotov/energético."}] },
-            { name: "Coach", group: "Paus", desc: "Extrai potencial. Não deixa desistir.", skills: [{type:"Ativa",name:"Preleção",effect:"+10 em atributo de aliado por 1 turno."}, {type:"Passiva",name:"Leitura",effect:"Sabe cansaço/dano exato de alguém."}, {type:"Narrativa",name:"Incentivo",effect:"Remove status 'Desistência'."}] },
-            { name: "Líder Sindical", group: "Paus", desc: "Guerreiro da classe. Força na união.", skills: [{type:"Ativa",name:"Massa",effect:"Coordena NPCs para tarefa física."}, {type:"Passiva",name:"Negociação",effect:"Melhor troca por recursos."}, {type:"Narrativa",name:"Resistência",effect:"Bônus de Vigor (acostumado a briga)."}] },
-            { name: "Guia Turístico", group: "Paus", desc: "Localização e comunicação.", skills: [{type:"Passiva",name:"Senso Direção",effect:"Acha norte e rotas de fuga."}, {type:"Narrativa",name:"Línguas",effect:"Comunica-se em qualquer idioma básico."}, {type:"Ativa",name:"Memória",effect:"Lembra mapas vistos uma vez."}] },
-            { name: "Piloto", group: "Paus", desc: "Frieza sob pressão. Gerencia crise.", skills: [{type:"Passiva",name:"Sangue Frio",effect:"Ignora pânico em velocidade/altura."}, {type:"Ativa",name:"Instrumentos",effect:"Opera qualquer painel complexo."}, {type:"Narrativa",name:"Visão 3D",effect:"Noção perfeita de espaço/distância."}] },
+                // PAUS (Social/Liderança)
+                { id: 'gerente', name: 'Gerente', group: 'Paus', bonus: ['Liderança', 'Logística', 'Persuasão', 'Negociação'], 
+                  skills: [
+                    { type: "Ativa", name: "Delegar", effect: "Cede sua ação para aliado com bônus." },
+                    { type: "Passiva", name: "Recursos", effect: "O grupo gasta menos suprimentos." },
+                    { type: "Narrativa", name: "Plano B", effect: "Pode rerolar 1 falha crítica por sessão." }
+                ]},
+                { id: 'motorista', name: 'Motorista', group: 'Paus', bonus: ['Direção', 'Mecânica', 'Navegação', 'Reflexos'], 
+                  skills: [
+                    { type: "Ativa", name: "Fuga", effect: "Sucesso automático em fugas veiculares." },
+                    { type: "Passiva", name: "GPS Mental", effect: "Conhece atalhos em Tóquio." },
+                    { type: "Narrativa", name: "Manutenção", effect: "Veículos duram o dobro." }
+                ]},
+                { id: 'politico', name: 'Político', group: 'Paus', bonus: ['Persuasão', 'Enganação', 'Liderança', 'História'], 
+                  skills: [
+                    { type: "Passiva", name: "Diplomacia", effect: "Inimigos humanos hesitam antes de atacar." },
+                    { type: "Ativa", name: "Filibuster", effect: "Distrai um grupo com discurso longo." },
+                    { type: "Narrativa", name: "Conexões", effect: "Chance de conhecer NPCs influentes." }
+                ]},
+                { id: 'professor', name: 'Professor', group: 'Paus', bonus: ['Liderança', 'História', 'Psicologia', 'Empatia'], 
+                  skills: [
+                    { type: "Passiva", name: "Didática", effect: "Dá bônus de aprendizado a aliados." },
+                    { type: "Ativa", name: "Chamada", effect: "Detecta mentiras em um grupo." },
+                    { type: "Narrativa", name: "Autoridade", effect: "Crianças e jovens tendem a obedecer." }
+                ]},
 
-            // GRUPO 4: COPAS
-            {
-                name: "Psicólogo",
-                group: "Copas",
-                desc: "Engenheiro da mente. Conserta ou quebra.",
-                skills: [
-                    { type: "Ativa", name: "Perfil", effect: "Descobre Natureza/Trauma de alguém." },
-                    { type: "Narrativa", name: "Terapia", effect: "Recupera dobro de Stress do grupo." },
-                    { type: "Passiva", name: "Psy-Op", effect: "Induz medo/dúvida com palavras." }
-                ]
-            },
-            {
-                name: "Ator / Atriz",
-                group: "Copas",
-                desc: "Camaleão. Identidade é fluida.",
-                skills: [
-                    { type: "Passiva", name: "Máscara", effect: "Finge emoção perfeitamente (imune insight)." },
-                    { type: "Ativa", name: "Disfarce", effect: "Passa-se por outra pessoa." },
-                    { type: "Narrativa", name: "Mímica", effect: "Copia voz e sotaque." }
-                ]
-            },
-            { name: "Vigarista", group: "Copas", desc: "Predador social. Pessoas são cofres.", skills: [{type:"Passiva",name:"Leitura Fria",effect:"Sabe o que a pessoa quer ouvir."}, {type:"Ativa",name:"Mãos Leves",effect:"Rouba itens conversando."}, {type:"Narrativa",name:"Falsificação",effect:"Cria documentos falsos com lixo."}] },
-            { name: "Jogador Poker", group: "Copas", desc: "Risco calculado. Face impenetrável.", skills: [{type:"Passiva",name:"Poker Face",effect:"Impossível ler suas intenções."}, {type:"Narrativa",name:"Fold",effect:"Sabe quando desistir de situação ruim."}, {type:"Ativa",name:"Blefe",effect:"Convence de vantagem que não tem."}] },
-            { name: "Host / Hostess", group: "Copas", desc: "Vende desejo e ilusão.", skills: [{type:"Ativa",name:"Sedução",effect:"Vantagem manipulando sexo oposto."}, {type:"Narrativa",name:"Distração",effect:"Mantém atenção total do alvo."}, {type:"Passiva",name:"VIP",effect:"Acesso a locais exclusivos."}] },
-            { name: "Vidente", group: "Copas", desc: "Usa o medo do desconhecido.", skills: [{type:"Ativa",name:"Aura",effect:"Mestre descreve 'vibe' do local."}, {type:"Passiva",name:"Forer",effect:"Finge saber passado da pessoa."}, {type:"Narrativa",name:"Ritual",effect:"Fé protege contra medo sobrenatural."}] },
-            { name: "Influencer", group: "Copas", desc: "Celebridade. Narcisismo é armadura.", skills: [{type:"Ativa",name:"Culto",effect:"Influencia grupo de mente fraca."}, {type:"Narrativa",name:"Imagem",effect:"Finge estar bem para manter moral."}, {type:"Passiva",name:"Spin",effect:"Distorce fatos para culpar outro."}] },
-            { name: "Vendedor Carro", group: "Copas", desc: "Negociador agressivo. Pressão.", skills: [{type:"Ativa",name:"Lábia",effect:"Vende qualquer ideia ruim."}, {type:"Narrativa",name:"Pressão",effect:"Força decisão rápida e errada."}, {type:"Passiva",name:"Valor",effect:"Sabe valor real e se é enganado."}] },
-            { name: "Negociador", group: "Copas", desc: "Desarma bomba humana. Empatia tática.", skills: [{type:"Ativa",name:"Desescalada",effect:"Para combate com conversa."}, {type:"Passiva",name:"Troca",effect:"Consegue melhores termos."}, {type:"Narrativa",name:"Empatia",effect:"Cria vínculo para prever ação."}] },
-            { name: "Fanático", group: "Copas", desc: "Submissão à doutrina. Convicção.", skills: [{type:"Passiva",name:"Zelo",effect:"Bônus se for 'missão divina'."}, {type:"Ativa",name:"Conversão",effect:"Recruta seguidores leais."}, {type:"Narrativa",name:"Mártir",effect:"Sua morte cura Stress de aliados."}] }
-        ];
-
-        const personalities = [
-            "Analítico", "Covarde", "Heroico", "Sádico", "Niilista", "Pragmático", 
-            "Otimista Delirante", "Pessimista", "Líder Nato", "Seguidor", "Lobo Solitário", 
-            "Dependente", "Agressivo", "Passivo", "Manipulador", "Ingênuo", "Estoico", 
-            "Neurótico (TOC)", "Narcisista", "Altruísta", "Paranoico", "Confiante", 
-            "Disciplinado", "Caótico", "Místico"
-        ];
-
-        // --- INICIALIZAÇÃO ---
-        window.onload = () => {
-            populateLists();
-            generateRegID();
+                // COPAS (Psique/Manipulação)
+                { id: 'psicologo', name: 'Psicólogo', group: 'Copas', bonus: ['Psicologia', 'Empatia', 'Diplomacia', 'Intuição'], 
+                  skills: [
+                    { type: "Ativa", name: "Perfil", effect: "Descobre o medo ou desejo oculto de alguém." },
+                    { type: "Passiva", name: "Empatia", effect: "Sente as emoções dominantes no ambiente." },
+                    { type: "Narrativa", name: "Terapia", effect: "Recupera Stress de aliados conversando." }
+                ]},
+                { id: 'vigarista', name: 'Vigarista', group: 'Copas', bonus: ['Enganação', 'Furtividade', 'Ladinagem', 'Atuação'], 
+                  skills: [
+                    { type: "Passiva", name: "Poker Face", effect: "Imune a leitura de intenções." },
+                    { type: "Ativa", name: "Mãos Leves", effect: "Rouba itens sem ser notado." },
+                    { type: "Narrativa", name: "Camaleão", effect: "Mistura-se em qualquer grupo social." }
+                ]},
+                { id: 'ator', name: 'Ator', group: 'Copas', bonus: ['Atuação', 'Disfarce', 'Enganação', 'Memória'], 
+                  skills: [
+                    { type: "Passiva", name: "Máscara", effect: "Pode esconder seu nível de Stress real." },
+                    { type: "Ativa", name: "Drama", effect: "Finge lesão ou morte perfeitamente." },
+                    { type: "Narrativa", name: "Mimetismo", effect: "Imita vozes e comportamentos." }
+                ]},
+                { id: 'influencer', name: 'Influencer', group: 'Copas', bonus: ['Persuasão', 'Tecnologia', 'Atuação', 'Sorte'], 
+                  skills: [
+                    { type: "Passiva", name: "Fotogenia", effect: "Sempre causa boa primeira impressão." },
+                    { type: "Ativa", name: "Live", effect: "Inspira o grupo como se tivesse uma audiência." },
+                    { type: "Narrativa", name: "Tendência", effect: "Sabe intuitivamente o que as pessoas querem." }
+                ]}
+            ],
+            // Hybrid logic handled in code: ['s', 'd'] means average of Spades and Diamonds
+            perks: [
+                {name: 'Atletismo', attr: 's'}, 
+                {name: 'Briga', attr: 's'}, 
+                {name: 'Armas de Fogo', attr: 's'}, 
+                {name: 'Acrobacia', attr: 's'},
+                {name: 'Prontidão', attr: 's'},
+                
+                {name: 'Sobrevivência', attr: ['s','d']}, // Híbrido Físico+Mente
+                {name: 'Furtividade', attr: ['s','h']},   // Híbrido Físico+Psique
+                {name: 'Arrombamento', attr: ['s','d']},
+                
+                {name: 'Primeiros Socorros', attr: 'd'}, 
+                {name: 'Investigação', attr: ['d','c']}, // Híbrido Mente+Social
+                {name: 'Eletrônica', attr: 'd'}, 
+                {name: 'Ciências', attr: 'd'}, 
+                {name: 'História', attr: 'd'},
+                
+                {name: 'Persuasão', attr: 'c'}, 
+                {name: 'Liderança', attr: ['c','h']}, // Híbrido Social+Psique
+                {name: 'Intimidação', attr: ['s','c']}, // Híbrido Físico+Social
+                {name: 'Direção', attr: 'c'}, 
+                {name: 'Navegação', attr: 'c'},
+                
+                {name: 'Empatia', attr: 'h'}, 
+                {name: 'Enganação', attr: 'h'}, 
+                {name: 'Psicologia', attr: 'h'}, 
+                {name: 'Intuição', attr: 'h'},
+                {name: 'Atuação', attr: ['c','h']} // Híbrido Social+Psique
+            ],
+            conditions: ["Fratura", "Hemorragia", "Envenenado", "Exausto", "Concussão", "Queimadura", "Infecção", "Choque"],
+            personalities: ["O Analítico", "O Covarde", "O Heroico", "O Sádico", "O Niilista", "O Pragmático", "O Otimista", "O Líder", "O Solitário", "O Manipulador"]
         };
 
-        function generateRegID() {
-            document.getElementById('reg-id').innerText = Math.floor(1000 + Math.random() * 9000);
-        }
+        // Estado
+        let state = { hp: 100, stress: 0, visa: 3, trainedSkills: [], inventory: [] };
 
-        function populateLists() {
-            // Personalidades
-            const pSelect = document.getElementById('char-personality');
-            personalities.forEach(p => {
+        /* --- CORE LOGIC --- */
+        function init() {
+            // Professions
+            const jobSelect = document.getElementById('job-select');
+            DB.professions.forEach((job, idx) => {
                 const opt = document.createElement('option');
-                opt.value = p;
-                opt.innerText = p;
-                pSelect.appendChild(opt);
+                opt.value = idx;
+                opt.innerText = `[${job.group[0]}] ${job.name}`;
+                jobSelect.appendChild(opt);
             });
 
-            // Profissões
-            const jSelect = document.getElementById('char-job');
-            professions.forEach((p, index) => {
+            // Personalities
+            const persSelect = document.getElementById('char-personality');
+            DB.personalities.forEach(p => {
                 const opt = document.createElement('option');
-                opt.value = index;
-                opt.innerText = `[${p.group}] ${p.name}`;
-                jSelect.appendChild(opt);
+                opt.value = p; opt.innerText = p;
+                persSelect.appendChild(opt);
             });
+
+            // Conditions
+            const condGrid = document.getElementById('condition-grid');
+            DB.conditions.forEach(c => {
+                const div = document.createElement('div');
+                div.className = "text-[9px] uppercase border border-white/20 p-1 text-center cursor-pointer hover:bg-accent hover:text-black transition select-none rounded bg-black/30 text-dim";
+                div.innerText = c;
+                div.onclick = () => {
+                    div.classList.toggle('bg-accent'); div.classList.toggle('text-black'); div.classList.toggle('font-bold');
+                    recalcDeathProb();
+                };
+                condGrid.appendChild(div);
+            });
+
+            // Inventory
+            const invGrid = document.getElementById('inventory-grid');
+            for(let i=0; i<20; i++) {
+                const slot = document.createElement('div');
+                slot.className = "inv-slot group aspect-square border border-dim flex items-center justify-center cursor-pointer hover:border-accent bg-black/10";
+                slot.id = `inv-${i}`;
+                slot.onclick = () => removeItem(i);
+                invGrid.appendChild(slot);
+            }
+
+            initCanvasEffect();
+            recalcSkills();
+            updateVisa(3);
+            generateUID();
         }
 
-        // --- LÓGICA DE INTERFACE ---
-
-        function setTheme(themeName) {
-            document.body.className = themeName + " min-h-screen p-4 md:p-8";
+        function generateUID() {
+            document.getElementById('uid-display').innerText = Math.floor(1000 + Math.random() * 9000);
         }
 
-        function updateJob() {
-            const index = document.getElementById('char-job').value;
-            const desc = document.getElementById('job-desc');
-            const container = document.getElementById('skills-container');
+        /* --- SKILL ENGINE --- */
+        function applyJob() {
+            const idx = document.getElementById('job-select').value;
+            const skillList = document.getElementById('job-skills-list');
             
-            if (index === "") {
-                desc.innerText = "Selecione uma profissão para ver detalhes.";
-                container.innerHTML = `
-                    <div class="skill-card p-3 rounded h-24 flex items-center justify-center opacity-30 border border-dashed border-gray-600"><span class="text-xs">Habilidade 1</span></div>
-                    <div class="skill-card p-3 rounded h-24 flex items-center justify-center opacity-30 border border-dashed border-gray-600"><span class="text-xs">Habilidade 2</span></div>
-                    <div class="skill-card p-3 rounded h-24 flex items-center justify-center opacity-30 border border-dashed border-gray-600"><span class="text-xs">Habilidade 3</span></div>`;
+            if(idx === "") {
+                skillList.innerHTML = `<div class="text-xs opacity-40 italic border border-dashed border-dim p-4 rounded text-center text-dim">Selecione uma profissão...</div>`;
                 return;
             }
-
-            const job = professions[index];
-            desc.innerText = job.desc;
             
-            // Highlight Attribute
-            resetBorders();
-            if (job.group === "Espadas") highlightAttr("attr-spades", "blue");
-            if (job.group === "Ouros") highlightAttr("attr-diamonds", "yellow");
-            if (job.group === "Paus") highlightAttr("attr-clubs", "green");
-            if (job.group === "Copas") highlightAttr("attr-hearts", "red");
-
-            // Update Skills
-            container.innerHTML = job.skills.map(s => `
-                <div class="skill-card p-3 rounded h-24 flex flex-col justify-center transition-all hover:scale-105">
+            const job = DB.professions[idx];
+            state.trainedSkills = [...job.bonus];
+            
+            skillList.innerHTML = job.skills.map(s => `
+                <div class="job-skill-card">
                     <div class="flex items-center gap-2 mb-1">
-                        <span class="text-[9px] uppercase border px-1 rounded font-bold" style="border-color: var(--accent-primary); color: var(--accent-primary)">${s.type}</span>
-                        <strong class="text-xs uppercase font-bold" style="color: var(--text-main)">${s.name}</strong>
+                        <span class="text-[8px] bg-accent text-black px-1.5 py-0.5 rounded-sm font-bold uppercase tracking-wide">${s.type}</span>
+                        <strong class="text-accent uppercase text-xs tracking-wider">${s.name}</strong>
                     </div>
-                    <p class="text-[10px] leading-tight opacity-80" style="color: var(--text-muted)">${s.effect}</p>
+                    <div class="text-[10px] leading-tight opacity-90 text-justify font-mono text-dim">${s.effect}</div>
                 </div>
             `).join('');
-        }
-
-        function highlightAttr(id, color) {
-            // Simples indicação visual de qual atributo a profissão foca
-            const el = document.getElementById(id).parentElement;
-            el.style.boxShadow = `0 0 15px ${color}`;
-        }
-
-        function resetBorders() {
-            ['attr-spades','attr-diamonds','attr-clubs','attr-hearts'].forEach(id => {
-                document.getElementById(id).parentElement.style.boxShadow = "none";
-            });
-        }
-
-        function updatePersonaDesc() {
-            // (Opcional) Poderia adicionar descrições para personalidades aqui se necessário
-            const val = document.getElementById('char-personality').value;
-            const desc = document.getElementById('persona-desc');
-            desc.innerText = val ? `Arquétipo: ${val}. O trauma define sua reação.` : "...";
-        }
-
-        function updateBars() {
-            // Visa
-            const visa = document.getElementById('visa-input').value;
-            const visaText = document.getElementById('visa-val');
-            visaText.innerText = visa + " DIAS";
-            if(visa <= 3) visaText.classList.add('animate-pulse', 'text-red-600');
-            else visaText.classList.remove('animate-pulse', 'text-red-600');
-
-            // Stress
-            const stressInput = document.getElementById('stress-input');
-            let stress = parseInt(stressInput.value);
             
-            // Clamp value
-            if (stress > 25) stress = 25;
-            if (stress < 0) stress = 0;
-            stressInput.value = stress;
-
-            document.getElementById('stress-val').innerText = stress + " / 25";
-            
-            const bar = document.getElementById('stress-bar');
-            const pct = (stress / 25) * 100;
-            bar.style.width = pct + "%";
-            
-            if(stress < 10) bar.style.backgroundColor = "#3b82f6"; // Blue
-            else if(stress < 20) bar.style.backgroundColor = "#eab308"; // Yellow
-            else bar.style.backgroundColor = "#ef4444"; // Red
+            recalcSkills();
         }
 
-        function adjustStress(val) {
-            const input = document.getElementById('stress-input');
-            input.value = parseInt(input.value) + val;
-            updateBars();
-        }
+        function recalcSkills() {
+            const s = parseInt(document.getElementById('attr-s').value) || 0;
+            const d = parseInt(document.getElementById('attr-d').value) || 0;
+            const c = parseInt(document.getElementById('attr-c').value) || 0;
+            const h = parseInt(document.getElementById('attr-h').value) || 0;
 
-        function showTextTab(tab) {
-            if(tab === 'history') {
-                document.getElementById('tab-history').classList.remove('hidden');
-                document.getElementById('tab-log').classList.add('hidden');
-            } else {
-                document.getElementById('tab-history').classList.add('hidden');
-                document.getElementById('tab-log').classList.remove('hidden');
-            }
-        }
+            const container = document.getElementById('skills-container');
+            container.innerHTML = "";
 
-        // --- FOTO ---
-        function loadPhoto(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.getElementById('char-photo');
-                    img.src = e.target.result;
-                    img.classList.remove('hidden');
-                    document.getElementById('photo-placeholder').classList.add('hidden');
+            DB.perks.forEach(perk => {
+                let base = 0;
+                let colorClass = "text-dim";
+                let isHybrid = Array.isArray(perk.attr);
+
+                if (isHybrid) {
+                    let v1 = 0, v2 = 0;
+                    if(perk.attr[0] === 's') v1 = s; else if(perk.attr[0] === 'd') v1 = d; else if(perk.attr[0] === 'c') v1 = c; else v1 = h;
+                    if(perk.attr[1] === 's') v2 = s; else if(perk.attr[1] === 'd') v2 = d; else if(perk.attr[1] === 'c') v2 = c; else v2 = h;
+                    base = Math.floor((v1 + v2) / 2);
+                    colorClass = "text-white"; 
+                } else {
+                    if(perk.attr === 's') { base = s; colorClass = "text-blue-500"; }
+                    else if(perk.attr === 'd') { base = d; colorClass = "text-yellow-500"; }
+                    else if(perk.attr === 'c') { base = c; colorClass = "text-green-500"; }
+                    else { base = h; colorClass = "text-red-500"; }
                 }
-                reader.readAsDataURL(input.files[0]);
+
+                const isTrained = state.trainedSkills.includes(perk.name);
+                let final = base + (isTrained ? 20 : 0);
+                if(final > 99) final = 99;
+
+                const div = document.createElement('div');
+                div.className = `skill-item ${isTrained ? 'active' : ''}`;
+                div.innerHTML = `
+                    <span class="${isTrained ? '' : 'text-dim'}">${perk.name}</span>
+                    <span class="skill-val ${isTrained ? 'text-bg-color' : colorClass}">${final}%</span>
+                    ${isHybrid ? '<div class="hybrid-indicator" title="Perícia Híbrida"></div>' : ''}
+                `;
+                div.onclick = () => {
+                    if(isTrained) state.trainedSkills = state.trainedSkills.filter(x => x !== perk.name);
+                    else state.trainedSkills.push(perk.name);
+                    recalcSkills();
+                };
+                container.appendChild(div);
+            });
+            recalcDeathProb();
+        }
+
+        /* --- STATS & INVENTORY --- */
+        function modStat(type, val) {
+            if(type === 'hp') {
+                state.hp = Math.min(100, Math.max(0, state.hp + val));
+                document.getElementById('hp-bar').style.width = state.hp + "%";
+                document.getElementById('hp-txt').innerText = state.hp + "%";
+                const bar = document.getElementById('hp-bar');
+                if(state.hp < 30) bar.className = "h-full bg-red-600 transition-all duration-500";
+                else if(state.hp < 60) bar.className = "h-full bg-yellow-500 transition-all duration-500";
+                else bar.className = "h-full bg-green-500 transition-all duration-500";
+            }
+            if(type === 'stress') {
+                state.stress = Math.min(100, Math.max(0, state.stress + val));
+                document.getElementById('stress-bar').style.width = state.stress + "%";
+                document.getElementById('stress-txt').innerText = state.stress + "%";
+            }
+            recalcDeathProb();
+        }
+
+        function updateVisa(val) {
+            state.visa = val;
+            document.getElementById('visa-txt').innerText = val;
+            const container = document.getElementById('visa-blocks');
+            container.innerHTML = "";
+            for(let i=0; i<val; i++) {
+                const div = document.createElement('div');
+                div.className = "flex-1 h-full bg-accent rounded-sm shadow-[0_0_5px_var(--accent)]";
+                container.appendChild(div);
+            }
+            recalcDeathProb();
+        }
+
+        function recalcDeathProb() {
+            let risk = 0;
+            if(state.hp < 40) risk += (40 - state.hp);
+            if(state.stress > 60) risk += (state.stress - 60) * 0.5;
+            if(state.visa < 2) risk += (2 - state.visa) * 20;
+            risk += document.querySelectorAll('#condition-grid .bg-accent').length * 15;
+            risk = Math.min(99, Math.floor(risk));
+            document.getElementById('death-prob').innerText = risk + "%";
+        }
+
+        function addItem() {
+            const input = document.getElementById('item-add-input');
+            const val = input.value.trim();
+            if(!val || state.inventory.length >= 20) return;
+            state.inventory.push(val);
+            input.value = "";
+            renderInventory();
+        }
+
+        function removeItem(idx) {
+            state.inventory.splice(idx, 1);
+            renderInventory();
+        }
+
+        function renderInventory() {
+            for(let i=0; i<20; i++) {
+                const slot = document.getElementById(`inv-${i}`);
+                if(state.inventory[i]) {
+                    let icon = "fa-box";
+                    const lower = state.inventory[i].toLowerCase();
+                    if(lower.includes("faca") || lower.includes("taco") || lower.includes("bastão")) icon = "fa-gavel";
+                    if(lower.includes("pistola") || lower.includes("munição")) icon = "fa-crosshairs";
+                    if(lower.includes("celular")) icon = "fa-mobile-screen";
+                    if(lower.includes("água") || lower.includes("comida")) icon = "fa-bottle-water";
+                    if(lower.includes("kit") || lower.includes("remédio")) icon = "fa-suitcase-medical";
+                    if(lower.includes("chave") || lower.includes("cartão")) icon = "fa-key";
+                    
+                    slot.innerHTML = `<i class="fa-solid ${icon} text-accent group-hover:scale-125 transition"></i>`;
+                    slot.title = state.inventory[i];
+                    slot.style.borderColor = "var(--accent)";
+                } else {
+                    slot.innerHTML = "";
+                    slot.title = "Vazio";
+                    slot.style.borderColor = "rgba(255,255,255,0.1)";
+                }
+            }
+            document.getElementById('encumbrance').innerText = `${state.inventory.length}/20 SLOTS`;
+        }
+
+        /* --- EXTRAS --- */
+        function diceRoll() {
+            const modal = document.getElementById('dice-modal');
+            const anim = document.getElementById('dice-anim');
+            const res = document.getElementById('dice-result');
+            modal.classList.remove('hidden');
+            setTimeout(() => document.getElementById('dice-content').classList.remove('scale-90'), 10);
+            
+            let counter = 0;
+            const interval = setInterval(() => {
+                anim.innerText = Math.floor(Math.random() * 100);
+                counter++;
+                if(counter > 15) {
+                    clearInterval(interval);
+                    const final = Math.floor(Math.random() * 100) + 1;
+                    anim.innerText = final < 10 ? '0'+final : final;
+                    
+                    if(final <= 5) { res.innerText = "SUCESSO EXTREMO"; res.className = "text-lg font-bold uppercase text-yellow-400 animate-pulse"; }
+                    else if(final <= 50) { res.innerText = "SUCESSO"; res.className = "text-lg font-bold uppercase text-green-400"; }
+                    else if(final >= 95) { res.innerText = "DESASTRE"; res.className = "text-lg font-bold uppercase text-red-600 font-black"; }
+                    else { res.innerText = "FALHA"; res.className = "text-lg font-bold uppercase text-dim"; }
+                }
+            }, 50);
+        }
+
+        function closeModal() {
+            document.getElementById('dice-content').classList.add('scale-90');
+            setTimeout(() => document.getElementById('dice-modal').classList.add('hidden'), 200);
+        }
+
+        function switchTab(t) {
+            const h = document.getElementById('txt-hist');
+            const n = document.getElementById('txt-notes');
+            const bh = document.getElementById('btn-hist');
+            const bn = document.getElementById('btn-notes');
+            
+            if(t==='hist') {
+                h.classList.remove('hidden'); n.classList.add('hidden');
+                bh.className = "flex-1 text-[9px] font-bold py-2 bg-accent text-black transition";
+                bn.className = "flex-1 text-[9px] font-bold py-2 bg-transparent text-dim hover:text-accent transition";
+            } else {
+                h.classList.add('hidden'); n.classList.remove('hidden');
+                bn.className = "flex-1 text-[9px] font-bold py-2 bg-accent text-black transition";
+                bh.className = "flex-1 text-[9px] font-bold py-2 bg-transparent text-dim hover:text-accent transition";
             }
         }
 
-        // --- SALVAR / CARREGAR / EXPORTAR ---
+        function setTheme(t) { document.body.className = `theme-${t}`; initCanvasEffect(); }
 
         function saveData() {
+            const conds = []; document.querySelectorAll('#condition-grid .bg-accent').forEach(el => conds.push(el.innerText));
             const data = {
                 name: document.getElementById('char-name').value,
-                jobIdx: document.getElementById('char-job').value,
+                age: document.getElementById('char-age').value,
+                jobIdx: document.getElementById('job-select').value,
                 personality: document.getElementById('char-personality').value,
-                stats: {
-                    s: document.getElementById('attr-spades').value,
-                    d: document.getElementById('attr-diamonds').value,
-                    c: document.getElementById('attr-clubs').value,
-                    h: document.getElementById('attr-hearts').value
-                },
-                visa: document.getElementById('visa-input').value,
-                stress: document.getElementById('stress-input').value,
-                history: document.getElementById('txt-history').value,
-                log: document.getElementById('txt-log').value,
-                photo: document.getElementById('char-photo').src
+                stats: { s: document.getElementById('attr-s').value, d: document.getElementById('attr-d').value, c: document.getElementById('attr-c').value, h: document.getElementById('attr-h').value },
+                hp: state.hp, stress: state.stress, visa: state.visa, inventory: state.inventory, trainedSkills: state.trainedSkills, conditions: conds, hist: document.getElementById('txt-hist').value, photo: document.getElementById('avatar-img').src
             };
-            
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
-            const el = document.createElement('a');
-            el.setAttribute("href", dataStr);
-            el.setAttribute("download", `dossie_${data.name || 'imigrante'}.json`);
-            el.click();
+            const a = document.createElement('a');
+            a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+            a.download = `DOSSIE_${data.name}.json`;
+            a.click();
         }
 
         function loadData(input) {
             const file = input.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
+            if(!file) return;
+            const r = new FileReader();
+            r.onload = (e) => {
                 try {
-                    const data = JSON.parse(e.target.result);
-                    
-                    document.getElementById('char-name').value = data.name || "";
-                    document.getElementById('char-job').value = data.jobIdx || "";
-                    updateJob(); // Refresh skills
-                    
-                    document.getElementById('char-personality').value = data.personality || "";
-                    updatePersonaDesc();
-
-                    document.getElementById('attr-spades').value = data.stats.s;
-                    document.getElementById('attr-diamonds').value = data.stats.d;
-                    document.getElementById('attr-clubs').value = data.stats.c;
-                    document.getElementById('attr-hearts').value = data.stats.h;
-
-                    document.getElementById('visa-input').value = data.visa || 3;
-                    document.getElementById('stress-input').value = data.stress || 0;
-                    updateBars();
-
-                    document.getElementById('txt-history').value = data.history || "";
-                    document.getElementById('txt-log').value = data.log || "";
-
-                    if (data.photo && data.photo.length > 100) {
-                        const img = document.getElementById('char-photo');
-                        img.src = data.photo;
-                        img.classList.remove('hidden');
-                        document.getElementById('photo-placeholder').classList.add('hidden');
-                    }
-                    
+                    const d = JSON.parse(e.target.result);
+                    document.getElementById('char-name').value = d.name;
+                    document.getElementById('char-age').value = d.age;
+                    document.getElementById('job-select').value = d.jobIdx;
+                    applyJob();
+                    state.trainedSkills = d.trainedSkills || [];
+                    document.getElementById('attr-s').value = d.stats.s;
+                    document.getElementById('attr-d').value = d.stats.d;
+                    document.getElementById('attr-c').value = d.stats.c;
+                    document.getElementById('attr-h').value = d.stats.h;
+                    state.hp = d.hp; modStat('hp', 0);
+                    state.stress = d.stress; modStat('stress', 0);
+                    updateVisa(d.visa);
+                    state.inventory = d.inventory; renderInventory();
+                    document.getElementById('txt-hist').value = d.hist || "";
+                    if(d.photo) { document.getElementById('avatar-img').src = d.photo; document.getElementById('avatar-img').classList.remove('hidden'); document.getElementById('avatar-placeholder').classList.add('hidden'); }
+                    recalcSkills();
                     alert("Dossiê carregado com sucesso.");
-                } catch (err) {
-                    alert("Erro ao ler arquivo: " + err);
-                }
+                } catch(err) { alert("Erro ao carregar."); }
             };
-            reader.readAsText(file);
+            r.readAsText(file);
         }
 
-        function exportImage() {
-            const element = document.getElementById('character-sheet');
-            
-            // Garantir que a aba visível seja a de história (ou log, se preferir)
-            // html2canvas só renderiza o que está visível
-            
-            html2canvas(element, {
-                backgroundColor: null, // Mantém transparência/fundo do tema
-                scale: 2 // Melhor qualidade
-            }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `ficha_${document.getElementById('char-name').value || 'imigrante'}.png`;
-                link.href = canvas.toDataURL();
-                link.click();
+        function exportSheet() {
+            const c = document.getElementById('bg-canvas');
+            const s = document.querySelector('.scanlines');
+            c.style.display='none'; s.style.display='none';
+            html2canvas(document.getElementById('sheet-content'), {backgroundColor:null, scale:2}).then(can => {
+                const a = document.createElement('a');
+                a.download = `FICHA_${document.getElementById('char-name').value}.jpg`;
+                a.href = can.toDataURL('image/jpeg', 0.9);
+                a.click();
+                c.style.display='block'; s.style.display='block';
             });
         }
+        
+        function loadImage(i) {
+             if (i.files && i.files[0]) {
+                const r = new FileReader();
+                r.onload = (e) => {
+                    const img = document.getElementById('avatar-img');
+                    img.src = e.target.result; img.classList.remove('hidden');
+                    document.getElementById('avatar-placeholder').classList.add('hidden');
+                }
+                r.readAsDataURL(i.files[0]);
+            }
+        }
 
+        /* --- CANVAS --- */
+        let cInterval;
+        function initCanvasEffect() {
+            const c = document.getElementById('bg-canvas');
+            const ctx = c.getContext('2d');
+            c.width = window.innerWidth; c.height = window.innerHeight;
+            if(cInterval) clearInterval(cInterval);
+            const theme = document.body.className;
+            
+            if(theme.includes('arisu')) {
+                // MATRIX RAIN
+                const chars = "BORDERLAND01"; const font = 14; const cols = c.width/font; const drops = Array(Math.floor(cols)).fill(1);
+                cInterval = setInterval(() => {
+                    ctx.fillStyle = "rgba(5, 5, 16, 0.1)"; ctx.fillRect(0,0,c.width,c.height);
+                    ctx.fillStyle = "#00f3ff"; ctx.font = font+"px monospace";
+                    for(let i=0; i<drops.length; i++) {
+                        ctx.fillText(chars[Math.floor(Math.random()*chars.length)], i*font, drops[i]*font);
+                        if(drops[i]*font > c.height && Math.random()>0.975) drops[i]=0; drops[i]++;
+                    }
+                }, 33);
+            } else if(theme.includes('chishiya')) {
+                 // EKG / BATIMENTO
+                 let t = 0;
+                 cInterval = setInterval(() => {
+                     ctx.clearRect(0,0,c.width,c.height);
+                     // Grid limpo
+                     ctx.strokeStyle = "rgba(0,0,0,0.05)"; ctx.lineWidth = 1;
+                     for(let i=0; i<c.width; i+=40) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,c.height); ctx.stroke(); }
+                     for(let i=0; i<c.height; i+=40) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(c.width,i); ctx.stroke(); }
+                     // Linha Vermelha
+                     ctx.strokeStyle = "#dc2626"; ctx.lineWidth = 1.5; ctx.beginPath();
+                     for(let x=0; x<c.width; x++) { 
+                         // Simula batimento EKG complexo
+                         let y = c.height/2;
+                         let offset = (x + t) % c.width;
+                         if (offset > 100 && offset < 200) {
+                             y += Math.sin((offset-100)*0.1) * 50 * Math.exp(-Math.pow((offset-150)/20, 2));
+                         }
+                         if(x==0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                     }
+                     ctx.stroke(); t-=5; // Move para a esquerda
+                 }, 33);
+            } else {
+                 // PARTÍCULAS / POEIRA (Praia/Usagi)
+                 const p = []; for(let i=0; i<50; i++) p.push({x:Math.random()*c.width, y:Math.random()*c.height, s:Math.random()*3});
+                 cInterval = setInterval(() => {
+                     ctx.clearRect(0,0,c.width,c.height);
+                     ctx.fillStyle = theme.includes('mafia') ? "rgba(245,158,11,0.3)" : "rgba(132,204,22,0.2)";
+                     p.forEach(d => { 
+                         d.y-=0.5; 
+                         if(d.y<0) { d.y=c.height; d.x=Math.random()*c.width; } 
+                         ctx.beginPath(); ctx.arc(d.x,d.y,d.s,0,Math.PI*2); ctx.fill(); 
+                     });
+                 }, 33);
+            }
+        }
+        window.onload = init;
+        window.onresize = initCanvasEffect;
     </script>
 </body>
 </html>
