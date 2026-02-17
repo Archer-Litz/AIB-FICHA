@@ -3,179 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BORDERLAND: CHAOS SYSTEM [V8.0]</title>
+    <title>BORDERLAND: SYSTEM [DANIEL RUAS]</title>
     
     <!-- External Libs -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Fonts -->
+    <!-- Fonts Import -->
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;500;600;700&family=Courier+Prime:wght@400;700&family=Inter:wght@200;400;800&family=Cinzel:wght@400;700&family=Black+Ops+One&family=Rubik+Glitch&family=Creepster&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;500;600;700&family=Courier+Prime:wght@400;700&family=Inter:wght@200;400;800&family=Cinzel:wght@400;700&family=Black+Ops+One&family=Rubik+Glitch&family=Creepster&family=Orbitron:wght@400;900&display=swap');
 
         /* =========================================
            CORE THEME ENGINE
            ========================================= */
-        :root { --transition-speed: 0.5s; }
+        :root { --transition-speed: 0.4s; }
 
-        /* --- TEMA ARISU (GAMER / TECH) --- */
+        /* ARISU */
         body.theme-arisu {
-            --bg-color: #020205; --panel-bg: rgba(10, 15, 25, 0.96);
+            --bg-color: #020205; --panel-bg: rgba(8, 12, 20, 0.96);
             --text-main: #a5f3fc; --text-dim: #1e3a8a;
-            --accent: #00f3ff; --accent-glow: rgba(0, 243, 255, 0.4);
+            --accent: #00f3ff; --accent-glow: rgba(0, 243, 255, 0.3);
             --border-style: solid; --border-width: 1px;
             --font-head: 'Rajdhani', sans-serif; --font-body: 'Share Tech Mono', monospace;
             --corner-cut: polygon(0 0, 100% 0, 100% 95%, 95% 100%, 0 100%);
-            --cursor: crosshair;
+            --cursor: crosshair; --crt-flicker: block;
         }
 
-        /* --- TEMA CHISHIYA (MÉDICO / CLÍNICO) --- */
+        /* CHISHIYA */
         body.theme-chishiya {
-            --bg-color: #f8fafc; --panel-bg: #ffffff;
+            --bg-color: #f1f5f9; --panel-bg: #ffffff;
             --text-main: #0f172a; --text-dim: #94a3b8;
             --accent: #334155; --accent-glow: rgba(0,0,0,0.05);
-            --border-style: double; --border-width: 4px;
+            --border-style: double; --border-width: 3px;
             --font-head: 'Inter', sans-serif; --font-body: 'Courier Prime', monospace;
-            --corner-cut: none;
-            --cursor: help; /* Cursor médico/preciso */
+            --corner-cut: none; --cursor: help; --crt-flicker: none;
         }
         body.theme-chishiya .stat-block, body.theme-chishiya input, body.theme-chishiya textarea, body.theme-chishiya select {
-            background: #fff; color: #000; border-color: #cbd5e1;
+            background: #fff; color: #0f172a; border-color: #cbd5e1; border-radius: 4px;
         }
+        body.theme-chishiya .skill-item { background: #f8fafc; color: #334155; border: 1px solid #e2e8f0; }
 
-        /* --- TEMA PRAIA (MILITAR / SUJO) --- */
+        /* PRAIA */
         body.theme-mafia {
             --bg-color: #1a1614; --panel-bg: #26211f;
             --text-main: #e7e5e4; --text-dim: #5c4d46;
-            --accent: #f97316; --accent-glow: rgba(249, 115, 22, 0.3);
+            --accent: #f97316; --accent-glow: rgba(249, 115, 22, 0.2);
             --border-style: dashed; --border-width: 2px;
             --font-head: 'Black Ops One', cursive; --font-body: 'Courier Prime', monospace;
             --corner-cut: polygon(2% 0, 100% 0, 100% 100%, 0 100%, 0 2%);
-            --cursor: not-allowed; /* Cursor tático/bloqueio */
+            --cursor: not-allowed; --crt-flicker: block;
         }
 
-        /* --- TEMA JOKER (CAOS / CARTAS) --- */
-        body.theme-joker {
-            --bg-color: #1a0b2e; --panel-bg: rgba(20, 5, 30, 0.95);
-            --text-main: #d8b4fe; --text-dim: #581c87;
-            --accent: #4ade80; /* Verde Tóxico */
-            --accent-glow: rgba(74, 222, 128, 0.6);
-            --border-style: solid; --border-width: 2px;
-            --font-head: 'Rubik Glitch', cursive; --font-body: 'Rajdhani', sans-serif;
-            --corner-cut: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
-            --cursor: alias;
-        }
-        body.theme-joker .dossier-panel { border-image: repeating-linear-gradient(45deg, #4ade80, #9333ea 20px) 10; }
-        body.theme-joker input, body.theme-joker select { transform: rotate(-0.5deg); }
-
-        /* --- TEMA DEALER (ELEGANTE) --- */
+        /* DEALER */
         body.theme-dealer {
             --bg-color: #0f0518; --panel-bg: #1e0a25;
             --text-main: #fbcfe8; --text-dim: #831843;
             --accent: #d946ef; --accent-glow: rgba(217, 70, 239, 0.3);
             --border-style: solid; --border-width: 1px;
             --font-head: 'Cinzel', serif; --font-body: 'Rajdhani', sans-serif;
-            --corner-cut: border-box;
-            --cursor: default;
+            --corner-cut: border-box; --cursor: default; --crt-flicker: none;
+        }
+        body.theme-dealer .dossier-panel { border-bottom: 5px solid var(--accent); }
+
+        /* JOKER (FIXED LAYOUT) */
+        body.theme-joker {
+            --bg-color: #0c0a1f; --panel-bg: rgba(20, 5, 30, 0.98); /* Mais opaco para leitura */
+            --text-main: #e9d5ff; /* Texto mais claro */
+            --text-dim: #7e22ce;
+            --accent: #4ade80; 
+            --accent-glow: rgba(74, 222, 128, 0.5);
+            --border-style: solid; --border-width: 4px;
+            --font-head: 'Rubik Glitch', cursive; 
+            --font-body: 'Courier Prime', monospace; /* Fonte legível para corpo */
+            --corner-cut: polygon(5% 0, 100% 0, 95% 100%, 0% 100%);
+            --cursor: alias; --crt-flicker: block;
+        }
+        body.theme-joker .dossier-panel { 
+            border-image: repeating-linear-gradient(45deg, #4ade80, #9333ea 20px) 10; 
+            box-shadow: 0 0 30px var(--accent-glow);
+            padding: 3.5rem; /* Mais padding para não cortar texto */
+        }
+        body.theme-joker h1, body.theme-joker h2 { 
+            text-shadow: 3px 0 #9333ea, -3px 0 #4ade80; 
+        }
+        /* Garantir legibilidade nos inputs do Joker */
+        body.theme-joker input, body.theme-joker select, body.theme-joker textarea {
+            font-family: 'Courier Prime', monospace;
+            background: rgba(0,0,0,0.4);
+            border-color: #a855f7;
+            transform: none !important;
+        }
+
+        /* NOVO TEMA: VALETE DE PAUS (JACK) */
+        body.theme-jack {
+            --bg-color: #111111; 
+            --panel-bg: #1c1c1c;
+            --text-main: #facc15; /* Amarelo Neon */
+            --text-dim: #854d0e;
+            --accent: #facc15;
+            --accent-glow: rgba(250, 204, 21, 0.4);
+            --border-style: solid; --border-width: 0px;
+            --font-head: 'Orbitron', sans-serif; 
+            --font-body: 'Share Tech Mono', monospace;
+            --corner-cut: polygon(0 0, 90% 0, 100% 10%, 100% 100%, 10% 100%, 0 90%);
+            --cursor: progress; --crt-flicker: none;
+        }
+        body.theme-jack .dossier-panel {
+            border-top: 4px solid var(--accent);
+            border-bottom: 4px solid var(--accent);
+            background-image: repeating-linear-gradient(
+                -45deg,
+                transparent,
+                transparent 10px,
+                rgba(250, 204, 21, 0.05) 10px,
+                rgba(250, 204, 21, 0.05) 20px
+            );
+        }
+        body.theme-jack .stat-block {
+            border: 1px solid #444;
+            background: #222;
+        }
+        body.theme-jack .skill-item.active {
+            background: var(--accent);
+            color: #000;
+            font-weight: 900;
         }
 
         /* =========================================
            GLOBAL STYLES
            ========================================= */
-        body {
-            background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-body);
-            overflow-x: hidden; transition: all var(--transition-speed); cursor: var(--cursor);
-        }
-
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-body); overflow-x: hidden; transition: all var(--transition-speed); cursor: var(--cursor); min-height: 100vh; }
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
-
-        .dossier-panel {
-            background-color: var(--panel-bg); border: var(--border-width) var(--border-style) var(--accent);
-            box-shadow: 0 0 50px rgba(0,0,0,0.5), 0 0 15px var(--accent-glow);
-            backdrop-filter: blur(10px); clip-path: var(--corner-cut);
-            padding: 3rem; margin-top: 2rem; position: relative;
-            transition: all 0.5s;
-        }
-
-        input, select, textarea {
-            background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1);
-            color: var(--text-main); padding: 0.5rem; width: 100%; transition: 0.3s;
-        }
-        input:focus, select:focus, textarea:focus {
-            outline: none; border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow);
-        }
-
-        h1, h2, h3, h4 { font-family: var(--font-head); text-transform: uppercase; letter-spacing: 0.05em; }
-
-        /* Custom Elements */
-        .stat-block {
-            border: 1px solid rgba(255,255,255,0.1); padding: 1.2rem; position: relative;
-            background: linear-gradient(135deg, rgba(255,255,255,0.01) 0%, rgba(0,0,0,0.2) 100%);
-        }
-        .stat-block h3 {
-            position: absolute; top: -10px; left: 10px; background: var(--panel-bg);
-            padding: 0 8px; font-size: 0.7rem; color: var(--accent); border: 1px solid var(--accent);
-        }
-
-        .skill-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; }
-        .skill-item {
-            border: 1px solid rgba(255,255,255,0.1); padding: 6px 10px; font-size: 0.75rem;
-            cursor: pointer; display: flex; justify-content: space-between; align-items: center;
-            transition: all 0.2s; background: rgba(0,0,0,0.2);
-        }
-        .skill-item:hover { border-color: var(--accent); transform: translateX(3px); }
-        .skill-item.active {
-            background: var(--accent); color: var(--bg-color); border-color: var(--accent); font-weight: bold;
-            box-shadow: 0 0 10px var(--accent-glow);
-        }
-
-        .job-skill-card {
-            background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(0,0,0,0.1) 100%);
-            border-left: 3px solid var(--accent); padding: 10px; margin-bottom: 8px;
-            animation: slideIn 0.4s ease-out forwards;
-        }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
-
-        .expanded-textarea { min-height: 350px; line-height: 1.6; font-size: 0.9rem; resize: vertical; }
-
-        /* Joker Specific Animations */
-        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
-        body.theme-joker h1 { animation: shake 2s infinite; }
+        .dossier-panel { background-color: var(--panel-bg); border: var(--border-width) var(--border-style) var(--accent); box-shadow: 0 0 60px rgba(0,0,0,0.6), 0 0 15px var(--accent-glow); backdrop-filter: blur(15px); clip-path: var(--corner-cut); padding: 2.5rem; margin: 2rem auto; max-width: 1500px; position: relative; transition: all 0.5s; }
         
+        input, select, textarea { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); padding: 0.5rem; width: 100%; transition: 0.3s; font-family: var(--font-body); }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); background: rgba(255,255,255,0.05); }
+        
+        h1, h2, h3, h4, .header-font { font-family: var(--font-head); text-transform: uppercase; letter-spacing: 0.05em; }
+        
+        .stat-block { border: 1px solid rgba(255,255,255,0.1); padding: 1.2rem; position: relative; background: linear-gradient(135deg, rgba(255,255,255,0.01) 0%, rgba(0,0,0,0.2) 100%); margin-bottom: 1rem; transition: transform 0.3s ease; }
+        .stat-block:hover { transform: translateY(-2px); border-color: var(--accent); }
+        .stat-block h3 { position: absolute; top: -10px; left: 10px; background: var(--panel-bg); padding: 0 8px; font-size: 0.7rem; color: var(--accent); border: 1px solid var(--accent); font-weight: bold; z-index: 2; }
+        
+        /* SKILLS */
+        .skill-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 8px; max-height: 500px; overflow-y: auto; padding-right: 5px; }
+        .skill-grid::-webkit-scrollbar { width: 5px; } .skill-grid::-webkit-scrollbar-thumb { background: var(--accent); }
+        .skill-item { border: 1px solid rgba(255,255,255,0.1); padding: 8px 10px; font-size: 0.7rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; background: rgba(0,0,0,0.2); position: relative; overflow: hidden; }
+        .skill-item:hover { border-color: var(--accent); transform: translateX(3px); }
+        .skill-item.active { background: var(--accent); color: var(--bg-color); border-color: var(--accent); font-weight: bold; box-shadow: 0 0 15px var(--accent-glow); }
+        .skill-item.hybrid::after { content: ''; position: absolute; top: 0; right: 0; width: 0; height: 0; border-style: solid; border-width: 0 8px 8px 0; border-color: transparent var(--text-main) transparent transparent; opacity: 0.5; }
+        
+        .job-skill-card { background: linear-gradient(90deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.1) 100%); border-left: 3px solid var(--accent); padding: 12px; margin-bottom: 8px; animation: slideIn 0.4s ease-out forwards; }
+        
+        .expanded-textarea { min-height: 550px; line-height: 1.6; font-size: 0.9rem; resize: vertical; }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        
+        .crt-overlay { display: var(--crt-flicker); position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); background-size: 100% 4px; pointer-events: none; z-index: 9999; opacity: 0.15; }
     </style>
 </head>
 <body class="theme-arisu">
 
     <canvas id="bg-canvas"></canvas>
+    <div class="crt-overlay"></div>
 
-    <div class="max-w-[1400px] mx-auto p-4 relative z-10">
+    <div class="max-w-[1500px] mx-auto p-4 relative z-10">
         
-        <!-- NAV -->
-        <nav class="flex flex-wrap justify-between items-center p-4 mb-4 backdrop-blur-md bg-black/40 border-b border-white/10 sticky top-0 z-50 rounded shadow-lg">
-            <div class="flex items-center gap-3">
-                <i class="fa-solid fa-ghost text-2xl text-accent animate-pulse"></i>
+        <!-- NAVIGATION -->
+        <nav class="flex flex-wrap justify-between items-center p-4 mb-4 backdrop-blur-md bg-black/40 border-b border-white/10 sticky top-0 z-50 rounded shadow-2xl">
+            <div class="flex items-center gap-4">
+                <i class="fa-solid fa-biohazard text-3xl text-accent animate-pulse"></i>
                 <div>
-                    <h1 class="text-xl font-bold tracking-[0.2em] leading-none text-white header-font">BORDERLAND DB</h1>
-                    <span class="text-[10px] text-accent uppercase tracking-widest">Chaos System v8.0</span>
+                    <h1 class="text-2xl font-bold tracking-[0.2em] leading-none text-white header-font">BORDERLAND</h1>
+                    <span class="text-[10px] text-accent uppercase tracking-widest font-mono">Feito por Daniel Ruas</span>
                 </div>
             </div>
 
-            <div class="flex gap-2 my-2 overflow-x-auto">
-                <button onclick="setTheme('arisu')" class="px-3 py-1 border border-cyan-500 text-cyan-500 hover:bg-cyan-500 hover:text-black text-[10px] font-bold uppercase transition rounded-sm">Arisu</button>
-                <button onclick="setTheme('chishiya')" class="px-3 py-1 border border-gray-400 text-gray-400 bg-white hover:bg-gray-200 hover:text-black text-[10px] font-bold uppercase transition rounded-sm">Chishiya</button>
-                <button onclick="setTheme('mafia')" class="px-3 py-1 border border-orange-600 text-orange-500 hover:bg-orange-600 hover:text-black text-[10px] font-bold uppercase transition rounded-sm">Praia</button>
-                <button onclick="setTheme('dealer')" class="px-3 py-1 border border-purple-500 text-purple-400 hover:bg-purple-600 hover:text-white text-[10px] font-bold uppercase transition rounded-sm">Dealer</button>
-                <button onclick="setTheme('joker')" class="px-3 py-1 border border-green-500 text-green-400 hover:bg-purple-600 hover:text-white text-[10px] font-bold uppercase transition rounded-sm animate-pulse">JOKER</button>
+            <div class="flex gap-2 my-2 overflow-x-auto pb-1 custom-scroll">
+                <button onclick="setTheme('arisu')" class="px-3 py-1 border border-cyan-500 text-cyan-500 hover:bg-cyan-500 hover:text-black text-[10px] font-bold uppercase transition rounded-sm flex items-center gap-1"><i class="fa-solid fa-gamepad"></i> Arisu</button>
+                <button onclick="setTheme('chishiya')" class="px-3 py-1 border border-gray-400 text-gray-400 bg-white hover:bg-gray-200 hover:text-black text-[10px] font-bold uppercase transition rounded-sm flex items-center gap-1"><i class="fa-solid fa-user-doctor"></i> Chishiya</button>
+                <button onclick="setTheme('mafia')" class="px-3 py-1 border border-orange-600 text-orange-500 hover:bg-orange-600 hover:text-black text-[10px] font-bold uppercase transition rounded-sm flex items-center gap-1"><i class="fa-solid fa-gun"></i> Praia</button>
+                <button onclick="setTheme('dealer')" class="px-3 py-1 border border-purple-500 text-purple-400 hover:bg-purple-600 hover:text-white text-[10px] font-bold uppercase transition rounded-sm flex items-center gap-1"><i class="fa-solid fa-hat-wizard"></i> Dealer</button>
+                <button onclick="setTheme('jack')" class="px-3 py-1 border border-yellow-500 text-yellow-400 hover:bg-yellow-500 hover:text-black text-[10px] font-bold uppercase transition rounded-sm flex items-center gap-1"><i class="fa-solid fa-handshake"></i> VALETE</button>
+                <button onclick="setTheme('joker')" class="px-3 py-1 border border-green-500 text-green-400 hover:bg-green-500 hover:text-black text-[10px] font-bold uppercase transition rounded-sm animate-pulse flex items-center gap-1"><i class="fa-solid fa-masks-theater"></i> JOKER</button>
             </div>
 
             <div class="flex gap-2">
-                <button onclick="saveData()" class="px-3 bg-zinc-800 border border-white/20 text-white hover:bg-zinc-700 transition rounded"><i class="fa-solid fa-save"></i></button>
-                <label class="px-3 flex items-center bg-zinc-800 border border-white/20 text-white hover:bg-zinc-700 transition cursor-pointer rounded">
+                <button onclick="saveData()" class="px-4 bg-zinc-800 border border-white/20 text-white hover:bg-zinc-700 transition rounded shadow-lg"><i class="fa-solid fa-floppy-disk"></i></button>
+                <label class="px-4 flex items-center bg-zinc-800 border border-white/20 text-white hover:bg-zinc-700 transition cursor-pointer rounded shadow-lg">
                     <i class="fa-solid fa-upload"></i> <input type="file" class="hidden" onchange="loadData(this)">
                 </label>
-                <button onclick="diceRoll()" class="px-4 py-1 bg-accent text-black font-bold uppercase text-xs hover:shadow-[0_0_20px_var(--accent)] transition duration-300 rounded"><i class="fa-solid fa-dice-d20 mr-1"></i> D100</button>
-                <button onclick="exportSheet()" class="px-4 py-1 border border-accent text-accent font-bold uppercase text-xs hover:bg-accent hover:text-black transition duration-300 rounded"><i class="fa-solid fa-camera mr-1"></i> JPG</button>
+                <button onclick="diceRoll('TESTE GERAL')" class="px-5 py-2 bg-accent text-black font-bold uppercase text-xs hover:shadow-[0_0_20px_var(--accent)] transition duration-300 rounded skew-x-[-10deg]"><i class="fa-solid fa-dice-d20 mr-1"></i> TESTE (D100)</button>
+                <button onclick="exportSheet()" class="px-5 py-2 border border-accent text-accent font-bold uppercase text-xs hover:bg-accent hover:text-black transition duration-300 rounded skew-x-[-10deg]"><i class="fa-solid fa-camera mr-1"></i> FOTO</button>
             </div>
         </nav>
 
@@ -183,339 +203,385 @@
             
             <!-- HEADER -->
             <header class="flex flex-col md:flex-row justify-between items-end border-b pb-6 mb-8" style="border-color: var(--accent)">
-                <div class="w-full md:w-2/3">
+                <div class="w-full md:w-3/4">
                     <div class="flex items-center gap-2 mb-2">
-                        <span class="px-2 py-0.5 bg-accent text-black text-[10px] font-bold uppercase tracking-widest rounded-sm">Registro Oficial</span>
-                        <span class="text-[10px] text-dim font-mono animate-pulse" id="timestamp">CONECTADO...</span>
+                        <span class="px-2 py-0.5 bg-accent text-black text-[10px] font-bold uppercase tracking-widest rounded-sm">Registro de Sobrevivente</span>
+                        <span class="text-[10px] text-dim font-mono animate-pulse" id="timestamp">SINCRONIZANDO...</span>
                     </div>
-                    <input type="text" id="char-name" value="NOME DO JOGADOR" class="text-5xl md:text-6xl font-black uppercase bg-transparent border-none p-0 focus:ring-0 leading-none tracking-tighter w-full drop-shadow-lg transition-all duration-300">
+                    
+                    <input type="text" id="char-name" value="NOME DO JOGADOR" class="text-6xl font-black uppercase bg-transparent border-none p-0 focus:ring-0 leading-none tracking-tighter w-full drop-shadow-lg transition-all duration-300 hover:tracking-normal placeholder-white/20">
                     
                     <div class="flex flex-wrap gap-4 mt-6">
-                        <div class="w-20">
-                            <label class="text-[9px] uppercase font-bold text-accent">Idade</label>
+                        <div class="w-24">
+                            <label class="text-[9px] uppercase font-bold text-accent block mb-1">Idade</label>
                             <input type="number" id="char-age" class="text-xl font-bold bg-transparent border-b border-t-0 border-l-0 border-r-0 border-white/20 p-0 focus:border-accent" value="21">
                         </div>
-                        <div class="w-64">
-                            <label class="text-[9px] uppercase font-bold text-accent">Profissão</label>
-                            <select id="job-select" onchange="applyJob()" class="text-sm font-bold uppercase bg-transparent border-b border-t-0 border-l-0 border-r-0 border-white/20 p-0 h-8 cursor-pointer focus:border-accent">
+                        
+                        <div class="w-72 relative">
+                            <label class="text-[9px] uppercase font-bold text-accent block mb-1">Profissão (40 Opções)</label>
+                            <input type="text" id="job-search" placeholder="Filtrar..." class="text-xs bg-black/20 border border-dim mb-1 w-full" onkeyup="filterJobs()">
+                            <select id="job-select" onchange="applyJob()" class="text-sm font-bold uppercase bg-transparent border-b border-t-0 border-l-0 border-r-0 border-white/20 p-0 h-8 cursor-pointer focus:border-accent w-full">
                                 <option value="">Selecione...</option>
                             </select>
                         </div>
-                        <div class="flex-grow min-w-[150px]">
-                            <label class="text-[9px] uppercase font-bold text-accent">Personalidade</label>
-                            <select id="char-personality" class="text-sm font-bold uppercase bg-transparent border-b border-t-0 border-l-0 border-r-0 border-white/20 p-0 h-8 cursor-pointer focus:border-accent">
+
+                        <div class="flex-grow min-w-[300px]">
+                            <label class="text-[9px] uppercase font-bold text-accent block mb-1">Arquétipo / Personalidade</label>
+                            <select id="char-personality" onchange="updatePersonalityDesc()" class="text-sm font-bold uppercase bg-transparent border-b border-t-0 border-l-0 border-r-0 border-white/20 p-0 h-8 cursor-pointer focus:border-accent w-full mb-1">
                                 <option value="">Selecione...</option>
                             </select>
+                            <div id="personality-desc" class="text-[10px] text-dim font-mono italic opacity-80 h-4 overflow-hidden"></div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="text-right mt-4 md:mt-0 relative">
-                    <div class="text-xs font-mono text-dim mb-1">REGISTRO UID</div>
-                    <div class="text-5xl font-mono font-bold text-accent tracking-widest" id="uid-display">0000</div>
-                    <div class="mt-2 text-[10px] uppercase font-bold text-dim tracking-[0.3em]">Visto: <span class="text-accent animate-pulse">VÁLIDO</span></div>
-                    <div class="mt-2 text-[9px] font-mono text-red-500 border border-red-500 px-2 py-1 inline-block rounded bg-black/20">PROB. MORTE: <span id="death-prob">12%</span></div>
+                <div class="text-right mt-6 md:mt-0 relative w-full md:w-1/4">
+                    <div class="text-xs font-mono text-dim mb-1">ID ÚNICO</div>
+                    <div class="text-5xl font-mono font-bold text-accent tracking-widest glitch-hover cursor-pointer" id="uid-display" onclick="generateUID()">0000</div>
+                    <div class="mt-2 text-[10px] uppercase font-bold text-dim tracking-[0.3em] flex justify-end items-center gap-2">
+                        Visto: <span class="text-accent animate-pulse">VÁLIDO</span> <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                    </div>
+                    <div class="mt-3 text-[9px] font-mono text-red-500 border border-red-500/50 bg-red-900/10 px-3 py-2 inline-block rounded">
+                        PROB. MORTE: <span id="death-prob" class="text-lg font-bold">12%</span>
+                    </div>
                 </div>
             </header>
 
-            <!-- CORE GRID -->
             <div class="grid grid-cols-12 gap-8">
                 
-                <!-- COLUNA 1: AVATAR & VITAIS -->
+                <!-- COLUNA 1: BIOMETRIA -->
                 <div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
-                    
-                    <!-- FOTO -->
-                    <div class="relative group cursor-pointer border border-dim aspect-[4/5] bg-black/10 overflow-hidden shadow-lg transition-all hover:border-accent" onclick="document.getElementById('file-input').click()">
+                    <div class="relative group cursor-pointer border border-dim aspect-[4/5] bg-black/10 overflow-hidden shadow-2xl transition-all hover:border-accent rounded-sm" onclick="document.getElementById('file-input').click()">
                         <input type="file" id="file-input" class="hidden" onchange="loadImage(this)">
                         <img id="avatar-img" src="" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-700 hidden">
                         <div id="avatar-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-dim group-hover:text-accent transition duration-500">
-                            <i class="fa-solid fa-user-astronaut text-6xl mb-4"></i>
-                            <span class="text-xs font-mono tracking-widest">UPLOAD FOTO</span>
+                            <i class="fa-solid fa-fingerprint text-7xl mb-4 opacity-50 group-hover:opacity-100 group-hover:scale-110 transition"></i>
+                            <span class="text-xs font-mono tracking-widest border border-dim px-2 py-1">ENVIAR FOTO</span>
                         </div>
                         <div class="absolute inset-0 bg-scanline pointer-events-none opacity-20"></div>
                     </div>
 
-                    <!-- VITAIS -->
                     <div class="stat-block">
-                        <h3>SINAIS VITAIS</h3>
-                        <div class="space-y-5 pt-2">
-                            <!-- HP -->
+                        <h3><i class="fa-solid fa-heart-pulse mr-1"></i> BIOMETRIA</h3>
+                        <div class="space-y-6 pt-2">
                             <div>
                                 <div class="flex justify-between text-[10px] font-bold mb-1 uppercase tracking-widest">
-                                    <span>Integridade</span>
+                                    <span>Integridade Física</span>
                                     <span class="text-accent" id="hp-txt">100%</span>
                                 </div>
-                                <div class="w-full h-3 bg-gray-700/50 border border-gray-500/50 relative overflow-hidden rounded-sm">
-                                    <div id="hp-bar" class="h-full bg-green-500 transition-all duration-500 shadow-[0_0_10px_lime]" style="width: 100%;"></div>
+                                <div class="w-full h-4 bg-gray-800 border border-gray-600 relative overflow-hidden rounded-sm shadow-inner">
+                                    <div id="hp-bar" class="h-full bg-gradient-to-r from-green-600 to-green-400 transition-all duration-500" style="width: 100%;"></div>
                                 </div>
-                                <div class="flex gap-1 mt-1 opacity-80">
-                                    <button onclick="modStat('hp', -10)" class="text-[9px] bg-red-900/30 text-red-400 px-2 py-1 flex-1 border border-transparent hover:border-red-500 transition">- Dano</button>
-                                    <button onclick="modStat('hp', 10)" class="text-[9px] bg-green-900/30 text-green-400 px-2 py-1 flex-1 border border-transparent hover:border-green-500 transition">+ Cura</button>
+                                <div class="flex gap-1 mt-2 opacity-80">
+                                    <button onclick="modStat('hp', -10)" class="text-[9px] bg-red-900/40 text-red-300 px-3 py-1.5 flex-1 border border-transparent hover:border-red-500 hover:text-white transition rounded-sm"><i class="fa-solid fa-user-injured"></i> Dano</button>
+                                    <button onclick="modStat('hp', 10)" class="text-[9px] bg-green-900/40 text-green-300 px-3 py-1.5 flex-1 border border-transparent hover:border-green-500 hover:text-white transition rounded-sm"><i class="fa-solid fa-bandage"></i> Cura</button>
                                 </div>
                             </div>
-
-                            <!-- Visa -->
                             <div>
                                 <div class="flex justify-between text-[10px] font-bold mb-1 uppercase tracking-widest">
                                     <span>Dias de Visto</span>
                                     <span class="text-accent" id="visa-txt">3</span>
                                 </div>
-                                <div class="flex gap-0.5 h-3 mb-1" id="visa-blocks">
-                                    <!-- JS Generated -->
-                                </div>
-                                <input type="range" id="visa-input" min="0" max="14" value="3" oninput="updateVisa(this.value)" class="w-full h-1 mt-2 accent-accent">
+                                <div class="flex gap-1 h-3 mb-2" id="visa-blocks"></div>
+                                <input type="range" id="visa-input" min="0" max="14" value="3" oninput="updateVisa(this.value)" class="w-full h-1 mt-2 accent-accent cursor-pointer">
                             </div>
-
-                            <!-- Stress -->
                             <div>
                                 <div class="flex justify-between text-[10px] font-bold mb-1 uppercase tracking-widest">
-                                    <span>Stress Mental</span>
+                                    <span>Nível de Stress</span>
                                     <span class="text-red-500" id="stress-txt">0%</span>
                                 </div>
-                                <div class="w-full h-3 bg-gray-700/50 border border-gray-500/50 relative overflow-hidden rounded-sm">
-                                    <div id="stress-bar" class="h-full bg-red-600 transition-all duration-500 shadow-[0_0_10px_red]" style="width: 0%;"></div>
+                                <div class="w-full h-4 bg-gray-800 border border-gray-600 relative overflow-hidden rounded-sm shadow-inner">
+                                    <div id="stress-bar" class="h-full bg-gradient-to-r from-red-900 to-red-600 transition-all duration-500" style="width: 0%;"></div>
                                 </div>
-                                <div class="flex gap-1 mt-1 opacity-80">
-                                    <button onclick="modStat('stress', -10)" class="text-[9px] border border-dim px-2 py-1 flex-1 hover:bg-white/10 text-dim">Calma</button>
-                                    <button onclick="modStat('stress', 10)" class="text-[9px] border border-dim px-2 py-1 flex-1 hover:bg-white/10 text-dim">Surto</button>
+                                <div class="flex gap-1 mt-2 opacity-80">
+                                    <button onclick="modStat('stress', -10)" class="text-[9px] border border-dim px-3 py-1.5 flex-1 hover:bg-white/10 text-dim hover:text-white transition rounded-sm"><i class="fa-solid fa-spa"></i> Calma</button>
+                                    <button onclick="modStat('stress', 10)" class="text-[9px] border border-dim px-3 py-1.5 flex-1 hover:bg-white/10 text-dim hover:text-white transition rounded-sm"><i class="fa-solid fa-brain"></i> Surto</button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="stat-block">
-                        <h3>CONDIÇÕES FÍSICAS</h3>
-                        <div class="grid grid-cols-2 gap-2 mt-2" id="condition-grid">
-                            <!-- JS Generated -->
-                        </div>
+                        <h3><i class="fa-solid fa-skull-crossbones mr-1"></i> TRAUMAS & CONDIÇÕES</h3>
+                        <div class="grid grid-cols-2 gap-2 mt-2" id="condition-grid"></div>
                     </div>
                 </div>
 
-                <!-- COLUNA 2: ATRIBUTOS & PERÍCIAS -->
+                <!-- COLUNA 2: ATRIBUTOS & SKILLS -->
                 <div class="col-span-12 lg:col-span-5 flex flex-col gap-6">
-                    
-                    <!-- Atributos -->
                     <div class="grid grid-cols-4 gap-3">
-                        <div class="stat-block text-center cursor-pointer group border-t-2 border-t-transparent hover:border-t-blue-500 transition hover:-translate-y-1">
-                            <h3 class="!text-blue-500 !border-blue-500 group-hover:scale-110 transition">ESPADAS</h3>
-                            <input type="number" id="attr-s" value="40" min="1" max="99" onchange="recalcSkills()" class="text-3xl font-black bg-transparent border-none text-center w-full p-0 focus:text-blue-500 text-white">
-                            <div class="text-[8px] uppercase text-dim tracking-widest mt-1">Físico</div>
+                        <div class="stat-block text-center cursor-pointer group border-t-4 border-t-transparent hover:border-t-blue-500 transition-all hover:-translate-y-2 bg-gradient-to-b from-blue-900/10 to-transparent">
+                            <h3 class="!text-blue-500 !border-blue-500 group-hover:scale-110 transition"><i class="fa-solid fa-shield-halved"></i></h3>
+                            <input type="number" id="attr-s" value="40" min="1" max="99" onchange="recalcSkills()" class="text-3xl font-black bg-transparent border-none text-center w-full p-0 focus:text-blue-500 text-white mt-4">
+                            <div class="text-[9px] uppercase text-dim tracking-widest mt-1 font-bold">Espadas</div>
                         </div>
-                        <div class="stat-block text-center cursor-pointer group border-t-2 border-t-transparent hover:border-t-yellow-500 transition hover:-translate-y-1">
-                            <h3 class="!text-yellow-500 !border-yellow-500 group-hover:scale-110 transition">OUROS</h3>
-                            <input type="number" id="attr-d" value="40" min="1" max="99" onchange="recalcSkills()" class="text-3xl font-black bg-transparent border-none text-center w-full p-0 focus:text-yellow-500 text-white">
-                            <div class="text-[8px] uppercase text-dim tracking-widest mt-1">Intelecto</div>
+                        <div class="stat-block text-center cursor-pointer group border-t-4 border-t-transparent hover:border-t-yellow-500 transition-all hover:-translate-y-2 bg-gradient-to-b from-yellow-900/10 to-transparent">
+                            <h3 class="!text-yellow-500 !border-yellow-500 group-hover:scale-110 transition"><i class="fa-solid fa-lightbulb"></i></h3>
+                            <input type="number" id="attr-d" value="40" min="1" max="99" onchange="recalcSkills()" class="text-3xl font-black bg-transparent border-none text-center w-full p-0 focus:text-yellow-500 text-white mt-4">
+                            <div class="text-[9px] uppercase text-dim tracking-widest mt-1 font-bold">Ouros</div>
                         </div>
-                        <div class="stat-block text-center cursor-pointer group border-t-2 border-t-transparent hover:border-t-green-500 transition hover:-translate-y-1">
-                            <h3 class="!text-green-500 !border-green-500 group-hover:scale-110 transition">PAUS</h3>
-                            <input type="number" id="attr-c" value="40" min="1" max="99" onchange="recalcSkills()" class="text-3xl font-black bg-transparent border-none text-center w-full p-0 focus:text-green-500 text-white">
-                            <div class="text-[8px] uppercase text-dim tracking-widest mt-1">Social</div>
+                        <div class="stat-block text-center cursor-pointer group border-t-4 border-t-transparent hover:border-t-green-500 transition-all hover:-translate-y-2 bg-gradient-to-b from-green-900/10 to-transparent">
+                            <h3 class="!text-green-500 !border-green-500 group-hover:scale-110 transition"><i class="fa-solid fa-users"></i></h3>
+                            <input type="number" id="attr-c" value="40" min="1" max="99" onchange="recalcSkills()" class="text-3xl font-black bg-transparent border-none text-center w-full p-0 focus:text-green-500 text-white mt-4">
+                            <div class="text-[9px] uppercase text-dim tracking-widest mt-1 font-bold">Paus</div>
                         </div>
-                        <div class="stat-block text-center cursor-pointer group border-t-2 border-t-transparent hover:border-t-red-500 transition hover:-translate-y-1">
-                            <h3 class="!text-red-500 !border-red-500 group-hover:scale-110 transition">COPAS</h3>
-                            <input type="number" id="attr-h" value="40" min="1" max="99" onchange="recalcSkills()" class="text-3xl font-black bg-transparent border-none text-center w-full p-0 focus:text-red-500 text-white">
-                            <div class="text-[8px] uppercase text-dim tracking-widest mt-1">Psique</div>
+                        <div class="stat-block text-center cursor-pointer group border-t-4 border-t-transparent hover:border-t-red-500 transition-all hover:-translate-y-2 bg-gradient-to-b from-red-900/10 to-transparent">
+                            <h3 class="!text-red-500 !border-red-500 group-hover:scale-110 transition"><i class="fa-solid fa-heart"></i></h3>
+                            <input type="number" id="attr-h" value="40" min="1" max="99" onchange="recalcSkills()" class="text-3xl font-black bg-transparent border-none text-center w-full p-0 focus:text-red-500 text-white mt-4">
+                            <div class="text-[9px] uppercase text-dim tracking-widest mt-1 font-bold">Copas</div>
                         </div>
                     </div>
 
-                    <!-- Skills -->
-                    <div class="stat-block flex-grow flex flex-col">
-                        <h3>MATRIZ DE PERÍCIAS</h3>
-                        <div class="flex justify-between text-[9px] text-dim mb-3 font-mono border-b border-dim pb-1">
-                            <span>TREINO: +20%</span>
-                            <span>• = HÍBRIDAS</span>
+                    <div class="stat-block flex-grow flex flex-col min-h-[500px]">
+                        <h3><i class="fa-solid fa-list-check mr-1"></i> MATRIZ DE PERÍCIAS (0-99)</h3>
+                        <div class="flex justify-between text-[9px] text-dim mb-3 font-mono border-b border-dim pb-2 pt-2">
+                            <span><i class="fa-solid fa-mouse-pointer"></i> ESQ: TREINAR | DIR: RODAR DADO</span>
+                            <span><i class="fa-solid fa-link"></i> TRIÂNGULO = HÍBRIDA</span>
                         </div>
-                        
-                        <div class="skill-grid overflow-y-auto max-h-[400px] pr-2 custom-scroll" id="skills-container">
-                            <!-- JS Generated -->
-                        </div>
-                        
-                        <div class="mt-6">
-                            <h4 class="text-xs font-bold text-accent mb-3 flex items-center gap-2">
-                                <i class="fa-solid fa-star"></i> HABILIDADES DE CLASSE
+                        <div class="skill-grid" id="skills-container"></div>
+                        <div class="mt-6 pt-4 border-t border-dim">
+                            <h4 class="text-xs font-bold text-accent mb-3 flex items-center gap-2 animate-pulse">
+                                <i class="fa-solid fa-star"></i> TALENTOS DE PROFISSÃO
                             </h4>
-                            <div id="job-skills-list" class="flex flex-col gap-2 min-h-[120px]">
-                                <div class="text-xs opacity-40 italic border border-dashed border-dim p-4 rounded text-center text-dim">Selecione uma profissão...</div>
+                            <div id="job-skills-list" class="flex flex-col gap-2 min-h-[140px]">
+                                <div class="text-xs opacity-40 italic border border-dashed border-dim p-4 rounded text-center text-dim">
+                                    Selecione uma profissão acima para desbloquear talentos...
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- COLUNA 3: HISTÓRIA & INVENTÁRIO -->
+                <!-- COLUNA 3: NARRATIVA & LOGS -->
                 <div class="col-span-12 lg:col-span-3 flex flex-col gap-6">
                     
-                    <!-- Textos Expandidos -->
-                    <div class="stat-block flex-grow flex flex-col">
-                        <h3>REGISTROS DE SOBREVIVÊNCIA</h3>
+                    <div class="stat-block flex-grow flex flex-col h-[600px]">
+                        <h3><i class="fa-solid fa-book-journal-whills mr-1"></i> LOGS & HISTÓRIA</h3>
                         <div class="flex border-b border-dim mb-2">
-                            <button onclick="switchTab('hist')" id="btn-hist" class="flex-1 text-[9px] font-bold py-2 bg-accent text-black transition">HISTÓRICO</button>
-                            <button onclick="switchTab('notes')" id="btn-notes" class="flex-1 text-[9px] font-bold py-2 bg-transparent text-dim hover:text-accent transition">NOTAS</button>
+                            <button onclick="switchTab('hist')" id="btn-hist" class="flex-1 text-[9px] font-bold py-2 bg-accent text-black transition rounded-t-sm"><i class="fa-solid fa-scroll"></i> HISTÓRIA</button>
+                            <button onclick="switchTab('notes')" id="btn-notes" class="flex-1 text-[9px] font-bold py-2 bg-transparent text-dim hover:text-accent transition rounded-t-sm"><i class="fa-solid fa-pen"></i> NOTAS</button>
                         </div>
-                        <textarea id="txt-hist" class="w-full flex-grow expanded-textarea bg-transparent border-none" placeholder="> Digite aqui o passado do personagem, seus medos e objetivos..."></textarea>
-                        <textarea id="txt-notes" class="w-full flex-grow expanded-textarea bg-transparent border-none hidden" placeholder="> Notas da sessão, nomes de NPCs e pistas..."></textarea>
+                        <textarea id="txt-hist" class="w-full flex-grow expanded-textarea bg-transparent border-none p-2 custom-scroll" placeholder="> Digite aqui o histórico, traumas e motivações..."></textarea>
+                        <textarea id="txt-notes" class="w-full flex-grow expanded-textarea bg-transparent border-none hidden p-2 custom-scroll" placeholder="> Registro de sessão, nomes de NPCs e pistas..."></textarea>
                     </div>
-
-                    <div class="stat-block">
-                        <h3>MOCHILA</h3>
-                        <div class="grid grid-cols-5 gap-1 mb-3" id="inventory-grid">
-                            <!-- JS Generated -->
+                    
+                    <div class="stat-block h-64 overflow-hidden flex flex-col">
+                        <h3><i class="fa-solid fa-clock-rotate-left mr-1"></i> LOG DE DADOS</h3>
+                        <div id="dice-history" class="text-[10px] font-mono overflow-y-auto flex-grow p-1 custom-scroll space-y-1">
+                            <div class="text-dim italic text-center mt-4">Nenhum dado rolado ainda.</div>
                         </div>
-                        <div class="flex gap-2 relative">
-                            <input type="text" id="item-add-input" placeholder="Novo Item..." class="text-xs h-8 pl-2 pr-8">
-                            <button onclick="addItem()" class="absolute right-0 top-0 h-8 w-8 text-accent hover:text-white transition"><i class="fa-solid fa-plus"></i></button>
-                        </div>
-                        <div class="mt-2 text-[9px] text-right text-dim font-mono" id="encumbrance">0/20 SLOTS</div>
                     </div>
-
                 </div>
 
             </div>
 
-            <!-- FOOTER -->
-            <footer class="mt-12 pt-4 border-t border-dim flex justify-between items-center text-[9px] font-mono text-dim uppercase">
-                <div>TOKYO.MUNICIPAL // SERVIDOR LOCAL</div>
-                <div class="animate-pulse text-accent">STATUS: JOGO EM ANDAMENTO</div>
+            <footer class="mt-12 pt-4 border-t border-dim flex flex-col md:flex-row justify-between items-center text-[9px] font-mono text-dim uppercase gap-2">
+                <div>Feito por Daniel Ruas</div>
+                <div class="flex gap-4">
+                    <span class="animate-pulse text-accent"><i class="fa-solid fa-wifi"></i> SINAL: ONLINE</span>
+                    <span><i class="fa-solid fa-battery-full"></i> BATERIA: 84%</span>
+                </div>
             </footer>
-
         </div>
     </div>
 
-    <!-- DICE MODAL -->
+    <!-- MODAL DE DADOS -->
     <div id="dice-modal" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-md">
-        <div class="bg-gray-900 border border-accent p-10 rounded-sm shadow-[0_0_100px_rgba(0,243,255,0.1)] text-center max-w-sm w-full transform scale-90 transition-all duration-300 relative overflow-hidden" id="dice-content">
-            <h2 class="text-xl font-bold text-white mb-6 relative z-10 tracking-[0.2em]">TESTE PERCENTUAL</h2>
-            <div class="w-32 h-32 mx-auto border-4 border-accent rounded-full flex items-center justify-center mb-6 relative z-10 bg-black/50 shadow-[0_0_30px_var(--accent-glow)]">
-                <div id="dice-anim" class="text-6xl font-black text-white font-mono">00</div>
+        <div class="bg-gray-900 border-2 border-accent p-12 rounded-lg shadow-[0_0_150px_rgba(0,243,255,0.2)] text-center max-w-md w-full transform scale-90 transition-all duration-300 relative overflow-hidden" id="dice-content">
+            <h2 class="text-2xl font-bold text-white mb-2 relative z-10 tracking-[0.2em] border-b border-dim pb-4">TESTE DE SORTE</h2>
+            <div id="dice-reason" class="text-sm font-mono text-accent mb-6 uppercase tracking-widest opacity-80">PERÍCIA DESCONHECIDA</div>
+            
+            <div class="w-40 h-40 mx-auto border-4 border-accent rounded-full flex items-center justify-center mb-8 relative z-10 bg-black/80 shadow-[0_0_50px_var(--accent-glow)] group">
+                <div id="dice-anim" class="text-8xl font-black text-white font-mono group-hover:scale-110 transition">00</div>
             </div>
-            <div id="dice-result" class="text-lg font-bold uppercase relative z-10 h-8 text-dim">Rolando...</div>
-            <button onclick="closeModal()" class="mt-8 px-8 py-3 bg-accent text-black font-bold uppercase hover:bg-white hover:scale-105 transition w-full relative z-10">CONFIRMAR</button>
+            <div id="dice-result" class="text-2xl font-bold uppercase relative z-10 h-8 text-dim tracking-wider">Calculando...</div>
+            <button onclick="closeModal()" class="mt-10 px-8 py-4 bg-accent text-black font-black uppercase hover:bg-white hover:scale-105 transition w-full relative z-10 text-lg rounded-sm shadow-lg">CONTINUAR</button>
         </div>
     </div>
 
-    <!-- JS ENGINE -->
+    <!-- JAVASCRIPT ENGINE -->
     <script>
-        /* --- DATABASE V8.0 --- */
         const DB = {
             professions: [
-                // ESPADAS (Físico)
-                { id: 'militar', name: 'Militar', group: 'Espadas', bonus: ['Armas de Fogo', 'Atletismo', 'Sobrevivência', 'Prontidão', 'Briga'], skills: [
-                    { type: "Passiva", name: "Memória Muscular", effect: "Recarrega e move-se taticamente sem gastar ação." },
-                    { type: "Ativa", name: "Supressão", effect: "Obriga inimigos a se esconderem ou tomarem dano." },
-                    { type: "Narrativa", name: "Protocolo", effect: "Ignora ferimentos leves em combate." }]},
-                { id: 'dancarino', name: 'Dançarino', group: 'Espadas', bonus: ['Acrobacia', 'Atletismo', 'Atuação', 'Reflexos', 'Liderança'], skills: [
-                    { type: "Passiva", name: "Ritmo Absoluto", effect: "Pode usar o atributo Físico (Espadas) no lugar de Social para impressionar." },
-                    { type: "Ativa", name: "Flow", effect: "Por 2 turnos, aumenta seus atributos Físico e Social em +20." },
-                    { type: "Narrativa", name: "Performance", effect: "Pode distrair ou encantar um grupo inteiro de NPCs." }]},
-                { id: 'mma', name: 'Lutador de MMA', group: 'Espadas', bonus: ['Briga', 'Atletismo', 'Intimidação', 'Vigor', 'Resistência'], skills: [
-                    { type: "Passiva", name: "Clinch", effect: "Vantagem absoluta em combate corpo-a-corpo 1x1." },
-                    { type: "Ativa", name: "Nocaute", effect: "Pode derrubar um alvo humano com um único golpe limpo." },
-                    { type: "Narrativa", name: "Disciplina", effect: "Recupera Stress ao treinar ou meditar." }]},
-                
-                // OUROS (Intelecto)
-                { id: 'medico', name: 'Médico', group: 'Ouros', bonus: ['Primeiros Socorros', 'Ciências', 'Percepção', 'Sangue Frio', 'Química'], skills: [
-                    { type: "Ativa", name: "Triagem", effect: "Identifica instantaneamente quem pode ser salvo." },
-                    { type: "Passiva", name: "Mãos de Cirurgião", effect: "Sucesso automático em testes de estabilização padrão." },
-                    { type: "Narrativa", name: "Autoridade Médica", effect: "Civis obedecem comandos em emergências." }]},
-                { id: 'detetive', name: 'Detetive', group: 'Ouros', bonus: ['Investigação', 'Percepção', 'Psicologia', 'Intuição', 'Armas de Fogo'], skills: [
-                    { type: "Passiva", name: "Dedução", effect: "O mestre deve revelar uma pista útil ao entrar em uma cena." },
-                    { type: "Ativa", name: "Interrogatório", effect: "Bônus massivo para extrair a verdade de alguém." },
-                    { type: "Narrativa", name: "Instinto", effect: "Sente quando está sendo observado ou seguido." }]},
-                { id: 'engenheiro', name: 'Engenheiro', group: 'Ouros', bonus: ['Eletrônica', 'Física', 'Arrombamento', 'Percepção', 'Matemática'], skills: [
-                    { type: "Passiva", name: "Estrutura", effect: "Sabe exatamente onde bater para quebrar algo." },
-                    { type: "Ativa", name: "Overclock", effect: "Faz um dispositivo funcionar acima do limite por pouco tempo." },
-                    { type: "Narrativa", name: "Reparo", effect: "Pode consertar itens quebrados com sucata." }]},
+                { id: 'militar', name: 'Militar de Elite', group: 'Espadas', bonus: ['Armas de Fogo', 'Atletismo', 'Sobrevivência', 'Prontidão', 'Briga'], skills: [{type:"Passiva",name:"Memória Muscular",effect:"Recarrega armas e move-se taticamente sem gastar ação."},{type:"Ativa",name:"Supressão",effect:"Obriga inimigos a se esconderem ou tomarem dano garantido."},{type:"Narrativa",name:"Protocolo",effect:"Ignora penalidades de ferimentos leves durante o combate."}]},
+                { id: 'atleta', name: 'Atleta Olímpico', group: 'Espadas', bonus: ['Atletismo', 'Acrobacia', 'Fôlego', 'Vigor', 'Resistência'], skills: [{type:"Passiva",name:"Grip de Ferro",effect:"Vantagem absoluta em testes de escalada e agarrar."},{type:"Ativa",name:"Explosão",effect:"+30 em Força/Agilidade por 1 turno. Causa exaustão depois."},{type:"Narrativa",name:"Parkour",effect:"Move-se por terreno difícil urbano sem penalidade."}]},
+                { id: 'yakuza', name: 'Yakuza', group: 'Espadas', bonus: ['Briga', 'Intimidação', 'Armas Brancas', 'Resistência', 'Sangue Frio'], skills: [{type:"Passiva",name:"Irezumi",effect:"Resistência aumentada (+20) contra dor e testes de tortura."},{type:"Ativa",name:"Amputação",effect:"Golpe mirado que inutiliza um membro do alvo se acertar."},{type:"Narrativa",name:"Submundo",effect:"Reconhece hierarquias criminosas e rotas de contrabando."}]},
+                { id: 'duble', name: 'Dublê', group: 'Espadas', bonus: ['Acrobacia', 'Direção', 'Atuação', 'Reflexos', 'Vigor'], skills: [{type:"Passiva",name:"Queda Livre",effect:"Reduz dano de quedas pela metade. Cai sempre em pé."},{type:"Ativa",name:"Improviso",effect:"Usa qualquer objeto do cenário como arma letal sem penalidade."},{type:"Narrativa",name:"Temerário",effect:"Imune a medo em situações que envolvam perigo físico direto."}]},
+                { id: 'lutador', name: 'Lutador de MMA', group: 'Espadas', bonus: ['Briga', 'Atletismo', 'Intimidação', 'Vigor', 'Resistência'], skills: [{type:"Passiva",name:"Clinch",effect:"Vantagem absoluta em combate desarmado 1x1."},{type:"Ativa",name:"Nocaute",effect:"Pode derrubar um alvo humano instantaneamente com um acerto crítico."},{type:"Narrativa",name:"Disciplina",effect:"Pode recuperar Stress treinando fisicamente por 1 hora."}]},
+                { id: 'samurai', name: 'Praticante de Kendo', group: 'Espadas', bonus: ['Armas Brancas', 'Prontidão', 'História', 'Meditação', 'Reflexos'], skills: [{type:"Passiva",name:"Zanshin",effect:"Nunca é surpreendido em combate corpo-a-corpo."},{type:"Ativa",name:"Iaijutsu",effect:"Saque rápido que conta como ataque imediato no início do combate."},{type:"Narrativa",name:"Honra",effect:"NPCs tradicionais ou guerreiros sentem respeito imediato."}]},
+                { id: 'bombeiro', name: 'Bombeiro', group: 'Espadas', bonus: ['Atletismo', 'Sobrevivência', 'Primeiros Socorros', 'Arrombamento', 'Vigor'], skills: [{type:"Passiva",name:"Carga Pesada",effect:"Carrega pessoas ou escombros sem penalidade."},{type:"Ativa",name:"Arrombamento",effect:"Destrói portas ou barricadas automaticamente com ferramenta adequada."},{type:"Narrativa",name:"Resistência Térmica",effect:"Vantagem em resistir a calor, fumaça e fogo."}]},
+                { id: 'seguranca', name: 'Segurança Pessoal', group: 'Espadas', bonus: ['Prontidão', 'Intimidação', 'Armas de Fogo', 'Briga', 'Direção'], skills: [{type:"Ativa",name:"Escudo Humano",effect:"Pode interceptar um ataque destinado a um aliado adjacente."},{type:"Passiva",name:"Vigilância",effect:"Bônus de +20 em Percepção para notar ameaças antes que ocorram."},{type:"Narrativa",name:"Checklist",effect:"Identifica falhas de segurança em um local instantaneamente."}]},
+                { id: 'assassino', name: 'Assassino Profissional', group: 'Espadas', bonus: ['Furtividade', 'Armas de Fogo', 'Ladinagem', 'Disfarce', 'Sangue Frio'], skills: [{type:"Passiva",name:"Silenciador",effect:"Seus ataques furtivos causam dano dobrado."},{type:"Ativa",name:"Ponto Vital",effect:"Ignora armadura do alvo se tiver tempo para mirar."},{type:"Narrativa",name:"Sem Rastro",effect:"Não deixa pegadas ou evidências forenses comuns."}]},
+                { id: 'cacador', name: 'Caçador', group: 'Espadas', bonus: ['Sobrevivência', 'Armas de Fogo', 'Furtividade', 'Rastreio', 'Armadilhas'], skills: [{type:"Passiva",name:"Predador",effect:"Rastreia alvos feridos com facilidade extrema."},{type:"Ativa",name:"Armadilha",effect:"Monta armadilhas letais usando materiais do ambiente."},{type:"Narrativa",name:"Instinto Animal",effect:"Sente mudanças no clima e perigos naturais."}]},
 
-                // PAUS (Social/Equipe)
-                { id: 'motorista', name: 'Motorista', group: 'Paus', bonus: ['Direção', 'Mecânica', 'Navegação', 'Reflexos', 'Percepção', 'Geografia'], skills: [
-                    { type: "Ativa", name: "Fuga Impossível", effect: "Sucesso automático em fugas veiculares se houver uma rota." },
-                    { type: "Passiva", name: "Homem-Máquina", effect: "Veículos que você pilota ganham +20% de durabilidade." },
-                    { type: "Narrativa", name: "Transportador", effect: "Sabe como mover cargas ou pessoas sem ser visto." }]},
-                { id: 'politico', name: 'Político', group: 'Paus', bonus: ['Persuasão', 'Enganação', 'Liderança', 'História', 'Diplomacia'], skills: [
-                    { type: "Passiva", name: "Imunidade Diplomática", effect: "Inimigos humanos hesitam antes de te atacar." },
-                    { type: "Ativa", name: "Filibuster", effect: "Pode paralisar uma discussão falando sem parar." },
-                    { type: "Narrativa", name: "Alianças", effect: "Facilidade extrema em formar pactos." }]},
-                { id: 'coach', name: 'Coach Motivacional', group: 'Paus', bonus: ['Liderança', 'Psicologia', 'Atuação', 'Persuasão', 'Vigor'], skills: [
-                    { type: "Ativa", name: "Grito de Guerra", effect: "Remove condição 'Medo' de todos os aliados." },
-                    { type: "Passiva", name: "Mindset", effect: "Você ganha XP extra por falhas (aprendizado)." },
-                    { type: "Narrativa", name: "Influência", effect: "Pessoas fracas tendem a te seguir." }]},
+                { id: 'medico', name: 'Médico Cirurgião', group: 'Ouros', bonus: ['Primeiros Socorros', 'Ciências', 'Percepção', 'Sangue Frio', 'Química'], skills: [{type:"Ativa",name:"Triagem",effect:"Identifica instantaneamente a gravidade de ferimentos."},{type:"Passiva",name:"Mãos de Ouro",effect:"Cura o dobro de HP ao usar kits médicos."},{type:"Narrativa",name:"Juramento",effect:"Pode acalmar pacientes em pânico apenas com a presença."}]},
+                { id: 'engenheiro', name: 'Engenheiro', group: 'Ouros', bonus: ['Eletrônica', 'Física', 'Arrombamento', 'Percepção', 'Matemática'], skills: [{type:"Passiva",name:"Olho Estrutural",effect:"Sabe onde bater para derrubar ou consertar algo."},{type:"Ativa",name:"Overclock",effect:"Faz um dispositivo funcionar 200% melhor por 1 turno, mas quebra depois."},{type:"Narrativa",name:"Sucateiro",effect:"Cria ferramentas úteis combinando lixo eletrônico."}]},
+                { id: 'detetive', name: 'Detetive', group: 'Ouros', bonus: ['Investigação', 'Percepção', 'Psicologia', 'Intuição', 'Armas de Fogo'], skills: [{type:"Passiva",name:"Dedução",effect:"O Mestre deve revelar uma pista relevante ao entrar em uma cena nova."},{type:"Ativa",name:"Reconstrução",effect:"Visualiza mentalmente como um crime/evento ocorreu."},{type:"Narrativa",name:"Detector de Mentiras",effect:"Sabe quando alguém está omitindo informações importantes."}]},
+                { id: 'arquiteto', name: 'Arquiteto', group: 'Ouros', bonus: ['Geometria', 'Percepção', 'Desenho', 'História', 'Física'], skills: [{type:"Passiva",name:"Mapeamento Mental",effect:"Nunca se perde. Desenha mapas perfeitos."},{type:"Ativa",name:"Ponto Cego",effect:"Encontra salas secretas ou passagens ocultas em plantas."},{type:"Narrativa",name:"Fortificação",effect:"Pode reforçar uma base para aumentar a defesa do grupo."}]},
+                { id: 'quimico', name: 'Químico', group: 'Ouros', bonus: ['Química', 'Culinária', 'Sobrevivência', 'Ciências', 'Medicina'], skills: [{type:"Ativa",name:"Coquetel Molotov",effect:"Cria explosivos ou venenos com materiais caseiros."},{type:"Passiva",name:"Imunidade",effect:"Resistência +30 contra toxinas e gases."},{type:"Narrativa",name:"Análise",effect:"Identifica qualquer substância com teste simples."}]},
+                { id: 'hacker', name: 'Hacker (Grey Hat)', group: 'Ouros', bonus: ['Computação', 'Eletrônica', 'Investigação', 'Criptografia', 'Furtividade'], skills: [{type:"Ativa",name:"Brute Force",effect:"Quebra senhas eletrônicas simples instantaneamente."},{type:"Passiva",name:"Backdoor",effect:"Pode reativar eletrônicos 'mortos' por tempo limitado."},{type:"Narrativa",name:"Rastro Digital",effect:"Encontra informações sobre qualquer pessoa via celular achado."}]},
+                { id: 'advogado', name: 'Advogado', group: 'Ouros', bonus: ['Legislação', 'Persuasão', 'História', 'Línguas', 'Lógica'], skills: [{type:"Passiva",name:"Brecha na Regra",effect:"Em Jogos, pode pedir uma dica sobre as regras ao GM."},{type:"Ativa",name:"Objeção",effect:"Cancela um argumento social de um NPC adversário."},{type:"Narrativa",name:"Contrato",effect:"Formaliza acordos que NPCs tendem a cumprir à risca."}]},
+                { id: 'economista', name: 'Economista', group: 'Ouros', bonus: ['Matemática', 'Logística', 'Negociação', 'Estatística', 'Previsão'], skills: [{type:"Passiva",name:"Cálculo de Risco",effect:"Sabe a probabilidade exata de sucesso antes de tentar."},{type:"Ativa",name:"Gestão de Recursos",effect:"Otimiza o inventário do grupo (permite carregar +5 itens)."},{type:"Narrativa",name:"Valor Percebido",effect:"Sabe o valor de troca de qualquer item no Borderland."}]},
+                { id: 'mecanico', name: 'Mecânico', group: 'Ouros', bonus: ['Mecânica', 'Eletrônica', 'Física', 'Direção', 'Engenharia'], skills: [{type:"Ativa",name:"Hotwire",effect:"Liga veículos ou geradores sem chave rapidamente."},{type:"Passiva",name:"Manutenção",effect:"Armas e itens do grupo não quebram com falhas críticas."},{type:"Narrativa",name:"Customização",effect:"Pode melhorar armas ou veículos se tiver tempo e peças."}]},
+                { id: 'historiador', name: 'Historiador', group: 'Ouros', bonus: ['História', 'Investigação', 'Línguas', 'Geografia', 'Ocultismo'], skills: [{type:"Passiva",name:"Enciclopédia",effect:"Conhecimento sobre locais antigos e símbolos de Tóquio."},{type:"Ativa",name:"Padrões",effect:"Identifica se um Jogo é baseado em algum evento histórico ou mito."},{type:"Narrativa",name:"Arquivista",effect:"Organiza informações do grupo de forma impecável."}]},
 
-                // COPAS (Psique)
-                { id: 'psicopata', name: 'Psicopata', group: 'Copas', bonus: ['Enganação', 'Intimidação', 'Sangue Frio', 'Atuação', 'Briga'], skills: [
-                    { type: "Passiva", name: "Sem Remorso", effect: "Imune a Stress causado por violência ou morte." },
-                    { type: "Ativa", name: "Predador", effect: "Bônus de dano contra alvos que estão com medo." },
-                    { type: "Narrativa", name: "Máscara de Sanidade", effect: "Ninguém desconfia de sua natureza real." }]},
-                { id: 'magico', name: 'Mágico', group: 'Copas', bonus: ['Ladinagem', 'Atuação', 'Psicologia', 'Percepção', 'Enganação'], skills: [
-                    { type: "Ativa", name: "Desaparecer", effect: "Pode se esconder em plena vista com uma distração." },
-                    { type: "Passiva", name: "Mãos Rápidas", effect: "Pode roubar ou plantar itens sem teste." },
-                    { type: "Narrativa", name: "Ilusão", effect: "Convence alguém de que viu algo que não existe." }]},
-                { id: 'vigarista', name: 'Vigarista', group: 'Copas', bonus: ['Enganação', 'Furtividade', 'Ladinagem', 'Psicologia', 'Persuasão'], skills: [
-                    { type: "Passiva", name: "Leitura Fria", effect: "Sabe o que a pessoa quer ouvir." },
-                    { type: "Ativa", name: "Golpe", effect: "Vantagem em testes para obter recursos de outros." },
-                    { type: "Narrativa", name: "Camaleão", effect: "Adapta-se a qualquer estrato social." }]}
+                { id: 'motorista', name: 'Motorista de Fuga', group: 'Paus', bonus: ['Direção', 'Mecânica', 'Navegação', 'Reflexos', 'Percepção', 'Geografia'], skills: [{type:"Ativa",name:"Fuga Impossível",effect:"Sucesso automático em fugas veiculares se houver rota."},{type:"Passiva",name:"Homem-Máquina",effect:"Veículos pilotados ganham +50% de durabilidade e não capotam."},{type:"Narrativa",name:"Transportador",effect:"Sabe como mover o grupo inteiro de forma discreta."}]},
+                { id: 'politico', name: 'Político', group: 'Paus', bonus: ['Persuasão', 'Enganação', 'Liderança', 'História', 'Diplomacia'], skills: [{type:"Passiva",name:"Imunidade",effect:"Inimigos humanos hesitam 1 turno antes de te atacar."},{type:"Ativa",name:"Filibuster",effect:"Paralisa uma discussão falando sem parar, ganhando tempo."},{type:"Narrativa",name:"Alianças",effect:"Facilidade extrema em formar pactos de não-agressão."}]},
+                { id: 'coach', name: 'Coach', group: 'Paus', bonus: ['Liderança', 'Psicologia', 'Atuação', 'Persuasão', 'Vigor'], skills: [{type:"Ativa",name:"Grito de Guerra",effect:"Remove condição 'Medo' de todos os aliados próximos."},{type:"Passiva",name:"Mindset",effect:"Você ganha XP extra por falhas (aprendizado com o erro)."},{type:"Narrativa",name:"Influência",effect:"Pessoas mentalmente fracas tendem a seguir suas ordens."}]},
+                { id: 'gerente', name: 'Gerente de Projetos', group: 'Paus', bonus: ['Liderança', 'Logística', 'Negociação', 'Administração', 'Organização'], skills: [{type:"Ativa",name:"Delegar",effect:"Cede sua ação para um aliado, concedendo +20 no teste dele."},{type:"Passiva",name:"Eficiência",effect:"O grupo gasta 50% menos recursos."},{type:"Narrativa",name:"Plano B",effect:"Pode rerolar 1 falha crítica do grupo por sessão."}]},
+                { id: 'professor', name: 'Professor', group: 'Paus', bonus: ['Liderança', 'História', 'Psicologia', 'Empatia', 'Didática'], skills: [{type:"Passiva",name:"Didática",effect:"Aliados aprendem perícias mais rápido se ensinados por você."},{type:"Ativa",name:"Chamada Oral",effect:"Detecta imediatamente quem está mentindo em um grupo."},{type:"Narrativa",name:"Autoridade",effect:"Crianças e adolescentes obedecem instintivamente."}]},
+                { id: 'lider_seita', name: 'Líder de Seita', group: 'Paus', bonus: ['Liderança', 'Ocultismo', 'Persuasão', 'Manipulação', 'Carisma'], skills: [{type:"Ativa",name:"Sermão",effect:"Cura Stress do grupo falando, mas você ganha metade do Stress curado."},{type:"Passiva",name:"Fanatismo",effect:"Aliados ganham bônus de resistência se você estiver ferido."},{type:"Narrativa",name:"Sacrifício",effect:"Pode convencer NPCs a se sacrificarem por 'um bem maior'."}]},
+                { id: 'idol', name: 'Idol / Popstar', group: 'Paus', bonus: ['Atuação', 'Canto/Dança', 'Carisma', 'Moda', 'Sedução'], skills: [{type:"Ativa",name:"Showtime",effect:"Atrai a atenção de TODOS no ambiente para si (Distração em massa)."},{type:"Passiva",name:"Fandom",effect:"Chance de encontrar fãs entre os sobreviventes que ajudarão."},{type:"Narrativa",name:"Moral",effect:"Sua presença impede que o grupo perca esperança."}]},
+                { id: 'barman', name: 'Barman', group: 'Paus', bonus: ['Escuta', 'Química', 'Persuasão', 'Briga', 'Empatia'], skills: [{type:"Passiva",name:"Ouvinte",effect:"Pessoas bêbadas ou estressadas contam segredos para você."},{type:"Ativa",name:"Drink Especial",effect:"Cria bebidas que buffam atributos temporariamente."},{type:"Narrativa",name:"Zona Neutra",effect:"Seu local de descanso tende a não ser atacado."}]},
+                { id: 'jornalista', name: 'Jornalista', group: 'Paus', bonus: ['Investigação', 'Escrita', 'Fotografia', 'Persuasão', 'Furtividade'], skills: [{type:"Ativa",name:"Expor",effect:"Revelar um segredo de um inimigo causa dano moral/stress nele."},{type:"Passiva",name:"Fontes",effect:"Sempre sabe onde procurar rumores e informações."},{type:"Narrativa",name:"Registro",effect:"Mantém um log perfeito dos eventos."}]},
+                { id: 'comandante', name: 'Comandante Militar', group: 'Paus', bonus: ['Tática', 'Liderança', 'Armas de Fogo', 'Geografia', 'História'], skills: [{type:"Passiva",name:"Aura de Comando",effect:"Aliados em raio visual ganham +10 em coragem/resistência."},{type:"Ativa",name:"Ordem de Fogo",effect:"Coordena ataques aliados: todos atacam o mesmo alvo com bônus."},{type:"Narrativa",name:"Logística de Guerra",effect:"Sabe montar defesas de perímetro perfeitas."}]},
+
+                { id: 'psicologo', name: 'Psicólogo', group: 'Copas', bonus: ['Psicologia', 'Empatia', 'Diplomacia', 'Intuição', 'Biologia'], skills: [{type:"Ativa",name:"Perfil",effect:"Descobre o medo raiz ou desejo oculto de um alvo."},{type:"Passiva",name:"Estabilidade",effect:"Você tem resistência natural contra efeitos de loucura."},{type:"Narrativa",name:"Terapia Rápida",effect:"Recupera sanidade de aliados em descanso curto."}]},
+                { id: 'vigarista', name: 'Vigarista', group: 'Copas', bonus: ['Enganação', 'Furtividade', 'Ladinagem', 'Psicologia', 'Persuasão'], skills: [{type:"Passiva",name:"Leitura Fria",effect:"Sabe o que a pessoa quer ouvir antes dela falar."},{type:"Ativa",name:"Golpe",effect:"Vantagem em testes para convencer alguém a te dar recursos."},{type:"Narrativa",name:"Camaleão",effect:"Adapta-se a qualquer grupo social sem levantar suspeitas."}]},
+                { id: 'magico', name: 'Mágico Ilusionista', group: 'Copas', bonus: ['Ladinagem', 'Atuação', 'Psicologia', 'Percepção', 'Enganação'], skills: [{type:"Ativa",name:"Desaparecer",effect:"Foge de combate usando uma distração visual."},{type:"Passiva",name:"Mãos Rápidas",effect:"Pode roubar ou plantar itens pequenos sem teste."},{type:"Narrativa",name:"Ilusão",effect:"Convence alguém de que viu algo sobrenatural."}]},
+                { id: 'psicopata', name: 'Serial Killer / Psicopata', group: 'Copas', bonus: ['Enganação', 'Intimidação', 'Sangue Frio', 'Atuação', 'Briga'], skills: [{type:"Passiva",name:"Sem Remorso",effect:"Imune a Stress causado por violência, gore ou morte."},{type:"Ativa",name:"Olhar de Predador",effect:"Causa medo paralisante em um alvo único."},{type:"Narrativa",name:"Máscara de Sanidade",effect:"Ninguém desconfia de sua natureza real até ser tarde."}]},
+                { id: 'ator', name: 'Ator de Método', group: 'Copas', bonus: ['Atuação', 'Disfarce', 'Enganação', 'Memória', 'Literatura'], skills: [{type:"Passiva",name:"Personagem",effect:"Pode assumir uma 'persona' que tem coragem que você não tem."},{type:"Ativa",name:"Drama",effect:"Finge lesão ou morte perfeitamente para ser ignorado por inimigos."},{type:"Narrativa",name:"Mimetismo",effect:"Imita vozes e trejeitos de outras pessoas."}]},
+                { id: 'influencer', name: 'Influencer Digital', group: 'Copas', bonus: ['Persuasão', 'Tecnologia', 'Atuação', 'Sorte', 'Fotografia'], skills: [{type:"Passiva",name:"Fotogenia",effect:"Sempre causa boa primeira impressão visual."},{type:"Ativa",name:"Live Stream",effect:"Age como se tivesse uma audiência, ganhando bônus de performance."},{type:"Narrativa",name:"Tendência",effect:"Sabe intuitivamente o que a maioria vai escolher em uma votação."}]},
+                { id: 'padre', name: 'Padre / Sacerdote', group: 'Copas', bonus: ['Teologia', 'Ocultismo', 'Empatia', 'História', 'Liderança'], skills: [{type:"Ativa",name:"Confissão",effect:"Faz com que alguém revele um pecado ou segredo por culpa."},{type:"Passiva",name:"Fé Inabalável",effect:"Bônus massivo contra manipulação mental."},{type:"Narrativa",name:"Santuário",effect:"Pode declarar um local sagrado, desencorajando violência lá."}]},
+                { id: 'jogador', name: 'Jogador (Gambler)', group: 'Copas', bonus: ['Jogos', 'Matemática', 'Enganação', 'Intuição', 'Sorte'], skills: [{type:"Passiva",name:"Poker Face",effect:"Impossível ler suas emoções ou intenções."},{type:"Ativa",name:"All In",effect:"Aposta tudo em uma ação: Sucesso Crítico ou Falha Crítica (sem meio termo)."},{type:"Narrativa",name:"Sorte do Diabo",effect:"Uma vez por sessão, transforma uma falha em sucesso."}]},
+                { id: 'hipnotista', name: 'Hipnotista', group: 'Copas', bonus: ['Psicologia', 'Persuasão', 'Ocultismo', 'Foco', 'Atuação'], skills: [{type:"Ativa",name:"Sugestão",effect:"Implanta uma ideia na mente do alvo que ele acha que foi dele."},{type:"Passiva",name:"Voz Calmante",effect:"Sua fala reduz a hostilidade de ouvintes."},{type:"Narrativa",name:"Transe",effect:"Pode colocar alguém em estado catatônico temporário."}]},
+                { id: 'escritor', name: 'Escritor de Ficção', group: 'Copas', bonus: ['Literatura', 'História', 'Psicologia', 'Investigação', 'Datilografia'], skills: [{type:"Passiva",name:"Narrador",effect:"Consegue conectar pistas desconexas para formar uma teoria."},{type:"Ativa",name:"Plot Twist",effect:"Identifica a reviravolta de um Jogo antes que aconteça."},{type:"Narrativa",name:"Memória Eidética",effect:"Lembra de detalhes lidos em documentos perfeitamente."}]},
+                { id: 'dancarino', name: 'Dançarino', group: 'Espadas', bonus: ['Acrobacia', 'Atletismo', 'Atuação', 'Reflexos', 'Liderança'], skills: [{type:"Passiva",name:"Ritmo Absoluto",effect:"Pode usar o atributo Físico (Espadas) no lugar de Social para impressionar."},{type:"Ativa",name:"Flow",effect:"Entra em transe: +20 em Esquiva e Movimento por 3 turnos."},{type:"Narrativa",name:"Performance",effect:"Pode distrair ou encantar um grupo inteiro de NPCs sem combate."}]}
             ],
             perks: [
                 {name: 'Atletismo', attr: 's'}, {name: 'Briga', attr: 's'}, {name: 'Armas de Fogo', attr: 's'}, {name: 'Acrobacia', attr: 's'}, {name: 'Prontidão', attr: 's'},
-                {name: 'Sobrevivência', attr: ['s','d']}, {name: 'Furtividade', attr: ['s','h']}, {name: 'Arrombamento', attr: ['s','d']}, {name: 'Resistência', attr: 's'},
-                {name: 'Primeiros Socorros', attr: 'd'}, {name: 'Investigação', attr: ['d','c']}, {name: 'Eletrônica', attr: 'd'}, {name: 'Ciências', attr: 'd'}, {name: 'História', attr: 'd'}, {name: 'Geografia', attr: 'd'}, {name: 'Matemática', attr: 'd'},
-                {name: 'Persuasão', attr: 'c'}, {name: 'Liderança', attr: ['c','h']}, {name: 'Intimidação', attr: ['s','c']}, {name: 'Direção', attr: 'c'}, {name: 'Navegação', attr: 'c'}, {name: 'Diplomacia', attr: 'c'},
-                {name: 'Empatia', attr: 'h'}, {name: 'Enganação', attr: 'h'}, {name: 'Psicologia', attr: 'h'}, {name: 'Intuição', attr: 'h'}, {name: 'Atuação', attr: ['c','h']}, {name: 'Ladinagem', attr: 'h'}, {name: 'Sangue Frio', attr: 'h'}
+                {name: 'Sobrevivência', attr: ['s','d']}, {name: 'Furtividade', attr: ['s','h']}, {name: 'Arrombamento', attr: ['s','d']}, {name: 'Resistência', attr: 's'}, {name: 'Vigor', attr: 's'},
+                {name: 'Primeiros Socorros', attr: 'd'}, {name: 'Investigação', attr: ['d','c']}, {name: 'Eletrônica', attr: 'd'}, {name: 'Ciências', attr: 'd'}, {name: 'História', attr: 'd'}, {name: 'Geografia', attr: 'd'}, {name: 'Matemática', attr: 'd'}, {name: 'Computação', attr: 'd'}, {name: 'Química', attr: 'd'},
+                {name: 'Persuasão', attr: 'c'}, {name: 'Liderança', attr: ['c','h']}, {name: 'Intimidação', attr: ['s','c']}, {name: 'Direção', attr: 'c'}, {name: 'Navegação', attr: 'c'}, {name: 'Diplomacia', attr: 'c'}, {name: 'Etiqueta', attr: 'c'},
+                {name: 'Empatia', attr: 'h'}, {name: 'Enganação', attr: 'h'}, {name: 'Psicologia', attr: 'h'}, {name: 'Intuição', attr: 'h'}, {name: 'Atuação', attr: ['c','h']}, {name: 'Ladinagem', attr: 'h'}, {name: 'Sangue Frio', attr: 'h'}, {name: 'Artes', attr: 'h'}
             ],
-            conditions: ["Fratura", "Hemorragia", "Envenenado", "Exausto", "Concussão", "Queimadura", "Infecção", "Choque"],
-            personalities: ["O Analítico", "O Covarde", "O Heroico", "O Sádico", "O Niilista", "O Pragmático", "O Otimista", "O Líder", "O Solitário", "O Manipulador", "O Caótico"]
+            conditions: ["Fratura", "Hemorragia", "Envenenado", "Exausto", "Concussão", "Queimadura", "Infecção", "Choque", "Hipotermia", "Alucinação"],
+            personalities: {
+                "O Analítico": "Prioriza lógica e dados. Tende a ignorar sentimentos alheios em prol da eficiência.",
+                "O Covarde": "Evita perigo a todo custo. Sobrevive fugindo, mas pode hesitar quando outros precisam dele.",
+                "O Heroico": "Coloca-se em risco pelos outros. Inspira aliados, mas tende a se sacrificar cedo demais.",
+                "O Sádico": "Encontra prazer na dor alheia ou no caos. Útil em combate, perigoso socialmente.",
+                "O Niilista": "Não vê sentido em nada. Imune a desesperança, mas difícil de motivar.",
+                "O Pragmático": "Faz o que é necessário. Sem moralidade fixa, foca apenas no resultado prático.",
+                "O Otimista": "Mantém a esperança viva. Recupera Stress mais rápido, mas pode ser ingênuo.",
+                "O Líder": "Assume o comando naturalmente. Organiza o grupo, mas vira alvo prioritário.",
+                "O Solitário": "Trabalha melhor sozinho. Furtivo e autossuficiente, mas ruim em equipe.",
+                "O Manipulador": "Usa pessoas como peças. Ótimo socialmente, mas ninguém confia nele totalmente.",
+                "O Caótico": "Imprevisível. Pode salvar o dia ou condenar todos por um capricho.",
+                "O Protetor": "Foca em defender um aliado específico. Ganha bônus quando esse aliado está em perigo.",
+                "O Estrategista": "Vê o mundo como um xadrez. Planeja 3 passos à frente, mas paralisa se o plano falhar.",
+                "O Impulsivo": "Age primeiro, pensa depois. Reação rápida, mas cai em armadilhas facilmente.",
+                "O Negociador": "Resolve tudo na conversa. Evita violência, mas pode tentar dialogar com quem só quer matar.",
+                "O Sobrevivente": "Barata tonta do apocalipse. Sabe se esconder e fugir, mas não luta.",
+                "O Mártir": "Procura uma morte com significado. Aceita missões suicidas sem questionar.",
+                "O Cético": "Duvida de tudo e todos. Difícil de enganar, mas difícil de convencer a confiar.",
+                "O Visionário": "Vê padrões onde ninguém vê. Pode ser genial ou estar louco.",
+                "O Perfeccionista": "Não aceita falhas. Se estressa facilmente com erros menores.",
+                "O Pacifista": "Recusa-se a matar. Busca soluções não letais, o que pode ser fatal em Borderland.",
+                "O Rebelde": "Desafia autoridade. Ótimo contra mestres de jogos, péssimo para seguir ordens.",
+                "O Observador": "Fala pouco, vê tudo. Nota detalhes que outros perdem.",
+                "O Erudito": "Conhecimento enciclopédico. Sabe muito, mas pode faltar prática.",
+                "O Trapaceiro": "Joga sujo. Vence quebrando regras, não seguindo-as.",
+                "O Leal": "Nunca abandona um amigo. Sua lealdade é sua maior força e fraqueza.",
+                "O Vingativo": "Motivado por um ódio antigo. Focado, mas cego pela raiva.",
+                "O Artista": "Vê beleza no caos. Criativo em soluções, mas distraído.",
+                "O Filósofo": "Questiona a natureza do jogo. Pode ter insights profundos ou perder tempo pensando.",
+                "O Inocente": "Não corrompido pelo mundo. Todos tendem a protegê-lo.",
+                "O Veterano": "Já viu de tudo. Experiente e calmo, mas cansado da vida.",
+                "O Implacável": "Não para até atingir o objetivo. Vontade de ferro, sem empatia por obstáculos."
+            }
         };
 
-        let state = { hp: 100, stress: 0, visa: 3, trainedSkills: [], inventory: [] };
+        let state = { hp: 100, stress: 0, visa: 3, trainedSkills: [] };
 
         function init() {
-            const jobSelect = document.getElementById('job-select');
-            DB.professions.forEach((job, idx) => {
-                const opt = document.createElement('option');
-                opt.value = idx;
-                opt.innerText = `[${job.group[0]}] ${job.name}`;
-                jobSelect.appendChild(opt);
-            });
+            renderProfessions();
+            
             const persSelect = document.getElementById('char-personality');
-            DB.personalities.forEach(p => {
+            Object.keys(DB.personalities).forEach(p => {
                 const opt = document.createElement('option');
                 opt.value = p; opt.innerText = p;
                 persSelect.appendChild(opt);
             });
+
             const condGrid = document.getElementById('condition-grid');
             DB.conditions.forEach(c => {
                 const div = document.createElement('div');
                 div.className = "text-[9px] uppercase border border-white/20 p-1 text-center cursor-pointer hover:bg-accent hover:text-black transition select-none rounded bg-black/30 text-dim";
                 div.innerText = c;
-                div.onclick = () => { div.classList.toggle('bg-accent'); div.classList.toggle('text-black'); div.classList.toggle('font-bold'); recalcDeathProb(); };
+                div.onclick = () => { 
+                    div.classList.toggle('bg-accent'); 
+                    div.classList.toggle('text-black'); 
+                    div.classList.toggle('font-bold'); 
+                    recalcDeathProb(); 
+                };
                 condGrid.appendChild(div);
             });
-            const invGrid = document.getElementById('inventory-grid');
-            for(let i=0; i<20; i++) {
-                const slot = document.createElement('div');
-                slot.className = "inv-slot group aspect-square border border-dim flex items-center justify-center cursor-pointer hover:border-accent bg-black/10";
-                slot.id = `inv-${i}`;
-                slot.onclick = () => removeItem(i);
-                invGrid.appendChild(slot);
-            }
+
             initCanvasEffect(); recalcSkills(); updateVisa(3); generateUID();
         }
 
-        function generateUID() { document.getElementById('uid-display').innerText = Math.floor(1000 + Math.random() * 9000); }
+        function updatePersonalityDesc() {
+            const val = document.getElementById('char-personality').value;
+            const desc = document.getElementById('personality-desc');
+            if(val && DB.personalities[val]) {
+                desc.innerText = DB.personalities[val];
+                desc.classList.remove('opacity-0');
+            } else {
+                desc.innerText = "";
+            }
+        }
+
+        function renderProfessions(filterText = "") {
+            const jobSelect = document.getElementById('job-select');
+            jobSelect.innerHTML = '<option value="">Selecione...</option>';
+            
+            DB.professions.forEach((job, idx) => {
+                if(filterText && !job.name.toLowerCase().includes(filterText.toLowerCase()) && !job.group.toLowerCase().includes(filterText.toLowerCase())) {
+                    return;
+                }
+                const opt = document.createElement('option');
+                opt.value = idx;
+                opt.innerText = `[${job.group.substring(0,3).toUpperCase()}] ${job.name}`;
+                jobSelect.appendChild(opt);
+            });
+        }
+
+        function filterJobs() {
+            const txt = document.getElementById('job-search').value;
+            renderProfessions(txt);
+        }
+
+        function generateUID() { 
+            const uid = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('uid-display').innerText = uid;
+            const el = document.getElementById('uid-display');
+            el.style.textShadow = "2px 0 red, -2px 0 blue";
+            setTimeout(() => el.style.textShadow = "none", 200);
+        }
 
         function applyJob() {
             const idx = document.getElementById('job-select').value;
             const skillList = document.getElementById('job-skills-list');
-            if(idx === "") { skillList.innerHTML = `<div class="text-xs opacity-40 italic border border-dashed border-dim p-4 rounded text-center text-dim">Selecione uma profissão...</div>`; return; }
+            
+            if(idx === "") { 
+                skillList.innerHTML = `<div class="text-xs opacity-40 italic border border-dashed border-dim p-4 rounded text-center text-dim">Selecione uma profissão...</div>`; 
+                return; 
+            }
             const job = DB.professions[idx];
+            if (!job) return;
             state.trainedSkills = [...job.bonus];
+            
             skillList.innerHTML = job.skills.map(s => `
                 <div class="job-skill-card">
                     <div class="flex items-center gap-2 mb-1">
-                        <span class="text-[8px] bg-accent text-black px-1.5 py-0.5 rounded-sm font-bold uppercase tracking-wide">${s.type}</span>
+                        <span class="text-[8px] bg-accent text-black px-1.5 py-0.5 rounded-sm font-bold uppercase tracking-wide border border-black">${s.type}</span>
                         <strong class="text-accent uppercase text-xs tracking-wider">${s.name}</strong>
                     </div>
-                    <div class="text-[10px] leading-tight opacity-90 text-justify font-mono text-dim">${s.effect}</div>
+                    <div class="text-[10px] leading-tight opacity-90 text-justify font-mono text-dim pl-1 border-l border-dim/30">${s.effect}</div>
                 </div>
             `).join('');
+            
             recalcSkills();
         }
 
@@ -524,15 +590,20 @@
             const d = parseInt(document.getElementById('attr-d').value) || 0;
             const c = parseInt(document.getElementById('attr-c').value) || 0;
             const h = parseInt(document.getElementById('attr-h').value) || 0;
+            
             const container = document.getElementById('skills-container');
             container.innerHTML = "";
+            
             DB.perks.forEach(perk => {
-                let base = 0; let colorClass = "text-dim"; let isHybrid = Array.isArray(perk.attr);
+                let base = 0; 
+                let colorClass = "text-dim"; 
+                let isHybrid = Array.isArray(perk.attr);
                 if (isHybrid) {
                     let v1=0, v2=0;
                     v1 = (perk.attr[0] === 's') ? s : (perk.attr[0] === 'd') ? d : (perk.attr[0] === 'c') ? c : h;
                     v2 = (perk.attr[1] === 's') ? s : (perk.attr[1] === 'd') ? d : (perk.attr[1] === 'c') ? c : h;
-                    base = Math.floor((v1 + v2) / 2); colorClass = "text-white"; 
+                    base = Math.floor((v1 + v2) / 2); 
+                    colorClass = "text-white"; 
                 } else {
                     if(perk.attr === 's') { base = s; colorClass = "text-blue-500"; }
                     else if(perk.attr === 'd') { base = d; colorClass = "text-yellow-500"; }
@@ -542,140 +613,241 @@
                 const isTrained = state.trainedSkills.includes(perk.name);
                 let final = base + (isTrained ? 20 : 0);
                 if(final > 99) final = 99;
+                
                 const div = document.createElement('div');
-                div.className = `skill-item ${isTrained ? 'active' : ''}`;
-                div.innerHTML = `<span class="${isTrained ? '' : 'text-dim'}">${perk.name}</span><span class="skill-val ${isTrained ? 'text-bg-color' : colorClass}">${final}%</span>`;
-                div.onclick = () => { if(isTrained) state.trainedSkills = state.trainedSkills.filter(x => x !== perk.name); else state.trainedSkills.push(perk.name); recalcSkills(); };
+                div.className = `skill-item ${isTrained ? 'active' : ''} ${isHybrid ? 'hybrid' : ''}`;
+                div.innerHTML = `<span class="${isTrained ? '' : 'text-dim'} truncate mr-2">${perk.name}</span><span class="skill-val ${isTrained ? 'text-bg-color' : colorClass}">${final}%</span>`;
+                
+                // Left Click: Toggle
+                div.onclick = () => { 
+                    if(isTrained) state.trainedSkills = state.trainedSkills.filter(x => x !== perk.name); 
+                    else state.trainedSkills.push(perk.name); 
+                    recalcSkills(); 
+                };
+
+                // Right Click: Roll
+                div.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    diceRoll(`Testando: ${perk.name}`);
+                };
+
                 container.appendChild(div);
             });
             recalcDeathProb();
         }
 
         function modStat(type, val) {
-            if(type === 'hp') { state.hp = Math.min(100, Math.max(0, state.hp + val)); document.getElementById('hp-bar').style.width = state.hp + "%"; document.getElementById('hp-txt').innerText = state.hp + "%"; }
-            if(type === 'stress') { state.stress = Math.min(100, Math.max(0, state.stress + val)); document.getElementById('stress-bar').style.width = state.stress + "%"; document.getElementById('stress-txt').innerText = state.stress + "%"; }
+            if(type === 'hp') { 
+                state.hp = Math.min(100, Math.max(0, state.hp + val)); 
+                document.getElementById('hp-bar').style.width = state.hp + "%"; 
+                document.getElementById('hp-txt').innerText = state.hp + "%"; 
+                const bar = document.getElementById('hp-bar');
+                if(state.hp < 30) { bar.classList.remove('from-green-600', 'to-green-400', 'from-yellow-500', 'to-yellow-300'); bar.classList.add('bg-red-600'); }
+                else if(state.hp < 70) { bar.classList.remove('bg-red-600', 'from-green-600', 'to-green-400'); bar.classList.add('bg-gradient-to-r', 'from-yellow-500', 'to-yellow-300'); }
+                else { bar.classList.remove('bg-red-600', 'from-yellow-500', 'to-yellow-300'); bar.classList.add('bg-gradient-to-r', 'from-green-600', 'to-green-400'); }
+            }
+            if(type === 'stress') { 
+                state.stress = Math.min(100, Math.max(0, state.stress + val)); 
+                document.getElementById('stress-bar').style.width = state.stress + "%"; 
+                document.getElementById('stress-txt').innerText = state.stress + "%"; 
+            }
             recalcDeathProb();
         }
 
         function updateVisa(val) {
-            state.visa = val; document.getElementById('visa-txt').innerText = val;
-            const container = document.getElementById('visa-blocks'); container.innerHTML = "";
-            for(let i=0; i<val; i++) { const div = document.createElement('div'); div.className = "flex-1 h-full bg-accent rounded-sm shadow-[0_0_5px_var(--accent)]"; container.appendChild(div); }
+            state.visa = val; 
+            document.getElementById('visa-txt').innerText = val;
+            const container = document.getElementById('visa-blocks'); 
+            container.innerHTML = "";
+            for(let i=0; i<val; i++) { 
+                const div = document.createElement('div'); 
+                div.className = "flex-1 h-full bg-accent rounded-sm shadow-[0_0_5px_var(--accent)]"; 
+                container.appendChild(div); 
+            }
             recalcDeathProb();
         }
 
         function recalcDeathProb() {
-            let risk = 0; if(state.hp < 40) risk += (40 - state.hp); if(state.stress > 60) risk += (state.stress - 60) * 0.5; if(state.visa < 2) risk += (2 - state.visa) * 20;
-            risk += document.querySelectorAll('#condition-grid .bg-accent').length * 15;
-            risk = Math.min(99, Math.floor(risk)); document.getElementById('death-prob').innerText = risk + "%";
+            let risk = 0; 
+            if(state.hp < 40) risk += (40 - state.hp); 
+            if(state.stress > 60) risk += (state.stress - 60) * 0.5; 
+            if(state.visa < 2) risk += (2 - state.visa) * 20;
+            risk += document.querySelectorAll('#condition-grid .bg-accent').length * 10;
+            risk = Math.min(99, Math.floor(risk)); 
+            document.getElementById('death-prob').innerText = risk + "%";
+            const probEl = document.getElementById('death-prob').parentElement;
+            if(risk > 80) probEl.classList.add('animate-pulse', 'bg-red-900');
+            else probEl.classList.remove('animate-pulse', 'bg-red-900');
         }
 
-        function addItem() { const input = document.getElementById('item-add-input'); const val = input.value.trim(); if(!val || state.inventory.length >= 20) return; state.inventory.push(val); input.value = ""; renderInventory(); }
-        function removeItem(idx) { state.inventory.splice(idx, 1); renderInventory(); }
-        function renderInventory() {
-            for(let i=0; i<20; i++) {
-                const slot = document.getElementById(`inv-${i}`);
-                if(state.inventory[i]) {
-                    let icon = "fa-box"; const lower = state.inventory[i].toLowerCase();
-                    if(lower.includes("faca") || lower.includes("taco")) icon = "fa-gavel";
-                    if(lower.includes("pistola")) icon = "fa-crosshairs";
-                    if(lower.includes("celular")) icon = "fa-mobile-screen";
-                    if(lower.includes("água")) icon = "fa-bottle-water";
-                    if(lower.includes("chave")) icon = "fa-key";
-                    slot.innerHTML = `<i class="fa-solid ${icon} text-accent group-hover:scale-125 transition"></i>`; slot.title = state.inventory[i]; slot.style.borderColor = "var(--accent)";
-                } else { slot.innerHTML = ""; slot.title = "Vazio"; slot.style.borderColor = "rgba(255,255,255,0.1)"; }
-            }
-            document.getElementById('encumbrance').innerText = `${state.inventory.length}/20 SLOTS`;
-        }
+        function diceRoll(reason = "TESTE GERAL") {
+            const modal = document.getElementById('dice-modal'); 
+            const anim = document.getElementById('dice-anim'); 
+            const res = document.getElementById('dice-result');
+            const label = document.getElementById('dice-reason');
+            
+            label.innerText = reason; // Show the skill being tested
 
-        function diceRoll() {
-            const modal = document.getElementById('dice-modal'); const anim = document.getElementById('dice-anim'); const res = document.getElementById('dice-result');
-            modal.classList.remove('hidden'); setTimeout(() => document.getElementById('dice-content').classList.remove('scale-90'), 10);
+            modal.classList.remove('hidden'); 
+            setTimeout(() => document.getElementById('dice-content').classList.remove('scale-90'), 10);
+            
             let counter = 0;
             const interval = setInterval(() => {
-                anim.innerText = Math.floor(Math.random() * 100); counter++;
+                anim.innerText = Math.floor(Math.random() * 100); 
+                counter++;
                 if(counter > 15) {
-                    clearInterval(interval); const final = Math.floor(Math.random() * 100) + 1; anim.innerText = final < 10 ? '0'+final : final;
-                    if(final <= 5) { res.innerText = "SUCESSO EXTREMO"; res.className = "text-lg font-bold uppercase text-yellow-400 animate-pulse"; }
-                    else if(final <= 50) { res.innerText = "SUCESSO"; res.className = "text-lg font-bold uppercase text-green-400"; }
-                    else if(final >= 95) { res.innerText = "DESASTRE"; res.className = "text-lg font-bold uppercase text-red-600 font-black"; }
-                    else { res.innerText = "FALHA"; res.className = "text-lg font-bold uppercase text-dim"; }
+                    clearInterval(interval); 
+                    const final = Math.floor(Math.random() * 100) + 1; 
+                    anim.innerText = final < 10 ? '0'+final : final;
+                    let resultType = "NORMAL";
+                    if(final <= 5) { res.innerText = "SUCESSO EXTREMO"; res.className = "text-xl font-black uppercase text-yellow-400 animate-pulse glow-text"; resultType = "EXTREMO"; } 
+                    else if(final <= 50) { res.innerText = "SUCESSO"; res.className = "text-xl font-bold uppercase text-green-400"; resultType = "SUCESSO"; } 
+                    else if(final >= 95) { res.innerText = "DESASTRE"; res.className = "text-xl font-black uppercase text-red-600 glitch-text"; resultType = "DESASTRE"; } 
+                    else { res.innerText = "FALHA"; res.className = "text-xl font-bold uppercase text-dim"; resultType = "FALHA"; }
+                    addToHistory(final, resultType, reason);
                 }
             }, 50);
         }
 
-        function closeModal() { document.getElementById('dice-content').classList.add('scale-90'); setTimeout(() => document.getElementById('dice-modal').classList.add('hidden'), 200); }
+        function addToHistory(val, type, reason) {
+            const hist = document.getElementById('dice-history');
+            const entry = document.createElement('div');
+            let color = "text-gray-400";
+            if(type === "EXTREMO") color = "text-yellow-400";
+            if(type === "SUCESSO") color = "text-green-400";
+            if(type === "DESASTRE") color = "text-red-500";
+            
+            // Format time
+            const time = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+            
+            entry.innerHTML = `
+                <div class="border-b border-white/5 pb-1 mb-1">
+                    <span class="opacity-40 text-[9px]">[${time}]</span> 
+                    <span class="text-accent font-bold">${reason}</span>: 
+                    <span class="${color} font-black text-xs">${val}</span> <span class="text-[9px] opacity-70">(${type})</span>
+                </div>`;
+            hist.prepend(entry);
+        }
+
+        function closeModal() { 
+            document.getElementById('dice-content').classList.add('scale-90'); 
+            setTimeout(() => document.getElementById('dice-modal').classList.add('hidden'), 200); 
+        }
 
         function switchTab(t) {
-            const h = document.getElementById('txt-hist'); const n = document.getElementById('txt-notes'); const bh = document.getElementById('btn-hist'); const bn = document.getElementById('btn-notes');
-            if(t==='hist') { h.classList.remove('hidden'); n.classList.add('hidden'); bh.className = "flex-1 text-[9px] font-bold py-2 bg-accent text-black transition"; bn.className = "flex-1 text-[9px] font-bold py-2 bg-transparent text-dim hover:text-accent transition"; } 
-            else { h.classList.add('hidden'); n.classList.remove('hidden'); bn.className = "flex-1 text-[9px] font-bold py-2 bg-accent text-black transition"; bh.className = "flex-1 text-[9px] font-bold py-2 bg-transparent text-dim hover:text-accent transition"; }
+            const h = document.getElementById('txt-hist'); 
+            const n = document.getElementById('txt-notes'); 
+            const bh = document.getElementById('btn-hist'); 
+            const bn = document.getElementById('btn-notes');
+            if(t==='hist') { h.classList.remove('hidden'); n.classList.add('hidden'); bh.className = "flex-1 text-[9px] font-bold py-2 bg-accent text-black transition rounded-t-sm"; bn.className = "flex-1 text-[9px] font-bold py-2 bg-transparent text-dim hover:text-accent transition rounded-t-sm"; } 
+            else { h.classList.add('hidden'); n.classList.remove('hidden'); bn.className = "flex-1 text-[9px] font-bold py-2 bg-accent text-black transition rounded-t-sm"; bh.className = "flex-1 text-[9px] font-bold py-2 bg-transparent text-dim hover:text-accent transition rounded-t-sm"; }
         }
 
         function setTheme(t) { document.body.className = `theme-${t}`; initCanvasEffect(); }
 
         function saveData() {
             const conds = []; document.querySelectorAll('#condition-grid .bg-accent').forEach(el => conds.push(el.innerText));
-            const data = { name: document.getElementById('char-name').value, age: document.getElementById('char-age').value, jobIdx: document.getElementById('job-select').value, personality: document.getElementById('char-personality').value, stats: { s: document.getElementById('attr-s').value, d: document.getElementById('attr-d').value, c: document.getElementById('attr-c').value, h: document.getElementById('attr-h').value }, hp: state.hp, stress: state.stress, visa: state.visa, inventory: state.inventory, trainedSkills: state.trainedSkills, conditions: conds, hist: document.getElementById('txt-hist').value, photo: document.getElementById('avatar-img').src };
-            const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data)); a.download = `DOSSIE_${data.name}.json`; a.click();
+            const data = { 
+                name: document.getElementById('char-name').value, 
+                age: document.getElementById('char-age').value, 
+                jobIdx: document.getElementById('job-select').value, 
+                personality: document.getElementById('char-personality').value, 
+                stats: { s: document.getElementById('attr-s').value, d: document.getElementById('attr-d').value, c: document.getElementById('attr-c').value, h: document.getElementById('attr-h').value }, 
+                hp: state.hp, stress: state.stress, visa: state.visa, trainedSkills: state.trainedSkills, conditions: conds, 
+                hist: document.getElementById('txt-hist').value, notes: document.getElementById('txt-notes').value, photo: document.getElementById('avatar-img').src 
+            };
+            const a = document.createElement('a'); 
+            a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data)); 
+            a.download = `DOSSIE_${data.name}.json`; a.click();
         }
 
         function loadData(input) {
             const file = input.files[0]; if(!file) return; const r = new FileReader();
             r.onload = (e) => {
                 try {
-                    const d = JSON.parse(e.target.result); document.getElementById('char-name').value = d.name; document.getElementById('char-age').value = d.age; document.getElementById('job-select').value = d.jobIdx; applyJob();
-                    state.trainedSkills = d.trainedSkills || []; document.getElementById('attr-s').value = d.stats.s; document.getElementById('attr-d').value = d.stats.d; document.getElementById('attr-c').value = d.stats.c; document.getElementById('attr-h').value = d.stats.h;
-                    state.hp = d.hp; modStat('hp', 0); state.stress = d.stress; modStat('stress', 0); updateVisa(d.visa); state.inventory = d.inventory; renderInventory(); document.getElementById('txt-hist').value = d.hist || "";
-                    if(d.photo) { document.getElementById('avatar-img').src = d.photo; document.getElementById('avatar-img').classList.remove('hidden'); document.getElementById('avatar-placeholder').classList.add('hidden'); }
+                    const d = JSON.parse(e.target.result); 
+                    document.getElementById('char-name').value = d.name; 
+                    document.getElementById('char-age').value = d.age; 
+                    document.getElementById('job-select').value = d.jobIdx; 
+                    applyJob();
+                    state.trainedSkills = d.trainedSkills || []; 
+                    document.getElementById('attr-s').value = d.stats.s; 
+                    document.getElementById('attr-d').value = d.stats.d; 
+                    document.getElementById('attr-c').value = d.stats.c; 
+                    document.getElementById('attr-h').value = d.stats.h;
+                    state.hp = d.hp; modStat('hp', 0); state.stress = d.stress; modStat('stress', 0); updateVisa(d.visa); 
+                    document.getElementById('txt-hist').value = d.hist || ""; document.getElementById('txt-notes').value = d.notes || "";
+                    if(d.photo && d.photo.length > 100) { document.getElementById('avatar-img').src = d.photo; document.getElementById('avatar-img').classList.remove('hidden'); document.getElementById('avatar-placeholder').classList.add('hidden'); }
+                    const condGrid = document.getElementById('condition-grid');
+                    Array.from(condGrid.children).forEach(el => { el.classList.remove('bg-accent','text-black','font-bold'); });
+                    if(d.conditions) { Array.from(condGrid.children).forEach(el => { if(d.conditions.includes(el.innerText)) { el.classList.add('bg-accent','text-black','font-bold'); } }); }
+                    
+                    // Load personality correctly
+                    const pSelect = document.getElementById('char-personality');
+                    if(d.personality) {
+                        pSelect.value = d.personality;
+                        updatePersonalityDesc();
+                    }
+
                     recalcSkills(); alert("Dossiê carregado com sucesso.");
-                } catch(err) { alert("Erro ao carregar."); }
+                } catch(err) { alert("Erro ao carregar: Arquivo inválido."); }
             }; r.readAsText(file);
         }
 
-        function exportSheet() { const c = document.getElementById('bg-canvas'); c.style.display='none'; html2canvas(document.getElementById('sheet-content'), {backgroundColor:null, scale:2}).then(can => { const a = document.createElement('a'); a.download = `FICHA_${document.getElementById('char-name').value}.jpg`; a.href = can.toDataURL('image/jpeg', 0.9); a.click(); c.style.display='block'; }); }
-        function loadImage(i) { if (i.files && i.files[0]) { const r = new FileReader(); r.onload = (e) => { const img = document.getElementById('avatar-img'); img.src = e.target.result; img.classList.remove('hidden'); document.getElementById('avatar-placeholder').classList.add('hidden'); }; r.readAsDataURL(i.files[0]); } }
+        function exportSheet() { 
+            const c = document.getElementById('bg-canvas'); c.style.display='none'; 
+            html2canvas(document.getElementById('sheet-content'), {backgroundColor:null, scale:2}).then(can => { 
+                const a = document.createElement('a'); a.download = `FICHA_${document.getElementById('char-name').value}.jpg`; a.href = can.toDataURL('image/jpeg', 0.9); a.click(); c.style.display='block'; 
+            }); 
+        }
+        
+        function loadImage(i) { 
+            if (i.files && i.files[0]) { const r = new FileReader(); r.onload = (e) => { const img = document.getElementById('avatar-img'); img.src = e.target.result; img.classList.remove('hidden'); document.getElementById('avatar-placeholder').classList.add('hidden'); }; r.readAsDataURL(i.files[0]); } 
+        }
 
-        /* --- CANVAS --- */
         let cInterval;
         function initCanvasEffect() {
             const c = document.getElementById('bg-canvas'); const ctx = c.getContext('2d'); c.width = window.innerWidth; c.height = window.innerHeight; if(cInterval) clearInterval(cInterval);
             const theme = document.body.className;
-            
             if(theme.includes('arisu')) {
-                const chars = "BORDERLAND01"; const font = 14; const cols = c.width/font; const drops = Array(Math.floor(cols)).fill(1);
-                cInterval = setInterval(() => {
-                    ctx.fillStyle = "rgba(5, 5, 16, 0.1)"; ctx.fillRect(0,0,c.width,c.height); ctx.fillStyle = "#00f3ff"; ctx.font = font+"px monospace";
-                    for(let i=0; i<drops.length; i++) { ctx.fillText(chars[Math.floor(Math.random()*chars.length)], i*font, drops[i]*font); if(drops[i]*font > c.height && Math.random()>0.975) drops[i]=0; drops[i]++; }
-                }, 33);
+                const chars = "BORDERLAND01X"; const font = 14; const cols = c.width/font; const drops = Array(Math.floor(cols)).fill(1);
+                cInterval = setInterval(() => { ctx.fillStyle = "rgba(5, 5, 16, 0.1)"; ctx.fillRect(0,0,c.width,c.height); ctx.fillStyle = "#00f3ff"; ctx.font = font+"px monospace"; for(let i=0; i<drops.length; i++) { const char = chars[Math.floor(Math.random()*chars.length)]; ctx.fillText(char, i*font, drops[i]*font); if(drops[i]*font > c.height && Math.random()>0.975) drops[i]=0; drops[i]++; } }, 33);
             } else if(theme.includes('chishiya')) {
                  let t = 0;
-                 cInterval = setInterval(() => {
-                     ctx.clearRect(0,0,c.width,c.height); ctx.strokeStyle = "rgba(0,0,0,0.05)"; ctx.lineWidth = 1;
-                     for(let i=0; i<c.width; i+=40) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,c.height); ctx.stroke(); } for(let i=0; i<c.height; i+=40) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(c.width,i); ctx.stroke(); }
-                     ctx.strokeStyle = "#dc2626"; ctx.lineWidth = 2; ctx.beginPath();
-                     for(let x=0; x<c.width; x++) { let y = c.height/2; let offset = (x + t) % c.width; if (offset > 100 && offset < 200) { y += Math.sin((offset-100)*0.1) * 60 * Math.exp(-Math.pow((offset-150)/20, 2)); } if(x==0) ctx.moveTo(x, y); else ctx.lineTo(x, y); } ctx.stroke(); t-=8;
-                 }, 33);
+                 cInterval = setInterval(() => { ctx.clearRect(0,0,c.width,c.height); ctx.strokeStyle = "rgba(0,0,0,0.05)"; ctx.lineWidth = 1; for(let i=0; i<c.width; i+=40) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,c.height); ctx.stroke(); } for(let i=0; i<c.height; i+=40) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(c.width,i); ctx.stroke(); } ctx.strokeStyle = "#334155"; ctx.lineWidth = 2; ctx.beginPath(); for(let x=0; x<c.width; x++) { let y = c.height/2; let offset = (x + t) % c.width; if (offset > 100 && offset < 200) { y += Math.sin((offset-100)*0.2) * 50 * Math.exp(-Math.pow((offset-150)/15, 2)); } if(x==0) ctx.moveTo(x, y); else ctx.lineTo(x, y); } ctx.stroke(); t-=5; }, 33);
             } else if(theme.includes('joker')) {
-                 const cards = []; const suits = ['♠', '♥', '♦', '♣'];
-                 for(let i=0; i<20; i++) cards.push({x:Math.random()*c.width, y:Math.random()*c.height, s:Math.random()*20+10, t:suits[Math.floor(Math.random()*4)], r:Math.random()*360, v:Math.random()*2+1});
+                 const objects = []; const chars = ['J', 'Q', 'K', 'A', '?', '!', 'Ha']; const colors = ['#a855f7', '#4ade80', '#ffffff'];
+                 for(let i=0; i<30; i++) { objects.push({ x: Math.random()*c.width, y: Math.random()*c.height, text: chars[Math.floor(Math.random()*chars.length)], color: colors[Math.floor(Math.random()*colors.length)], size: Math.random()*20+10, vx: Math.random()*4-2, vy: Math.random()*4-2, rot: Math.random()*360, vrot: Math.random()*5-2.5 }); }
+                 cInterval = setInterval(() => { ctx.fillStyle = "rgba(20, 5, 30, 0.1)"; ctx.fillRect(0,0,c.width,c.height); objects.forEach(obj => { obj.x += obj.vx; obj.y += obj.vy; obj.rot += obj.vrot; if(obj.x < 0 || obj.x > c.width) obj.vx *= -1; if(obj.y < 0 || obj.y > c.height) obj.vy *= -1; ctx.save(); ctx.translate(obj.x, obj.y); ctx.rotate(obj.rot * Math.PI / 180); ctx.fillStyle = obj.color; ctx.font = `${obj.size}px Creepster`; ctx.fillText(obj.text, 0, 0); ctx.restore(); }); }, 33);
+            } else if(theme.includes('jack')) {
+                 const nodes = [];
+                 for(let i=0; i<40; i++) nodes.push({x:Math.random()*c.width, y:Math.random()*c.height, vx:Math.random()*2-1, vy:Math.random()*2-1});
                  cInterval = setInterval(() => {
-                     ctx.clearRect(0,0,c.width,c.height); ctx.fillStyle = "#a855f7"; ctx.font = "20px serif";
-                     cards.forEach(card => {
-                         card.y+=card.v; card.r+=1; if(card.y>c.height) card.y = -50;
-                         ctx.save(); ctx.translate(card.x, card.y); ctx.rotate(card.r * Math.PI / 180); ctx.fillStyle = (card.t === '♥' || card.t === '♦') ? '#ef4444' : '#a855f7'; ctx.font = card.s+"px serif"; ctx.fillText(card.t, 0, 0); ctx.restore();
+                     ctx.clearRect(0,0,c.width,c.height);
+                     ctx.lineWidth = 1;
+                     ctx.fillStyle = "#facc15";
+                     nodes.forEach((n, i) => {
+                         n.x += n.vx; n.y += n.vy;
+                         if(n.x<0 || n.x>c.width) n.vx*=-1;
+                         if(n.y<0 || n.y>c.height) n.vy*=-1;
+                         ctx.beginPath(); ctx.arc(n.x, n.y, 2, 0, Math.PI*2); ctx.fill();
+                         nodes.forEach((n2, j) => {
+                             if(i!==j) {
+                                 let d = Math.sqrt((n.x-n2.x)**2 + (n.y-n2.y)**2);
+                                 if(d < 100) {
+                                     ctx.strokeStyle = `rgba(250, 204, 21, ${1 - d/100})`;
+                                     ctx.beginPath(); ctx.moveTo(n.x, n.y); ctx.lineTo(n2.x, n2.y); ctx.stroke();
+                                 }
+                             }
+                         });
                      });
                  }, 33);
             } else {
-                 const p = []; for(let i=0; i<50; i++) p.push({x:Math.random()*c.width, y:Math.random()*c.height, s:Math.random()*3});
-                 cInterval = setInterval(() => {
-                     ctx.clearRect(0,0,c.width,c.height); ctx.fillStyle = theme.includes('mafia') ? "rgba(245,158,11,0.3)" : "rgba(132,204,22,0.2)";
-                     p.forEach(d => { d.y-=0.5; if(d.y<0) { d.y=c.height; d.x=Math.random()*c.width; } ctx.beginPath(); ctx.arc(d.x,d.y,d.s,0,Math.PI*2); ctx.fill(); });
-                 }, 33);
+                 const p = []; for(let i=0; i<60; i++) p.push({x:Math.random()*c.width, y:Math.random()*c.height, s:Math.random()*3});
+                 cInterval = setInterval(() => { ctx.clearRect(0,0,c.width,c.height); ctx.fillStyle = theme.includes('mafia') ? "rgba(249, 115, 22, 0.2)" : "rgba(217, 70, 239, 0.15)"; p.forEach(d => { d.y-=0.5; if(d.y<0) { d.y=c.height; d.x=Math.random()*c.width; } ctx.beginPath(); ctx.arc(d.x,d.y,d.s,0,Math.PI*2); ctx.fill(); }); }, 33);
             }
         }
         window.onload = init; window.onresize = initCanvasEffect;
     </script>
 </body>
 </html>
-
