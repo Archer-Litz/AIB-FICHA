@@ -1,140 +1,140 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo do Espião - por Daniel Ruas</title>
-    <!-- Tailwind CSS para estilização moderna e responsiva -->
+    <title>Jogo do Impostor - por Daniel Ruas</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
         
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0f172a; /* dark blue */
-            color: #f8fafc;
-            user-select: none; /* Evita seleção de texto acidental no mobile */
+            font-family: 'Outfit', sans-serif;
+            background-color: #111827; /* cinza muito escuro */
+            color: #f3f4f6;
+            user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Animação suave para troca de telas */
         .fade-in {
-            animation: fadeIn 0.3s ease-in-out;
+            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
-        /* Estilo do scrollbar para a lista de locais */
-        ::-webkit-scrollbar {
-            width: 6px;
+        .cyber-border {
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
         }
-        ::-webkit-scrollbar-track {
-            background: #1e293b; 
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #475569; 
-            border-radius: 4px;
+        
+        .impostor-border {
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col justify-center">
 
-    <!-- Container Principal (Modo Mobile First) -->
-    <main id="app" class="flex-1 max-w-md w-full mx-auto p-6 flex flex-col justify-center fade-in">
-        <!-- O conteúdo será injetado aqui via JavaScript -->
+    <main id="app" class="w-full max-w-sm mx-auto p-5 fade-in">
+        <!-- Conteúdo gerado via JS -->
     </main>
 
     <script>
-        // --- BASE DE DADOS DO JOGO ---
-        const LOCATIONS = {
-            "Avião": ["Piloto", "Comissário de Bordo", "Mecânico", "Passageiro de Primeira Classe", "Marechal do Ar", "Co-piloto", "Passageiro Assustado", "Criança Chorona"],
-            "Banco": ["Gerente", "Caixa", "Segurança", "Cliente Vip", "Assaltante de Banco", "Consultor Financeiro", "Faxineiro", "Motorista do Carro Forte"],
-            "Hospital": ["Cirurgião", "Enfermeiro", "Paciente", "Recepcionista", "Anestesista", "Diretor do Hospital", "Visitante", "Paramédico"],
-            "Restaurante": ["Chef de Cozinha", "Garçom", "Cliente Crítico", "Hostess", "Sommelier", "Lavador de Pratos", "Cliente em Encontro", "Inspetor de Saúde"],
-            "Escola": ["Diretor", "Professor", "Aluno Bagunceiro", "Aluno Nerd", "Zelador", "Inspetor de Pátio", "Merendeira", "Professor de Ed. Física"],
-            "Submarino": ["Capitão", "Operador de Sonar", "Cozinheiro", "Marinheiro", "Mergulhador", "Engenheiro Chefe", "Imediato", "Prisioneiro"],
-            "Estação Espacial": ["Astronauta", "Cientista", "Engenheiro de Sistemas", "Médico", "Turista Espacial", "Comandante", "Piloto do Módulo", "Especialista em Robótica"],
-            "Cinema": ["Espectador", "Projecionista", "Vendedor de Pipoca", "Gerente", "Segurança", "Crítico de Cinema", "Pessoa Falando no Celular", "Criança Animada"],
-            "Praia": ["Salva-vidas", "Surfista", "Vendedor de Picolé", "Turista Queimado", "Criança na Areia", "Biólogo Marinho", "Mergulhador", "Fotógrafo"],
-            "Zoológico": ["Tratador de Animais", "Veterinário", "Visitante", "Guia Turístico", "Criança Perdida", "Pesquisador", "Segurança", "Fotógrafo de Natureza"]
-        };
-
         // --- ESTADO DO JOGO ---
         let state = {
-            players: [],      // Nomes dos jogadores
-            gameData: [],     // Array de objetos com { nome, papel, espião }
-            currentLocation: "",
-            spyPlayer: "",
-            currentPlayerIndex: 0,
-            screen: 'setup',  // 'setup', 'pass', 'reveal', 'play', 'end'
-            timeRemaining: 8 * 60, // 8 minutos
-            timerInterval: null
+            mestre: "",
+            palavraSecreta: "",
+            jogadores: [],
+            dadosJogo: [], // Array com { nome, isImpostor }
+            jogadorAtualIndex: 0,
+            ecra: 'mestre' // 'mestre', 'setup_jogadores', 'passar', 'revelar', 'jogo', 'fim'
         };
 
-        // Elemento raiz
         const appElement = document.getElementById('app');
 
-        // --- FUNÇÕES DE RENDERIZAÇÃO DE TELAS ---
-
+        // --- FUNÇÕES DE RENDERIZAÇÃO ---
         function render() {
-            appElement.innerHTML = ''; // Limpa tela
-            appElement.className = "flex-1 max-w-md w-full mx-auto p-6 flex flex-col fade-in"; // Reseta animação
+            appElement.innerHTML = '';
+            appElement.className = "w-full max-w-sm mx-auto p-5 fade-in"; 
 
-            switch (state.screen) {
-                case 'setup':
-                    renderSetupScreen();
-                    break;
-                case 'pass':
-                    renderPassScreen();
-                    break;
-                case 'reveal':
-                    renderRevealScreen();
-                    break;
-                case 'play':
-                    renderPlayScreen();
-                    break;
-                case 'end':
-                    renderEndScreen();
-                    break;
+            switch (state.ecra) {
+                case 'mestre': renderMestreScreen(); break;
+                case 'setup_jogadores': renderSetupJogadoresScreen(); break;
+                case 'passar': renderPassarScreen(); break;
+                case 'revelar': renderRevelarScreen(); break;
+                case 'jogo': renderJogoScreen(); break;
+                case 'fim': renderFimScreen(); break;
             }
         }
 
-        // TELA 1: SETUP (Adicionar Jogadores)
-        function renderSetupScreen() {
-            appElement.classList.add('justify-center');
-            
-            let html = `
+        // ECRA 1: DEFINIR MESTRE E PALAVRA
+        function renderMestreScreen() {
+            appElement.innerHTML = `
                 <div class="text-center mb-8">
-                    <h1 class="text-4xl font-bold tracking-tight text-red-500 mb-1">ESPIÃO</h1>
-                    <p class="text-sm text-slate-400">por Daniel Ruas</p>
+                    <h1 class="text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 mb-1">IMPOSTOR</h1>
+                    <p class="text-xs text-gray-500 uppercase tracking-widest font-semibold">por Daniel Ruas</p>
                 </div>
                 
-                <div class="bg-slate-800 p-5 rounded-2xl shadow-xl mb-6 border border-slate-700">
-                    <h2 class="text-lg font-semibold mb-3">Jogadores (${state.players.length})</h2>
+                <div class="bg-gray-800/50 p-6 rounded-2xl cyber-border backdrop-blur-sm mb-6">
+                    <h2 class="text-lg font-semibold mb-4 text-blue-300">A vez do Mestre</h2>
+                    <p class="text-sm text-gray-400 mb-5">O Mestre escolhe a palavra e gere o jogo, não participa nas respostas.</p>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1 ml-1">Nome do Mestre</label>
+                            <input type="text" id="mestreName" placeholder="Ex: João..." 
+                                class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1 ml-1">Palavra Secreta</label>
+                            <input type="password" id="palavraInput" placeholder="Digite a palavra sem ninguém ver..." 
+                                class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:border-emerald-500 transition-colors">
+                            <div class="flex items-center mt-2 ml-1">
+                                <input type="checkbox" id="showWord" class="mr-2 accent-emerald-500" onchange="togglePassword()">
+                                <label for="showWord" class="text-xs text-gray-400">Mostrar palavra</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="salvarMestre()" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold py-4 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.4)] transition-all active:scale-95 text-lg">
+                    Continuar
+                </button>
+            `;
+        }
+
+        // ECRA 2: ADICIONAR JOGADORES
+        function renderSetupJogadoresScreen() {
+            let html = `
+                <div class="text-center mb-6">
+                    <p class="text-sm text-gray-400">Mestre: <span class="font-bold text-blue-400">${state.mestre}</span></p>
+                    <h2 class="text-2xl font-bold mt-2">Adicionar Jogadores</h2>
+                </div>
+                
+                <div class="bg-gray-800/50 p-5 rounded-2xl cyber-border mb-6">
                     <div class="flex gap-2 mb-4">
                         <input type="text" id="playerName" placeholder="Nome do jogador..." 
-                            class="flex-1 bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 focus:outline-none focus:border-red-500 transition-colors"
+                            class="flex-1 bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
                             onkeypress="if(event.key === 'Enter') addPlayer()">
-                        <button onclick="addPlayer()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg font-semibold transition-colors">
+                        <button onclick="addPlayer()" class="bg-blue-600 hover:bg-blue-500 px-5 py-3 rounded-xl font-bold text-xl transition-colors">
                             +
                         </button>
                     </div>
                     
-                    <ul id="playersList" class="space-y-2 max-h-48 overflow-y-auto pr-2">
+                    <ul id="playersList" class="space-y-2 max-h-56 overflow-y-auto pr-1">
             `;
 
-            if (state.players.length === 0) {
-                html += `<li class="text-slate-500 text-sm text-center py-2">Adicione pelo menos 3 jogadores.</li>`;
+            if (state.jogadores.length === 0) {
+                html += `<li class="text-gray-500 text-sm text-center py-4">Adicione pelo menos 3 jogadores.</li>`;
             } else {
-                state.players.forEach((player, index) => {
+                state.jogadores.forEach((player, index) => {
                     html += `
-                        <li class="flex justify-between items-center bg-slate-700 px-3 py-2 rounded-lg">
-                            <span>${player}</span>
-                            <button onclick="removePlayer(${index})" class="text-red-400 hover:text-red-300 font-bold px-2">&times;</button>
+                        <li class="flex justify-between items-center bg-gray-700/50 px-4 py-3 rounded-xl border border-gray-600/50">
+                            <span class="font-medium">${player}</span>
+                            <button onclick="removePlayer(${index})" class="text-red-400 hover:text-red-300 font-bold p-1 text-lg leading-none">&times;</button>
                         </li>
                     `;
                 });
@@ -144,248 +144,235 @@
                     </ul>
                 </div>
                 
-                <button onclick="startGame()" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-4 rounded-xl shadow-lg transition-all transform active:scale-95 flex items-center justify-center gap-2 text-lg">
-                    <span>Começar Jogo</span>
+                <button onclick="iniciarSorteio()" class="w-full bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold py-4 rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.4)] transition-all active:scale-95 text-lg flex justify-center items-center gap-2">
+                    Distribuir Palavras
+                </button>
+                <button onclick="state.ecra='mestre'; render();" class="w-full mt-3 text-gray-500 text-sm py-2 underline hover:text-gray-300">
+                    Voltar para o Mestre
                 </button>
             `;
             appElement.innerHTML = html;
         }
 
-        // TELA 2: PASSAR CELULAR
-        function renderPassScreen() {
-            appElement.classList.add('justify-center');
-            const currentPlayerName = state.gameData[state.currentPlayerIndex].nome;
+        // ECRA 3: PASSAR TELEMÓVEL
+        function renderPassarScreen() {
+            const nomeAtual = state.dadosJogo[state.jogadorAtualIndex].nome;
 
             appElement.innerHTML = `
-                <div class="text-center bg-slate-800 p-8 rounded-3xl shadow-xl border border-slate-700 border-t-4 border-t-blue-500">
-                    <div class="text-5xl mb-4">📱</div>
-                    <h2 class="text-2xl font-bold mb-2 text-slate-300">Passe o celular para</h2>
-                    <h1 class="text-4xl font-bold text-white mb-8">${currentPlayerName}</h1>
-                    <p class="text-slate-400 text-sm mb-8">Certifique-se de que ninguém mais está olhando a tela!</p>
+                <div class="text-center bg-gray-800/80 p-8 rounded-3xl cyber-border mt-10">
+                    <div class="text-6xl mb-6 animate-bounce">📱</div>
+                    <h2 class="text-xl font-medium mb-1 text-gray-400">Passe o telemóvel para</h2>
+                    <h1 class="text-4xl font-black text-white mb-8 tracking-wide">${nomeAtual}</h1>
                     
-                    <button onclick="showReveal()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg transition-all transform active:scale-95 text-lg">
-                        Sou Eu! Ver meu papel
+                    <div class="bg-gray-900/50 p-4 rounded-xl border border-gray-700 mb-8">
+                        <p class="text-amber-400/80 text-sm font-medium">⚠️ Certifique-se de que ninguém está a olhar para o seu ecrã!</p>
+                    </div>
+                    
+                    <button onclick="state.ecra='revelar'; render();" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-95 text-lg">
+                        Mostrar minha palavra
                     </button>
                 </div>
             `;
         }
 
-        // TELA 3: REVELAR PAPEL
-        function renderRevealScreen() {
-            appElement.classList.add('justify-center');
-            const playerData = state.gameData[state.currentPlayerIndex];
+        // ECRA 4: REVELAR
+        function renderRevelarScreen() {
+            const jogadorData = state.dadosJogo[state.jogadorAtualIndex];
             
-            let contentHtml = '';
+            let htmlConteudo = '';
             
-            if (playerData.espião) {
-                // É o espião
-                contentHtml = `
-                    <div class="text-center bg-red-900/40 p-8 rounded-3xl shadow-xl border border-red-800 border-t-4 border-t-red-500">
-                        <div class="text-6xl mb-4">🕵️‍♂️</div>
-                        <h1 class="text-3xl font-bold text-red-400 mb-2">VOCÊ É O ESPIÃO!</h1>
-                        <p class="text-slate-300 mb-6">Mantenha a calma. Tente descobrir onde os outros estão fazendo perguntas, mas não deixe que descubram você!</p>
+            if (jogadorData.isImpostor) {
+                htmlConteudo = `
+                    <div class="text-center bg-red-950/40 p-8 rounded-3xl impostor-border mt-10">
+                        <div class="text-6xl mb-4">🤫</div>
+                        <h2 class="text-xl text-red-300/80 font-medium tracking-widest uppercase mb-2">Você é o</h2>
+                        <h1 class="text-4xl font-black text-red-500 mb-6 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]">IMPOSTOR</h1>
+                        <p class="text-gray-300 text-sm leading-relaxed">Não deixe que descubram. Preste atenção nas palavras dos outros para tentar adivinhar a palavra secreta!</p>
                     </div>
                 `;
             } else {
-                // Não é o espião
-                contentHtml = `
-                    <div class="text-center bg-slate-800 p-8 rounded-3xl shadow-xl border border-slate-700 border-t-4 border-t-blue-500">
-                        <div class="text-sm text-slate-400 uppercase tracking-widest mb-1">Seu Local</div>
-                        <h1 class="text-3xl font-bold text-blue-400 mb-6">${state.currentLocation}</h1>
-                        
-                        <div class="text-sm text-slate-400 uppercase tracking-widest mb-1">Sua Função</div>
-                        <h2 class="text-2xl font-bold text-white mb-6">${playerData.papel}</h2>
-                        
-                        <p class="text-slate-400 text-sm">Responda às perguntas de acordo com sua função e local, e tente encontrar o Espião!</p>
+                htmlConteudo = `
+                    <div class="text-center bg-blue-950/40 p-8 rounded-3xl cyber-border mt-10">
+                        <div class="text-sm text-blue-300/80 uppercase tracking-widest mb-2 font-medium">A Palavra Secreta é</div>
+                        <h1 class="text-4xl font-black text-white mb-8 tracking-wider bg-gray-900 py-4 rounded-xl border border-blue-500/30 shadow-inner">${state.palavraSecreta}</h1>
+                        <p class="text-gray-300 text-sm">Memorize a palavra. Tente descobrir quem é o impostor fazendo perguntas aos outros.</p>
                     </div>
                 `;
             }
 
             appElement.innerHTML = `
-                ${contentHtml}
+                ${htmlConteudo}
                 <div class="mt-8">
-                    <button onclick="nextTurn()" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all transform active:scale-95 text-lg">
-                        Entendido! Esconder.
+                    <button onclick="proximoTurno()" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-95 text-lg">
+                        Esconder e Continuar
                     </button>
                 </div>
             `;
         }
 
-        // TELA 4: JOGO (Timer e Locais)
-        function renderPlayScreen() {
-            appElement.classList.remove('justify-center');
-            
-            const minutes = Math.floor(state.timeRemaining / 60).toString().padStart(2, '0');
-            const seconds = (state.timeRemaining % 60).toString().padStart(2, '0');
-            const timeColor = state.timeRemaining <= 60 ? 'text-red-500' : 'text-white';
-
-            let locationsHtml = Object.keys(LOCATIONS).sort().map(loc => 
-                `<div class="bg-slate-800 border border-slate-700 rounded-lg p-3 text-center text-sm font-medium text-slate-300">${loc}</div>`
-            ).join('');
-
+        // ECRA 5: MESTRE CONTROLA O JOGO
+        function renderJogoScreen() {
             appElement.innerHTML = `
-                <div class="text-center mb-6 pt-4">
-                    <h2 class="text-slate-400 text-sm uppercase tracking-wider mb-2">Tempo Restante</h2>
-                    <div class="text-6xl font-bold font-mono ${timeColor} drop-shadow-md">
-                        ${minutes}:${seconds}
-                    </div>
+                <div class="text-center mb-8">
+                    <h2 class="text-sm text-gray-400 uppercase tracking-widest mb-1">Em Andamento</h2>
+                    <h1 class="text-2xl font-bold text-blue-400">Descubram o Impostor!</h1>
                 </div>
 
-                <div class="flex-1 flex flex-col min-h-0">
-                    <h3 class="text-lg font-semibold mb-3 text-slate-200">Lista de Locais (Para o Espião):</h3>
-                    <div class="grid grid-cols-2 gap-2 overflow-y-auto pb-4 custom-scrollbar">
-                        ${locationsHtml}
+                <div class="bg-gray-800/50 p-6 rounded-3xl cyber-border text-center mb-8">
+                    <p class="text-gray-400 mb-2 text-sm">O Mestre (<span class="text-white font-medium">${state.mestre}</span>) controla esta fase.</p>
+                    <div class="my-6">
+                        <p class="text-xs text-gray-500 mb-1">Palavra desta rodada:</p>
+                        <button onclick="alert('Palavra Secreta: ${state.palavraSecreta}')" class="text-emerald-400 border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 rounded-lg text-sm hover:bg-emerald-500/20 transition">
+                            👁️ Lembrar Mestre da Palavra
+                        </button>
                     </div>
+                    <p class="text-sm text-gray-300">Façam perguntas à vez. Quando o grupo decidir quem é o impostor, o Mestre encerra o jogo.</p>
                 </div>
 
-                <div class="mt-4 pt-4 border-t border-slate-800">
-                    <button onclick="revealSpy()" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-4 rounded-xl shadow-lg transition-all transform active:scale-95 text-lg">
-                        Finalizar Jogo / Revelar
-                    </button>
-                </div>
+                <button onclick="state.ecra='fim'; render();" class="w-full bg-red-600/90 hover:bg-red-500 text-white font-bold py-4 rounded-xl shadow-[0_0_15px_rgba(220,38,38,0.4)] transition-all active:scale-95 text-lg">
+                    Encerrar e Revelar Todos
+                </button>
             `;
         }
 
-        // TELA 5: FIM DE JOGO
-        function renderEndScreen() {
-            appElement.classList.add('justify-center');
-            
+        // ECRA 6: FIM
+        function renderFimScreen() {
+            const impostores = state.dadosJogo.filter(j => j.isImpostor).map(j => j.nome).join(' e ');
+
             appElement.innerHTML = `
-                <div class="text-center bg-slate-800 p-8 rounded-3xl shadow-xl border border-slate-700 mb-8 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-red-900/20"></div>
+                <div class="text-center bg-gray-800/80 p-8 rounded-3xl border border-gray-700 mt-6 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-red-500/5"></div>
                     <div class="relative z-10">
-                        <div class="text-6xl mb-4">🚨</div>
-                        <h2 class="text-xl text-slate-300 mb-2">O Espião era...</h2>
-                        <h1 class="text-4xl font-bold text-red-500 mb-6">${state.spyPlayer}</h1>
+                        <h2 class="text-lg text-gray-400 mb-2 uppercase tracking-widest font-semibold">Os Impostores eram</h2>
+                        <h1 class="text-3xl font-black text-red-500 mb-6 drop-shadow-md">${impostores}</h1>
                         
-                        <div class="w-full h-px bg-slate-700 my-4"></div>
+                        <div class="w-16 h-px bg-gray-600 mx-auto my-6"></div>
                         
-                        <h2 class="text-sm text-slate-400 mb-1">O Local Verdadeiro era:</h2>
-                        <h3 class="text-2xl font-bold text-blue-400">${state.currentLocation}</h3>
+                        <h2 class="text-sm text-gray-400 mb-2">A Palavra era</h2>
+                        <h3 class="text-2xl font-bold text-white bg-gray-900 inline-block px-6 py-2 rounded-xl border border-gray-700">${state.palavraSecreta}</h3>
                     </div>
                 </div>
                 
-                <div class="space-y-3">
-                    <button onclick="restartGame(false)" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg transition-all transform active:scale-95 text-lg">
-                        Jogar Novamente (Mesmos Jogadores)
+                <div class="mt-8 space-y-3">
+                    <button onclick="resetarRodada()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-95">
+                        Nova Palavra (Mesmo Mestre/Jogadores)
                     </button>
-                    <button onclick="restartGame(true)" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-xl shadow-lg transition-all transform active:scale-95">
-                        Novo Jogo (Trocar Jogadores)
+                    <button onclick="resetTotal()" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-xl transition-all active:scale-95 text-sm">
+                        Mudar Tudo (Novo Mestre)
                     </button>
                 </div>
             `;
         }
 
-
         // --- LÓGICA DO JOGO ---
+
+        function togglePassword() {
+            const input = document.getElementById('palavraInput');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        function salvarMestre() {
+            const mestreInput = document.getElementById('mestreName').value.trim();
+            const palavraInput = document.getElementById('palavraInput').value.trim();
+
+            if (!mestreInput) {
+                alert("O Mestre precisa de um nome!");
+                return;
+            }
+            if (!palavraInput) {
+                alert("Precisas de escrever uma Palavra Secreta!");
+                return;
+            }
+
+            state.mestre = mestreInput;
+            state.palavraSecreta = palavraInput.toUpperCase();
+            state.ecra = 'setup_jogadores';
+            render();
+        }
 
         function addPlayer() {
             const input = document.getElementById('playerName');
             const name = input.value.trim();
-            if (name && !state.players.includes(name)) {
-                state.players.push(name);
+            if (name && !state.jogadores.includes(name) && name.toLowerCase() !== state.mestre.toLowerCase()) {
+                state.jogadores.push(name);
                 input.value = '';
                 render();
+            } else if (name.toLowerCase() === state.mestre.toLowerCase()) {
+                alert("O Mestre não pode ser um jogador nesta rodada!");
             }
         }
 
         function removePlayer(index) {
-            state.players.splice(index, 1);
+            state.jogadores.splice(index, 1);
             render();
         }
 
-        function startGame() {
-            if (state.players.length < 3) {
-                alert("O jogo precisa de pelo menos 3 jogadores para ter graça!");
+        function iniciarSorteio() {
+            if (state.jogadores.length < 3) {
+                alert("É preciso pelo menos 3 jogadores (além do Mestre)!");
                 return;
             }
 
-            // 1. Escolher local aleatório
-            const locationNames = Object.keys(LOCATIONS);
-            state.currentLocation = locationNames[Math.floor(Math.random() * locationNames.length)];
-            
-            // 2. Escolher espião
-            const spyIndex = Math.floor(Math.random() * state.players.length);
-            state.spyPlayer = state.players[spyIndex];
+            // Decidir quantidade de impostores: 1 (sempre) ou 2 (50% de probabilidade se houver 5+ jogadores)
+            let qtImpostores = 1;
+            if (state.jogadores.length >= 5 && Math.random() > 0.5) {
+                qtImpostores = 2;
+            }
 
-            // 3. Pegar papéis para o local (embaralhar papéis disponíveis)
-            let availableRoles = [...LOCATIONS[state.currentLocation]];
-            availableRoles = availableRoles.sort(() => Math.random() - 0.5);
-
-            // 4. Distribuir papéis
-            state.gameData = state.players.map((playerName, index) => {
-                if (index === spyIndex) {
-                    return { nome: playerName, espião: true, papel: null };
-                } else {
-                    // Pega um papel. Se faltar papel (mais jogadores que papéis), repete algum aleatório.
-                    const role = availableRoles.pop() || LOCATIONS[state.currentLocation][Math.floor(Math.random() * LOCATIONS[state.currentLocation].length)];
-                    return { nome: playerName, espião: false, papel: role };
+            // Sorteio
+            let indicesImpostores = [];
+            while(indicesImpostores.length < qtImpostores) {
+                let randomIdx = Math.floor(Math.random() * state.jogadores.length);
+                if(!indicesImpostores.includes(randomIdx)){
+                    indicesImpostores.push(randomIdx);
                 }
+            }
+
+            state.dadosJogo = state.jogadores.map((nome, index) => {
+                return {
+                    nome: nome,
+                    isImpostor: indicesImpostores.includes(index)
+                };
             });
 
-            // Preparar variáveis da partida
-            state.currentPlayerIndex = 0;
-            state.timeRemaining = 8 * 60; // 8 minutos
-            
-            // Mudar para tela de passar
-            state.screen = 'pass';
+            state.jogadorAtualIndex = 0;
+            state.ecra = 'passar';
             render();
         }
 
-        function showReveal() {
-            state.screen = 'reveal';
-            render();
-        }
-
-        function nextTurn() {
-            state.currentPlayerIndex++;
-            if (state.currentPlayerIndex >= state.players.length) {
-                // Todos viram, começar o timer!
-                state.screen = 'play';
-                startTimer();
+        function proximoTurno() {
+            state.jogadorAtualIndex++;
+            if (state.jogadorAtualIndex >= state.dadosJogo.length) {
+                // Todos viram
+                state.ecra = 'jogo';
             } else {
-                state.screen = 'pass';
+                state.ecra = 'passar';
             }
             render();
         }
 
-        function startTimer() {
-            if (state.timerInterval) clearInterval(state.timerInterval);
-            state.timerInterval = setInterval(() => {
-                state.timeRemaining--;
-                if (state.timeRemaining <= 0) {
-                    clearInterval(state.timerInterval);
-                    // Pode tocar um som aqui ou apenas parar
-                }
-                // Só atualiza a tela se estiver na tela de jogo para não bugar
-                if (state.screen === 'play') {
-                    renderPlayScreen(); // Atualiza apenas o conteúdo, sem a animação geral
-                }
-            }, 1000);
-        }
-
-        function revealSpy() {
-            // Parar o timer e ir para tela final
-            if (state.timerInterval) clearInterval(state.timerInterval);
-            state.screen = 'end';
+        function resetarRodada() {
+            state.palavraSecreta = "";
+            state.ecra = 'mestre'; // Volta a pedir palavra
             render();
         }
 
-        function restartGame(fullReset) {
-            if (fullReset) {
-                state.players = [];
-                state.screen = 'setup';
-            } else {
-                // Inicia direto com os mesmos jogadores
-                startGame();
-                return; // startGame já chama render
-            }
+        function resetTotal() {
+            state = {
+                mestre: "",
+                palavraSecreta: "",
+                jogadores: [],
+                dadosJogo: [],
+                jogadorAtualIndex: 0,
+                ecra: 'mestre'
+            };
             render();
         }
 
-        // Iniciar app
+        // Init
         render();
     </script>
 </body>
 </html>
+
 
