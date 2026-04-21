@@ -4,374 +4,482 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo do Impostor - por Daniel Ruas</title>
+    <title>Forja de Maldições - Manipulação</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
         
-        body {
-            font-family: 'Outfit', sans-serif;
-            background-color: #111827; /* cinza muito escuro */
-            color: #f3f4f6;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
+        /* Variáveis Padrão (Tema Geto - Dourado e Preto/Azul Escuro) */
+        :root {
+            --bg-main: #0a0a0f;
+            --bg-panel: #13131a;
+            --bg-input: #1a1a24;
+            --accent: #d4af37; /* Dourado Geto */
+            --accent-hover: #b5952f;
+            --accent-light: rgba(212, 175, 55, 0.2);
+            --border-color: #2a2a35;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --gradient-start: #d4af37;
+            --gradient-end: #fcd34d;
+            --shadow-color: rgba(212, 175, 55, 0.1);
         }
 
-        .fade-in {
-            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Variáveis Tema Kenjaku (Carmesim, Roxo e Preto) */
+        [data-theme="kenjaku"] {
+            --bg-main: #090505;
+            --bg-panel: #140b0b;
+            --bg-input: #201111;
+            --accent: #dc2626; /* Vermelho Sangue Kenjaku */
+            --accent-hover: #b91c1c;
+            --accent-light: rgba(220, 38, 38, 0.2);
+            --border-color: #3f1d1d;
+            --gradient-start: #dc2626;
+            --gradient-end: #9333ea; /* Roxo Escuro */
+            --shadow-color: rgba(220, 38, 38, 0.15);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-main); 
+            color: var(--text-main); 
+            transition: background-color 0.5s ease;
+            background-image: radial-gradient(circle at top right, var(--shadow-color) 0%, transparent 50%),
+                              radial-gradient(circle at bottom left, var(--shadow-color) 0%, transparent 50%);
         }
 
-        .cyber-border {
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: var(--bg-panel); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        .input-style {
+            width: 100%;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            padding: 0.5rem 0.75rem;
+            color: var(--text-main);
+            transition: all 0.3s ease;
         }
         
-        .impostor-border {
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+        .input-style:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-light);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+
+        .theme-btn {
+            transition: all 0.3s ease;
+            opacity: 0.5;
+            filter: grayscale(100%);
+        }
+        
+        .theme-btn.active {
+            opacity: 1;
+            filter: grayscale(0%);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--accent-light);
+            border-color: var(--accent);
+        }
+
+        .panel-bg {
+            background-color: var(--bg-panel);
+            border-color: var(--border-color);
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.5s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent);
+            color: #000;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-center">
+<body class="min-h-screen p-4 md:p-6 lg:p-8 flex flex-col lg:flex-row gap-6">
 
-    <main id="app" class="w-full max-w-sm mx-auto p-5 fade-in">
-        <!-- Conteúdo gerado via JS -->
-    </main>
+    <!-- Painel de Configurações (Esquerda) -->
+    <div class="w-full lg:w-7/12 flex flex-col gap-6">
+        
+        <!-- Cabeçalho e Temas -->
+        <div class="panel-bg rounded-xl p-6 shadow-xl border">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <h1 class="text-2xl md:text-3xl font-black uppercase tracking-wider text-gradient flex items-center gap-3">
+                    <i class="fa-solid fa-hands-holding-circle text-[var(--accent)] transition-colors duration-500"></i> Manipulação de Maldição
+                </h1>
+                
+                <!-- Seletor de Temas -->
+                <div class="flex gap-3 bg-[var(--bg-input)] p-1.5 rounded-lg border border-[var(--border-color)]">
+                    <button id="themeGeto" class="theme-btn active flex items-center gap-2 px-3 py-1.5 rounded border border-transparent bg-black/40 text-xs font-bold text-[#d4af37]">
+                        <i class="fa-solid fa-mask"></i> Geto
+                    </button>
+                    <button id="themeKenjaku" class="theme-btn flex items-center gap-2 px-3 py-1.5 rounded border border-transparent bg-black/40 text-xs font-bold text-[#dc2626]">
+                        <i class="fa-solid fa-brain"></i> Kenjaku
+                    </button>
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-semibold mb-2 text-zinc-300">Formatação do Molde (Visual Discord):</label>
+                <select id="moldeStyle" class="input-style font-medium focus:ring-0">
+                    <option value="1">1. Original (Clássico do Exemplo)</option>
+                    <option value="2">2. Itálico e Spoilers (Sombrio, usa _ e ||)</option>
+                    <option value="3">3. Destaque de Sistema (Usa blocos inline ` e Negrito **)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Formulário Scrollável -->
+        <div class="panel-bg rounded-xl p-6 shadow-xl border overflow-y-auto max-h-[70vh] custom-scrollbar flex flex-col gap-8">
+            
+            <!-- Automação e Dados Básicos -->
+            <div>
+                <h2 class="section-title"><i class="fa-solid fa-bolt text-[var(--accent)] transition-colors duration-500"></i> Classificação & Automação</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-xs font-semibold mb-1 text-zinc-400">Grau da Maldição:</label>
+                        <select id="grade" class="input-style font-bold">
+                            <option value="4">Grau 4</option>
+                            <option value="3">Grau 3</option>
+                            <option value="2">Grau 2</option>
+                            <option value="1">Grau 1</option>
+                            <option value="Especial">Grau Especial</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1 text-zinc-400">Nome / Quantidade (Ex: 4x Maldições):</label>
+                        <input type="text" id="name" value="4x Maldições" class="input-style">
+                    </div>
+                </div>
+
+                <div class="bg-[var(--bg-input)] p-4 rounded-lg border border-[var(--border-color)] text-sm mb-4 transition-colors duration-500">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-center">
+                        <div><span class="block text-zinc-500 text-xs uppercase">Maestria Req.</span><span id="infoMaestria" class="font-bold text-[var(--text-main)]">I</span></div>
+                        <div><span class="block text-zinc-500 text-xs uppercase">Gasto Seigen</span><span id="infoGasto" class="font-bold text-[var(--text-main)]">50</span></div>
+                        <div><span class="block text-zinc-500 text-xs uppercase">Cooldown</span><span id="infoCd" class="font-bold text-[var(--text-main)]">N/a</span></div>
+                        <div><span class="block text-zinc-500 text-xs uppercase">Limite</span><span id="infoLimite" class="font-bold text-[var(--text-main)]">Sem limite</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informações Descritivas -->
+            <div>
+                <h2 class="section-title"><i class="fa-solid fa-book-journal-whills text-[var(--accent)] transition-colors duration-500"></i> Descrição</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold mb-1 text-zinc-400">Descrição da técnica:</label>
+                        <textarea id="description" rows="4" class="input-style resize-none custom-scrollbar">Quatro maldições de grau 4 idênticas, atuando em conjunto. Não possuem inteligência ou técnicas inatas, mas contam com maestria básica em energia amaldiçoada. São jacarés</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Atributos -->
+            <div>
+                <h2 class="section-title"><i class="fa-solid fa-chart-radar text-[var(--accent)] transition-colors duration-500"></i> Status (Por Unidade)</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                    <div><label class="text-[10px] uppercase text-zinc-400 font-bold block mb-1">Força</label><input type="number" id="s_forca" value="30" class="input-style text-center"></div>
+                    <div><label class="text-[10px] uppercase text-zinc-400 font-bold block mb-1">Velocid.</label><input type="number" id="s_vel" value="30" class="input-style text-center"></div>
+                    <div><label class="text-[10px] uppercase text-zinc-400 font-bold block mb-1">Resist.</label><input type="number" id="s_res" value="50" class="input-style text-center"></div>
+                    <div><label class="text-[10px] uppercase text-zinc-400 font-bold block mb-1">Energia</label><input type="number" id="s_ene" value="30" class="input-style text-center"></div>
+                    <div><label class="text-[10px] uppercase text-zinc-400 font-bold block mb-1">Reflexo</label><input type="number" id="s_ref" value="10" class="input-style text-center"></div>
+                    <div><label class="text-[10px] uppercase text-zinc-400 font-bold block mb-1">Intel.</label><input type="number" id="s_int" value="0" class="input-style text-center"></div>
+                    <div><label class="text-[10px] uppercase text-zinc-400 font-bold block mb-1">Agilid.</label><input type="number" id="s_agi" value="40" class="input-style text-center"></div>
+                    <div><label class="text-[10px] uppercase text-zinc-400 font-bold block mb-1">Iniciativa</label><input type="number" id="s_ini" value="40" class="input-style text-center"></div>
+                    <div><label class="text-[10px] uppercase text-[var(--accent)] font-bold block mb-1 transition-colors duration-500">Seigen</label><input type="number" id="s_seigen" value="0" class="input-style text-center"></div>
+                    <div><label class="text-[10px] uppercase text-zinc-400 font-bold block mb-1">Maestria</label><input type="text" id="s_maestria" value="I" class="input-style text-center opacity-50 cursor-not-allowed" readonly title="Automático pelo Grau"></div>
+                </div>
+            </div>
+
+            <!-- Dados Técnicos e Finais -->
+            <div>
+                <h2 class="section-title"><i class="fa-solid fa-atom text-[var(--accent)] transition-colors duration-500"></i> Dados da Conjuração</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-xs font-semibold mb-1 text-zinc-400">Técnica (Amaldiçoada / Inata) utilizada:</label>
+                        <input type="text" id="technique" value="Não tem" class="input-style">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1 text-zinc-400">Status de energia:</label>
+                        <input type="text" id="energyStatus" value="0" class="input-style">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1 text-zinc-400">Imagem (Opcional):</label>
+                    <input type="text" id="imageUrl" value="" class="input-style" placeholder="Link da imagem...">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Painel de Saída (Direita) -->
+    <div class="w-full lg:w-5/12 flex flex-col">
+        <div class="panel-bg rounded-xl p-0 shadow-2xl border flex-grow flex flex-col overflow-hidden relative">
+            
+            <div class="bg-[var(--bg-input)] p-4 flex justify-between items-center border-b border-[var(--border-color)] transition-colors duration-500">
+                <h2 class="text-sm font-bold text-zinc-200 flex items-center gap-2">
+                    <i class="fa-brands fa-discord text-[#5865F2]"></i> Resultado Final
+                </h2>
+                <button id="copyBtn" class="btn-primary font-bold text-xs px-4 py-2 rounded shadow-lg active:scale-95 flex items-center gap-2">
+                    <i class="fa-regular fa-copy"></i> Copiar Molde
+                </button>
+            </div>
+            
+            <textarea id="output" class="w-full h-full min-h-[500px] flex-grow bg-transparent p-6 text-zinc-300 font-mono text-xs md:text-sm outline-none resize-none custom-scrollbar leading-relaxed" spellcheck="false" readonly></textarea>
+            
+            <!-- Efeito de notificação -->
+            <div id="toast" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-emerald-500 text-white px-4 py-2 rounded-full text-sm font-bold opacity-0 transition-opacity duration-300 pointer-events-none shadow-[0_0_15px_rgba(16,185,129,0.5)] z-50">
+                Molde Copiado!
+            </div>
+        </div>
+    </div>
 
     <script>
-        // --- ESTADO DO JOGO ---
-        let state = {
-            mestre: "",
-            palavraSecreta: "",
-            jogadores: [],
-            dadosJogo: [], // Array com { nome, isImpostor }
-            jogadorAtualIndex: 0,
-            ecra: 'mestre' // 'mestre', 'setup_jogadores', 'passar', 'revelar', 'jogo', 'fim'
+        // Lógica de Automação dos Graus (Regras originais mantidas)
+        const gradeRules = {
+            "4": { maestria: "I", gasto: 50, cd: "N/a", limite: "Sem limite" },
+            "3": { maestria: "II", gasto: 80, cd: "N/a", limite: "Máx 25" },
+            "2": { maestria: "III", gasto: 125, cd: "N/a", limite: "Máx 10" },
+            "1": { maestria: "IV", gasto: 250, cd: "2 Turnos", limite: "Máx 5" },
+            "Especial": { maestria: "V", gasto: 400, cd: "5 Turnos", limite: "Máx 1" }
         };
 
-        const appElement = document.getElementById('app');
+        const inputs = document.querySelectorAll('input, select, textarea:not(#output)');
+        const output = document.getElementById('output');
+        const gradeSelect = document.getElementById('grade');
+        
+        const infoMaestria = document.getElementById('infoMaestria');
+        const infoGasto = document.getElementById('infoGasto');
+        const infoCd = document.getElementById('infoCd');
+        const infoLimite = document.getElementById('infoLimite');
+        const inputS_Maestria = document.getElementById('s_maestria');
 
-        // --- FUNÇÕES DE RENDERIZAÇÃO ---
-        function render() {
-            appElement.innerHTML = '';
-            appElement.className = "w-full max-w-sm mx-auto p-5 fade-in"; 
+        // Lógica de Temas
+        const themeGetoBtn = document.getElementById('themeGeto');
+        const themeKenjakuBtn = document.getElementById('themeKenjaku');
 
-            switch (state.ecra) {
-                case 'mestre': renderMestreScreen(); break;
-                case 'setup_jogadores': renderSetupJogadoresScreen(); break;
-                case 'passar': renderPassarScreen(); break;
-                case 'revelar': renderRevelarScreen(); break;
-                case 'jogo': renderJogoScreen(); break;
-                case 'fim': renderFimScreen(); break;
-            }
-        }
-
-        // ECRA 1: DEFINIR MESTRE E PALAVRA
-        function renderMestreScreen() {
-            appElement.innerHTML = `
-                <div class="text-center mb-8">
-                    <h1 class="text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 mb-1">IMPOSTOR</h1>
-                    <p class="text-xs text-gray-500 uppercase tracking-widest font-semibold">por Daniel Ruas</p>
-                </div>
-                
-                <div class="bg-gray-800/50 p-6 rounded-2xl cyber-border backdrop-blur-sm mb-6">
-                    <h2 class="text-lg font-semibold mb-4 text-blue-300">A vez do Mestre</h2>
-                    <p class="text-sm text-gray-400 mb-5">O Mestre escolhe a palavra e gere o jogo, não participa nas respostas.</p>
-                    
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-xs text-gray-400 mb-1 ml-1">Nome do Mestre</label>
-                            <input type="text" id="mestreName" placeholder="Ex: João..." 
-                                class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-gray-400 mb-1 ml-1">Palavra Secreta</label>
-                            <input type="password" id="palavraInput" placeholder="Digite a palavra sem ninguém ver..." 
-                                class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:border-emerald-500 transition-colors">
-                            <div class="flex items-center mt-2 ml-1">
-                                <input type="checkbox" id="showWord" class="mr-2 accent-emerald-500" onchange="togglePassword()">
-                                <label for="showWord" class="text-xs text-gray-400">Mostrar palavra</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <button onclick="salvarMestre()" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold py-4 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.4)] transition-all active:scale-95 text-lg">
-                    Continuar
-                </button>
-            `;
-        }
-
-        // ECRA 2: ADICIONAR JOGADORES
-        function renderSetupJogadoresScreen() {
-            let html = `
-                <div class="text-center mb-6">
-                    <p class="text-sm text-gray-400">Mestre: <span class="font-bold text-blue-400">${state.mestre}</span></p>
-                    <h2 class="text-2xl font-bold mt-2">Adicionar Jogadores</h2>
-                </div>
-                
-                <div class="bg-gray-800/50 p-5 rounded-2xl cyber-border mb-6">
-                    <div class="flex gap-2 mb-4">
-                        <input type="text" id="playerName" placeholder="Nome do jogador..." 
-                            class="flex-1 bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
-                            onkeypress="if(event.key === 'Enter') addPlayer()">
-                        <button onclick="addPlayer()" class="bg-blue-600 hover:bg-blue-500 px-5 py-3 rounded-xl font-bold text-xl transition-colors">
-                            +
-                        </button>
-                    </div>
-                    
-                    <ul id="playersList" class="space-y-2 max-h-56 overflow-y-auto pr-1">
-            `;
-
-            if (state.jogadores.length === 0) {
-                html += `<li class="text-gray-500 text-sm text-center py-4">Adicione pelo menos 3 jogadores.</li>`;
+        function setTheme(theme) {
+            if (theme === 'kenjaku') {
+                document.body.setAttribute('data-theme', 'kenjaku');
+                themeKenjakuBtn.classList.add('active');
+                themeGetoBtn.classList.remove('active');
             } else {
-                state.jogadores.forEach((player, index) => {
-                    html += `
-                        <li class="flex justify-between items-center bg-gray-700/50 px-4 py-3 rounded-xl border border-gray-600/50">
-                            <span class="font-medium">${player}</span>
-                            <button onclick="removePlayer(${index})" class="text-red-400 hover:text-red-300 font-bold p-1 text-lg leading-none">&times;</button>
-                        </li>
-                    `;
-                });
+                document.body.removeAttribute('data-theme');
+                themeGetoBtn.classList.add('active');
+                themeKenjakuBtn.classList.remove('active');
             }
-
-            html += `
-                    </ul>
-                </div>
-                
-                <button onclick="iniciarSorteio()" class="w-full bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold py-4 rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.4)] transition-all active:scale-95 text-lg flex justify-center items-center gap-2">
-                    Distribuir Palavras
-                </button>
-                <button onclick="state.ecra='mestre'; render();" class="w-full mt-3 text-gray-500 text-sm py-2 underline hover:text-gray-300">
-                    Voltar para o Mestre
-                </button>
-            `;
-            appElement.innerHTML = html;
         }
 
-        // ECRA 3: PASSAR TELEMÓVEL
-        function renderPassarScreen() {
-            const nomeAtual = state.dadosJogo[state.jogadorAtualIndex].nome;
+        themeGetoBtn.addEventListener('click', () => setTheme('geto'));
+        themeKenjakuBtn.addEventListener('click', () => setTheme('kenjaku'));
 
-            appElement.innerHTML = `
-                <div class="text-center bg-gray-800/80 p-8 rounded-3xl cyber-border mt-10">
-                    <div class="text-6xl mb-6 animate-bounce">📱</div>
-                    <h2 class="text-xl font-medium mb-1 text-gray-400">Passe o telemóvel para</h2>
-                    <h1 class="text-4xl font-black text-white mb-8 tracking-wide">${nomeAtual}</h1>
-                    
-                    <div class="bg-gray-900/50 p-4 rounded-xl border border-gray-700 mb-8">
-                        <p class="text-amber-400/80 text-sm font-medium">⚠️ Certifique-se de que ninguém está a olhar para o seu ecrã!</p>
-                    </div>
-                    
-                    <button onclick="state.ecra='revelar'; render();" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-95 text-lg">
-                        Mostrar minha palavra
-                    </button>
-                </div>
-            `;
+
+        function updateAutomatedRules() {
+            const rules = gradeRules[gradeSelect.value];
+            infoMaestria.innerText = rules.maestria;
+            infoGasto.innerText = rules.gasto;
+            infoCd.innerText = rules.cd;
+            infoLimite.innerText = rules.limite;
+            inputS_Maestria.value = rules.maestria; 
+            generateOutput();
         }
 
-        // ECRA 4: REVELAR
-        function renderRevelarScreen() {
-            const jogadorData = state.dadosJogo[state.jogadorAtualIndex];
+        function generateOutput() {
+            // Obter Valores
+            const style = document.getElementById('moldeStyle').value;
+            const grade = gradeSelect.value;
+            const name = document.getElementById('name').value;
+            const desc = document.getElementById('description').value;
+            const tech = document.getElementById('technique').value;
+            const enStatus = document.getElementById('energyStatus').value;
+            const img = document.getElementById('imageUrl').value;
             
-            let htmlConteudo = '';
-            
-            if (jogadorData.isImpostor) {
-                htmlConteudo = `
-                    <div class="text-center bg-red-950/40 p-8 rounded-3xl impostor-border mt-10">
-                        <div class="text-6xl mb-4">🤫</div>
-                        <h2 class="text-xl text-red-300/80 font-medium tracking-widest uppercase mb-2">Você é o</h2>
-                        <h1 class="text-4xl font-black text-red-500 mb-6 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]">IMPOSTOR</h1>
-                        <p class="text-gray-300 text-sm leading-relaxed">Não deixe que descubram. Preste atenção nas palavras dos outros para tentar adivinhar a palavra secreta!</p>
-                    </div>
-                `;
-            } else {
-                htmlConteudo = `
-                    <div class="text-center bg-blue-950/40 p-8 rounded-3xl cyber-border mt-10">
-                        <div class="text-sm text-blue-300/80 uppercase tracking-widest mb-2 font-medium">A Palavra Secreta é</div>
-                        <h1 class="text-4xl font-black text-white mb-8 tracking-wider bg-gray-900 py-4 rounded-xl border border-blue-500/30 shadow-inner">${state.palavraSecreta}</h1>
-                        <p class="text-gray-300 text-sm">Memorize a palavra. Tente descobrir quem é o impostor fazendo perguntas aos outros.</p>
-                    </div>
-                `;
-            }
+            const seigen = document.getElementById('s_seigen').value;
+            const rules = gradeRules[grade];
 
-            appElement.innerHTML = `
-                ${htmlConteudo}
-                <div class="mt-8">
-                    <button onclick="proximoTurno()" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-95 text-lg">
-                        Esconder e Continuar
-                    </button>
-                </div>
-            `;
-        }
+            // Formatação do bloco de Status (Fiel aos nomes originais)
+            const createStats = (formatType) => {
+                const s = [
+                    {k: "Força", v: document.getElementById('s_forca').value},
+                    {k: "Velocidade", v: document.getElementById('s_vel').value},
+                    {k: "Resistência", v: document.getElementById('s_res').value},
+                    {k: "Energia", v: document.getElementById('s_ene').value},
+                    {k: "Reflexo", v: document.getElementById('s_ref').value},
+                    {k: "Inteligência", v: document.getElementById('s_int').value},
+                    {k: "Agilidade", v: document.getElementById('s_agi').value},
+                    {k: "Iniciativa", v: document.getElementById('s_ini').value},
+                    {k: "Maestria", v: rules.maestria},
+                    {k: "Seigen", v: seigen}
+                ];
 
-        // ECRA 5: MESTRE CONTROLA O JOGO
-        function renderJogoScreen() {
-            appElement.innerHTML = `
-                <div class="text-center mb-8">
-                    <h2 class="text-sm text-gray-400 uppercase tracking-widest mb-1">Em Andamento</h2>
-                    <h1 class="text-2xl font-bold text-blue-400">Descubram o Impostor!</h1>
-                </div>
-
-                <div class="bg-gray-800/50 p-6 rounded-3xl cyber-border text-center mb-8">
-                    <p class="text-gray-400 mb-2 text-sm">O Mestre (<span class="text-white font-medium">${state.mestre}</span>) controla esta fase.</p>
-                    <div class="my-6">
-                        <p class="text-xs text-gray-500 mb-1">Palavra desta rodada:</p>
-                        <button onclick="alert('Palavra Secreta: ${state.palavraSecreta}')" class="text-emerald-400 border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 rounded-lg text-sm hover:bg-emerald-500/20 transition">
-                            👁️ Lembrar Mestre da Palavra
-                        </button>
-                    </div>
-                    <p class="text-sm text-gray-300">Façam perguntas à vez. Quando o grupo decidir quem é o impostor, o Mestre encerra o jogo.</p>
-                </div>
-
-                <button onclick="state.ecra='fim'; render();" class="w-full bg-red-600/90 hover:bg-red-500 text-white font-bold py-4 rounded-xl shadow-[0_0_15px_rgba(220,38,38,0.4)] transition-all active:scale-95 text-lg">
-                    Encerrar e Revelar Todos
-                </button>
-            `;
-        }
-
-        // ECRA 6: FIM
-        function renderFimScreen() {
-            const impostores = state.dadosJogo.filter(j => j.isImpostor).map(j => j.nome).join(' e ');
-
-            appElement.innerHTML = `
-                <div class="text-center bg-gray-800/80 p-8 rounded-3xl border border-gray-700 mt-6 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-red-500/5"></div>
-                    <div class="relative z-10">
-                        <h2 class="text-lg text-gray-400 mb-2 uppercase tracking-widest font-semibold">Os Impostores eram</h2>
-                        <h1 class="text-3xl font-black text-red-500 mb-6 drop-shadow-md">${impostores}</h1>
-                        
-                        <div class="w-16 h-px bg-gray-600 mx-auto my-6"></div>
-                        
-                        <h2 class="text-sm text-gray-400 mb-2">A Palavra era</h2>
-                        <h3 class="text-2xl font-bold text-white bg-gray-900 inline-block px-6 py-2 rounded-xl border border-gray-700">${state.palavraSecreta}</h3>
-                    </div>
-                </div>
-                
-                <div class="mt-8 space-y-3">
-                    <button onclick="resetarRodada()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-95">
-                        Nova Palavra (Mesmo Mestre/Jogadores)
-                    </button>
-                    <button onclick="resetTotal()" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-xl transition-all active:scale-95 text-sm">
-                        Mudar Tudo (Novo Mestre)
-                    </button>
-                </div>
-            `;
-        }
-
-        // --- LÓGICA DO JOGO ---
-
-        function togglePassword() {
-            const input = document.getElementById('palavraInput');
-            input.type = input.type === 'password' ? 'text' : 'password';
-        }
-
-        function salvarMestre() {
-            const mestreInput = document.getElementById('mestreName').value.trim();
-            const palavraInput = document.getElementById('palavraInput').value.trim();
-
-            if (!mestreInput) {
-                alert("O Mestre precisa de um nome!");
-                return;
-            }
-            if (!palavraInput) {
-                alert("Precisas de escrever uma Palavra Secreta!");
-                return;
-            }
-
-            state.mestre = mestreInput;
-            state.palavraSecreta = palavraInput.toUpperCase();
-            state.ecra = 'setup_jogadores';
-            render();
-        }
-
-        function addPlayer() {
-            const input = document.getElementById('playerName');
-            const name = input.value.trim();
-            if (name && !state.jogadores.includes(name) && name.toLowerCase() !== state.mestre.toLowerCase()) {
-                state.jogadores.push(name);
-                input.value = '';
-                render();
-            } else if (name.toLowerCase() === state.mestre.toLowerCase()) {
-                alert("O Mestre não pode ser um jogador nesta rodada!");
-            }
-        }
-
-        function removePlayer(index) {
-            state.jogadores.splice(index, 1);
-            render();
-        }
-
-        function iniciarSorteio() {
-            if (state.jogadores.length < 3) {
-                alert("É preciso pelo menos 3 jogadores (além do Mestre)!");
-                return;
-            }
-
-            // Decidir quantidade de impostores: 1 (sempre) ou 2 (50% de probabilidade se houver 5+ jogadores)
-            let qtImpostores = 1;
-            if (state.jogadores.length >= 5 && Math.random() > 0.5) {
-                qtImpostores = 2;
-            }
-
-            // Sorteio
-            let indicesImpostores = [];
-            while(indicesImpostores.length < qtImpostores) {
-                let randomIdx = Math.floor(Math.random() * state.jogadores.length);
-                if(!indicesImpostores.includes(randomIdx)){
-                    indicesImpostores.push(randomIdx);
+                let out = "";
+                for(let i=0; i<s.length; i++) {
+                    if(formatType === '1') out += `* ${s[i].k}: ${s[i].v}\n`;
+                    if(formatType === '2') out += `> ↳ ||**${s[i].k}:** ${s[i].v}||\n`;
+                    if(formatType === '3') out += `> ↳ \`${s[i].k}:\` **${s[i].v}**\n`;
                 }
-            }
-
-            state.dadosJogo = state.jogadores.map((nome, index) => {
-                return {
-                    nome: nome,
-                    isImpostor: indicesImpostores.includes(index)
-                };
-            });
-
-            state.jogadorAtualIndex = 0;
-            state.ecra = 'passar';
-            render();
-        }
-
-        function proximoTurno() {
-            state.jogadorAtualIndex++;
-            if (state.jogadorAtualIndex >= state.dadosJogo.length) {
-                // Todos viram
-                state.ecra = 'jogo';
-            } else {
-                state.ecra = 'passar';
-            }
-            render();
-        }
-
-        function resetarRodada() {
-            state.palavraSecreta = "";
-            state.ecra = 'mestre'; // Volta a pedir palavra
-            render();
-        }
-
-        function resetTotal() {
-            state = {
-                mestre: "",
-                palavraSecreta: "",
-                jogadores: [],
-                dadosJogo: [],
-                jogadorAtualIndex: 0,
-                ecra: 'mestre'
+                return out.trim();
             };
-            render();
+
+            let result = "";
+
+            if (style === "1") {
+                // ESTILO 1: O MOLDE ORIGINAL EXATO
+                result = `_▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+**[👻] Molde de Técnicas de energia amaldiçoada**
+▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+**❮❖❯ Nome da técnica / Habilidade:**
+> ↳ 【🌕】${name} | Grau ${grade}
+> 
+**❮❖❯ Descrição da técnica:**
+> ↳ 【🌖】${desc}
+> 
+**— Status (Por unidade):**
+${createStats('1')}
+**❮❖❯ Técnica (Amaldiçoada / Inata) utilizada:**
+> ↳ 【🌗】${tech}
+> 
+**❮❖❯ Maestria:**
+> ↳ 【🌘】${rules.maestria}
+> 
+**❮❖❯ Status de energia:**
+> ↳ 【🌒】${enStatus}
+> 
+**❮❖❯ Gasto da técnica:**
+> ↳ 【🌓】${rules.gasto}
+> 
+**❮❖❯ Cooldown da técnica:**
+> ↳ 【🌔】${rules.cd}
+> 
+**❮❖❯ Imagem (Opcional):**
+> ↳ 【🌕】${img}
+> 
+▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰_`;
+
+            } else if (style === "2") {
+                // ESTILO 2: SOMBRIO ITÁLICO / SPOILERS (Mantém o texto idêntico, muda os símbolos)
+                result = `_▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+**[👻] Molde de Técnicas de energia amaldiçoada**
+▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰_
+_**❮❖❯ Nome da técnica / Habilidade:**_
+> ↳ _||${name} | Grau ${grade}||_
+> 
+_**❮❖❯ Descrição da técnica:**_
+> ↳ _${desc}_
+> 
+_**— Status (Por unidade):**_
+${createStats('2')}
+_**❮❖❯ Técnica (Amaldiçoada / Inata) utilizada:**_
+> ↳ _||${tech}||_
+> 
+_**❮❖❯ Maestria:**_
+> ↳ _||${rules.maestria}||_
+> 
+_**❮❖❯ Status de energia:**_
+> ↳ _||${enStatus}||_
+> 
+_**❮❖❯ Gasto da técnica:**_
+> ↳ _||${rules.gasto}||_
+> 
+_**❮❖❯ Cooldown da técnica:**_
+> ↳ _||${rules.cd}||_
+> 
+_**❮❖❯ Imagem (Opcional):**_
+> ↳ _${img}_
+_▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰_`;
+
+            } else if (style === "3") {
+                // ESTILO 3: DESTAQUE SISTEMA (Inline code e Negrito)
+                result = `▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+**[👻] Molde de Técnicas de energia amaldiçoada**
+▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+**❮❖❯ Nome da técnica / Habilidade:**
+> ↳ \`${name}\` | **Grau ${grade}**
+> 
+**❮❖❯ Descrição da técnica:**
+> ↳ ${desc}
+> 
+**— Status (Por unidade):**
+${createStats('3')}
+**❮❖❯ Técnica (Amaldiçoada / Inata) utilizada:**
+> ↳ **${tech}**
+> 
+**❮❖❯ Maestria:**
+> ↳ \`${rules.maestria}\`
+> 
+**❮❖❯ Status de energia:**
+> ↳ \`${enStatus}\`
+> 
+**❮❖❯ Gasto da técnica:**
+> ↳ \`${rules.gasto}\`
+> 
+**❮❖❯ Cooldown da técnica:**
+> ↳ \`${rules.cd}\`
+> 
+**❮❖❯ Imagem (Opcional):**
+> ↳ ${img}
+▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰`;
+            } 
+
+            output.value = result;
         }
 
-        // Init
-        render();
+        // Função de Copiar
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            output.select();
+            document.execCommand('copy');
+            
+            const toast = document.getElementById('toast');
+            
+            toast.classList.remove('opacity-0');
+            toast.classList.add('opacity-100');
+            
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0');
+            }, 2500);
+        });
+
+        // Listeners para atualização em tempo real
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                if(input.id === 'grade') updateAutomatedRules();
+                else generateOutput();
+            });
+        });
+
+        // Inicialização
+        updateAutomatedRules();
+
     </script>
 </body>
 </html>
+
+
+```
